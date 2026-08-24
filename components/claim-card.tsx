@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Claim } from "@/lib/mock-data";
 import { StatusBadge } from "./status-badge";
 import { IndianRupee, ArrowRight, AlertTriangle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayDate } from "@/lib/utils";
 
 interface ClaimCardProps {
   claim: Claim;
@@ -36,12 +36,12 @@ export function ClaimCard({ claim }: ClaimCardProps) {
           </div>
 
           <div className="text-xs text-zinc-500 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <span>Submitted: <strong className="text-zinc-700 font-medium">{claim.submitted_date}</strong></span>
+            <span>Submitted: <strong className="text-zinc-700 font-medium">{formatDisplayDate(claim.submitted_date)}</strong></span>
             {claim.settled_date && (
               <>
                 <span className="text-zinc-300">•</span>
                 <span className="text-emerald-700 font-medium">
-                  Settled: {claim.settled_date}
+                  Settled: {formatDisplayDate(claim.settled_date)}
                 </span>
               </>
             )}

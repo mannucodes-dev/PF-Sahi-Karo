@@ -5,6 +5,7 @@ import { MOCK_CLAIMS, MOCK_USER } from "@/lib/mock-data";
 import { getDecoderResult } from "@/lib/decoder-rules";
 import { StatusBadge } from "@/components/status-badge";
 import { DecoderPanel } from "@/components/decoder-panel";
+import { RejectionScenarioView } from "@/components/rejection-scenario-view";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -19,7 +20,7 @@ import {
   FileCheck,
   Send,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayDate } from "@/lib/utils";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -112,7 +113,7 @@ export default async function ClaimDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
                 <span>
-                  Submitted Date: <strong className="text-zinc-800">{claim.submitted_date}</strong>
+                  Submitted Date: <strong className="text-zinc-800">{formatDisplayDate(claim.submitted_date)}</strong>
                 </span>
               </div>
 
@@ -120,7 +121,7 @@ export default async function ClaimDetailPage({ params }: PageProps) {
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>
-                    Settled Date: <strong className="text-zinc-800">{claim.settled_date}</strong>
+                    Settled Date: <strong className="text-zinc-800">{formatDisplayDate(claim.settled_date)}</strong>
                   </span>
                 </div>
               )}
@@ -138,8 +139,8 @@ export default async function ClaimDetailPage({ params }: PageProps) {
         {/* 2. State-Specific Content */}
 
         {/* A. REJECTED STATE: The centerpiece decoder & CTA */}
-        {isRejected && decoderResult && (
-          <div className="space-y-6">
+        {isRejected && (
+          <div className="space-y-4">
             <div className="border-l-4 border-rose-500 pl-3.5 py-0.5">
               <h2 className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight">
                 EPFO Rejection Analysis & Resolution Path
@@ -149,31 +150,11 @@ export default async function ClaimDetailPage({ params }: PageProps) {
               </p>
             </div>
 
-            {/* Decoder Panel */}
-            <DecoderPanel remark={decoderResult} />
-
-            {/* Action Bar / Primary CTA */}
-            <Card className="border-teal-300 bg-gradient-to-r from-teal-50/90 via-teal-50/50 to-emerald-50/50 shadow-sm p-4 sm:p-6 rounded-xl">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="space-y-1 text-center sm:text-left">
-                  <h3 className="font-bold text-base sm:text-lg text-teal-950">
-                    Ready to resolve this claim?
-                  </h3>
-                  <p className="text-xs sm:text-sm text-teal-800">
-                    Follow our guided resubmission workflow to ensure complete compliance.
-                  </p>
-                </div>
-                <Link
-                  href={`/claims/${claim.id}/resubmit`}
-                  className={cn(
-                    buttonVariants({ size: "default" }),
-                    "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-7 py-3 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm cursor-pointer"
-                  )}
-                >
-                  Sahi Karo → Resubmit claim <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </Card>
+            {/* Interactive Scenario & Decoder View */}
+            <RejectionScenarioView
+              claimId={claim.id}
+              defaultCode={claim.remark_code || "NAME_MISMATCH"}
+            />
           </div>
         )}
 
@@ -190,7 +171,7 @@ export default async function ClaimDetailPage({ params }: PageProps) {
             </CardHeader>
             <CardContent className="space-y-4 px-5 sm:px-6 pb-6 pt-1">
               <p className="text-sm text-zinc-800 leading-relaxed">
-                Your claim of <strong className="text-zinc-900 font-semibold">₹{claim.amount.toLocaleString("en-IN")}</strong> has been approved by the EPFO field office. Funds were electronically credited via NEFT to your KYC-verified bank account ending in <strong className="font-mono text-zinc-900 font-semibold">{MOCK_USER.bank_account_last4}</strong> on <strong className="text-zinc-900 font-semibold">{claim.settled_date}</strong>.
+                Your claim of <strong className="text-zinc-900 font-semibold">₹{claim.amount.toLocaleString("en-IN")}</strong> has been approved by the EPFO field office. Funds were electronically credited via NEFT to your KYC-verified bank account ending in <strong className="font-mono text-zinc-900 font-semibold">{MOCK_USER.bank_account_last4}</strong> on <strong className="text-zinc-900 font-semibold">{formatDisplayDate(claim.settled_date)}</strong>.
               </p>
               <div className="p-4 bg-white border border-emerald-100 rounded-lg text-xs font-mono text-zinc-600 space-y-1.5 shadow-2xs">
                 <div className="flex justify-between"><span className="text-zinc-400 font-sans">Payment Mode:</span> <span className="font-semibold text-zinc-800">Electronic NEFT Transfer</span></div>
@@ -237,7 +218,7 @@ export default async function ClaimDetailPage({ params }: PageProps) {
                       ✓
                     </div>
                     <div className="font-semibold text-xs sm:text-sm text-zinc-900">Submitted</div>
-                    <div className="text-[11px] text-zinc-500">{claim.submitted_date}</div>
+                    <div className="text-[11px] text-zinc-500">{formatDisplayDate(claim.submitted_date)}</div>
                   </div>
 
                   {/* Step 2 */}

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { MOCK_CLAIMS, MOCK_USER, Claim } from "@/lib/mock-data";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { MOCK_CLAIMS, MOCK_USER, Claim, RemarkCodeKey } from "@/lib/mock-data";
 import { getDecoderResult } from "@/lib/decoder-rules";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -24,16 +24,18 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function ClaimResubmitPage() {
+function ClaimResubmitContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const claimId = params?.id as string;
+  const codeParam = searchParams?.get("code") as RemarkCodeKey | null;
 
   const [claim, setClaim] = useState<Claim | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [hasConfirmedFix, setHasConfirmedFix] = useState(false);
+  const [hasConfirmedFix, setHasConfirmedFix] = useState(true);
   const [referenceId, setReferenceId] = useState("");
 
   useEffect(() => {
@@ -64,7 +66,12 @@ export default function ClaimResubmitPage() {
     );
   }
 
-  const decoderResult = getDecoderResult(claim.remark_code);
+  const effectiveCode: RemarkCodeKey =
+    codeParam && (codeParam in (getDecoderResult(codeParam) ? { [codeParam]: true } : {}))
+      ? codeParam
+      : claim.remark_code || "NAME_MISMATCH";
+
+  const decoderResult = getDecoderResult(effectiveCode);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -194,7 +201,7 @@ export default function ClaimResubmitPage() {
                     Recap: Required Fix
                   </div>
                   <p className="text-xs sm:text-sm font-medium text-teal-900 leading-relaxed">
-                    {decoderResult?.code === "NAME_MISMATCH"
+                    {effectiveCode === "NAME_MISMATCH"
                       ? "Ensure your name spelling on EPFO Member Sewa portal matches your Aadhaar card character-for-character before submitting."
                       : decoderResult?.plain_explanation ||
                         "Resolve the specific remark items noted in the rejection report."}
@@ -226,7 +233,7 @@ export default function ClaimResubmitPage() {
                         className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500 shrink-0 cursor-pointer"
                       />
                       <span className="text-xs sm:text-sm text-zinc-800 leading-snug font-medium">
-                        I have verified my Aadhaar and updated my profile details on the EPFO Member Sewa portal.
+                        I have verified and updated my profile details on the EPFO Member Sewa portal according to the decode instructions.
                       </span>
                     </label>
 
@@ -313,5 +320,22 @@ export default function ClaimResubmitPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function ClaimResubmitPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center text-zinc-600">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Loader2 className="w-5 h-5 animate-spin text-teal-700" />
+            Loading resubmission portal...
+          </div>
+        </div>
+      }
+    >
+      <ClaimResubmitContent />
+    </Suspense>
   );
 }
