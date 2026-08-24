@@ -80,28 +80,28 @@ export default async function ClaimDetailPage({ params }: PageProps) {
       {/* Main Container */}
       <main className="max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
         {/* 1. Claim Summary Header Card */}
-        <Card className="border-zinc-200/90 bg-white shadow-sm overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-5">
-              <div className="space-y-1">
+        <Card className="border-slate-200/90 bg-white shadow-sm overflow-hidden rounded-xl">
+          <CardContent className="p-5 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+              <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">
+                  <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
                     {claim.claim_type}
                   </h1>
                   <StatusBadge status={claim.status} />
                 </div>
-                <div className="text-xs text-zinc-500 font-mono">
-                  Claim ID: {claim.id}
+                <div className="text-xs text-zinc-500 font-mono flex items-center gap-2">
+                  <span>Claim ID: <strong className="text-zinc-700">{claim.id}</strong></span>
                 </div>
               </div>
 
               {/* Amount Display */}
-              <div className="text-left sm:text-right bg-zinc-50 sm:bg-transparent p-3 sm:p-0 rounded-lg">
-                <div className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
+              <div className="text-left sm:text-right bg-slate-50 sm:bg-transparent p-3 sm:p-0 rounded-lg shrink-0">
+                <div className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">
                   Claim Amount
                 </div>
-                <div className="text-2xl font-extrabold text-zinc-900 flex items-center sm:justify-end">
-                  <IndianRupee className="w-5 h-5 text-zinc-700" />
+                <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 flex items-center sm:justify-end">
+                  <IndianRupee className="w-5 h-5 text-zinc-700 shrink-0" />
                   {claim.amount.toLocaleString("en-IN")}
                 </div>
               </div>
@@ -110,25 +110,25 @@ export default async function ClaimDetailPage({ params }: PageProps) {
             {/* Key Dates & Meta Info */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 text-xs text-zinc-600">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-zinc-400" />
+                <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
                 <span>
-                  Submitted Date: <strong>{claim.submitted_date}</strong>
+                  Submitted Date: <strong className="text-zinc-800">{claim.submitted_date}</strong>
                 </span>
               </div>
 
               {claim.settled_date && (
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>
-                    Settled Date: <strong>{claim.settled_date}</strong>
+                    Settled Date: <strong className="text-zinc-800">{claim.settled_date}</strong>
                   </span>
                 </div>
               )}
 
               <div className="flex items-center gap-2">
-                <Landmark className="w-4 h-4 text-zinc-400" />
+                <Landmark className="w-4 h-4 text-slate-400 shrink-0" />
                 <span>
-                  UAN: <strong>{MOCK_USER.uan}</strong>
+                  UAN <span className="text-zinc-400 text-[11px]">(Universal Account Number)</span>: <strong className="font-mono text-zinc-800">{MOCK_USER.uan}</strong>
                 </span>
               </div>
             </div>
@@ -140,12 +140,12 @@ export default async function ClaimDetailPage({ params }: PageProps) {
         {/* A. REJECTED STATE: The centerpiece decoder & CTA */}
         {isRejected && decoderResult && (
           <div className="space-y-6">
-            <div className="border-l-4 border-rose-500 pl-3">
-              <h2 className="text-base font-bold text-zinc-900">
-                Claim Rejection Analysis & Solution
+            <div className="border-l-4 border-rose-500 pl-3.5 py-0.5">
+              <h2 className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight">
+                EPFO Rejection Analysis & Resolution Path
               </h2>
               <p className="text-xs text-zinc-500">
-                EPFO rejection decoded into plain language with verified action steps
+                Official rejection notice decoded into plain language with verified action steps
               </p>
             </div>
 
@@ -153,24 +153,24 @@ export default async function ClaimDetailPage({ params }: PageProps) {
             <DecoderPanel remark={decoderResult} />
 
             {/* Action Bar / Primary CTA */}
-            <Card className="border-teal-300 bg-teal-50/70 shadow-sm p-4 sm:p-5">
+            <Card className="border-teal-300 bg-gradient-to-r from-teal-50/90 via-teal-50/50 to-emerald-50/50 shadow-sm p-4 sm:p-6 rounded-xl">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="space-y-1 text-center sm:text-left">
-                  <h3 className="font-bold text-sm sm:text-base text-teal-950">
+                  <h3 className="font-bold text-base sm:text-lg text-teal-950">
                     Ready to resolve this claim?
                   </h3>
-                  <p className="text-xs text-teal-800">
-                    Follow our guided resubmission to avoid another rejection.
+                  <p className="text-xs sm:text-sm text-teal-800">
+                    Follow our guided resubmission workflow to ensure complete compliance.
                   </p>
                 </div>
                 <Link
                   href={`/claims/${claim.id}/resubmit`}
                   className={cn(
                     buttonVariants({ size: "default" }),
-                    "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-2.5 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                    "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-7 py-3 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm cursor-pointer"
                   )}
                 >
-                  Resubmit claim <ArrowRight className="w-4 h-4" />
+                  Sahi Karo → Resubmit claim <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </Card>
@@ -179,28 +179,30 @@ export default async function ClaimDetailPage({ params }: PageProps) {
 
         {/* B. APPROVED STATE */}
         {isApproved && (
-          <Card className="border-emerald-200 bg-emerald-50/40 shadow-sm">
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm sm:text-base">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+          <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50/60 via-white to-emerald-50/30 shadow-sm rounded-xl overflow-hidden">
+            <CardHeader className="pb-2 pt-5 px-5 sm:px-6">
+              <div className="flex items-center gap-2.5 text-emerald-900 font-bold text-base sm:text-lg">
+                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xs shrink-0">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
                 Settlement Completed Successfully
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 pt-1">
+            <CardContent className="space-y-4 px-5 sm:px-6 pb-6 pt-1">
               <p className="text-sm text-zinc-800 leading-relaxed">
-                Your claim of <strong>₹{claim.amount.toLocaleString("en-IN")}</strong> has been approved by the EPFO field office. Funds were electronically credited via NEFT to your verified bank account ending in <strong>{MOCK_USER.bank_account_last4}</strong> on <strong>{claim.settled_date}</strong>.
+                Your claim of <strong className="text-zinc-900 font-semibold">₹{claim.amount.toLocaleString("en-IN")}</strong> has been approved by the EPFO field office. Funds were electronically credited via NEFT to your KYC-verified bank account ending in <strong className="font-mono text-zinc-900 font-semibold">{MOCK_USER.bank_account_last4}</strong> on <strong className="text-zinc-900 font-semibold">{claim.settled_date}</strong>.
               </p>
-              <div className="p-3 bg-white border border-emerald-100 rounded-lg text-xs font-mono text-zinc-600 space-y-1">
-                <div>Payment Mode: Electronic NEFT Transfer</div>
-                <div>Status: Settled & Disbursed</div>
-                <div>Beneficiary: {MOCK_USER.full_name}</div>
+              <div className="p-4 bg-white border border-emerald-100 rounded-lg text-xs font-mono text-zinc-600 space-y-1.5 shadow-2xs">
+                <div className="flex justify-between"><span className="text-zinc-400 font-sans">Payment Mode:</span> <span className="font-semibold text-zinc-800">Electronic NEFT Transfer</span></div>
+                <div className="flex justify-between"><span className="text-zinc-400 font-sans">Transfer Status:</span> <span className="font-semibold text-emerald-700">Settled & Disbursed</span></div>
+                <div className="flex justify-between"><span className="text-zinc-400 font-sans">Beneficiary Name:</span> <span className="font-semibold text-zinc-800">{MOCK_USER.full_name}</span></div>
               </div>
               <div className="pt-2">
                 <Link
                   href="/dashboard"
-                  className={cn(buttonVariants({ variant: "outline" }), "text-xs")}
+                  className={cn(buttonVariants({ variant: "outline" }), "text-xs font-medium")}
                 >
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Return to Claims Dashboard
+                  <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Return to Claims Dashboard
                 </Link>
               </div>
             </CardContent>
@@ -209,59 +211,61 @@ export default async function ClaimDetailPage({ params }: PageProps) {
 
         {/* C. PENDING STATE */}
         {isPending && (
-          <Card className="border-amber-200 bg-amber-50/30 shadow-sm">
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-2 text-amber-900 font-bold text-sm sm:text-base">
-                <Clock className="w-5 h-5 text-amber-600" />
-                Claim Under Active Processing
+          <Card className="border-amber-200 bg-gradient-to-br from-amber-50/50 via-white to-amber-50/30 shadow-sm rounded-xl overflow-hidden">
+            <CardHeader className="pb-2 pt-5 px-5 sm:px-6">
+              <div className="flex items-center gap-2.5 text-amber-900 font-bold text-base sm:text-lg">
+                <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-2xs shrink-0">
+                  <Clock className="w-5 h-5" />
+                </div>
+                Claim Under Active Field Office Processing
               </div>
             </CardHeader>
-            <CardContent className="space-y-6 pt-1">
+            <CardContent className="space-y-6 px-5 sm:px-6 pb-6 pt-1">
               <p className="text-sm text-zinc-800 leading-relaxed">
-                Your claim is currently being processed by the regional EPFO Field Office. Standard settlement processing typically takes between 15 to 20 working days from submission date.
+                Your claim of <strong className="text-zinc-900 font-semibold">₹{claim.amount.toLocaleString("en-IN")}</strong> is currently being processed by the regional EPFO Field Office. Standard settlement processing typically takes between 15 to 20 working days from submission date.
               </p>
 
               {/* 3-Step Progress Tracker */}
-              <div className="bg-white border border-amber-100 rounded-xl p-4 sm:p-5">
-                <div className="text-xs font-semibold text-zinc-700 uppercase tracking-wide mb-4">
-                  Processing Stage:
+              <div className="bg-white border border-amber-200/80 rounded-xl p-5 sm:p-6 shadow-2xs">
+                <div className="text-xs font-bold text-zinc-700 uppercase tracking-wider mb-5">
+                  Processing Stage
                 </div>
                 <div className="grid grid-cols-3 gap-2 relative">
                   {/* Step 1 */}
-                  <div className="text-center space-y-1.5">
-                    <div className="w-8 h-8 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                  <div className="text-center space-y-2">
+                    <div className="w-9 h-9 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shadow-2xs">
                       ✓
                     </div>
-                    <div className="font-semibold text-xs text-zinc-900">Submitted</div>
-                    <div className="text-[10px] text-zinc-500">{claim.submitted_date}</div>
+                    <div className="font-semibold text-xs sm:text-sm text-zinc-900">Submitted</div>
+                    <div className="text-[11px] text-zinc-500">{claim.submitted_date}</div>
                   </div>
 
                   {/* Step 2 */}
-                  <div className="text-center space-y-1.5">
-                    <div className="w-8 h-8 mx-auto rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs animate-pulse">
+                  <div className="text-center space-y-2">
+                    <div className="w-9 h-9 mx-auto rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-2xs ring-4 ring-amber-100">
                       2
                     </div>
-                    <div className="font-semibold text-xs text-amber-900">Under Review</div>
-                    <div className="text-[10px] text-amber-700 font-medium">Field Office</div>
+                    <div className="font-semibold text-xs sm:text-sm text-amber-950">Under Review</div>
+                    <div className="text-[11px] text-amber-700 font-medium">Regional Office</div>
                   </div>
 
                   {/* Step 3 */}
-                  <div className="text-center space-y-1.5 opacity-60">
-                    <div className="w-8 h-8 mx-auto rounded-full bg-zinc-100 text-zinc-400 flex items-center justify-center font-bold text-xs">
+                  <div className="text-center space-y-2 opacity-50">
+                    <div className="w-9 h-9 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-xs">
                       3
                     </div>
-                    <div className="font-semibold text-xs text-zinc-600">Decision</div>
-                    <div className="text-[10px] text-zinc-400">Pending</div>
+                    <div className="font-semibold text-xs sm:text-sm text-zinc-600">Decision</div>
+                    <div className="text-[11px] text-zinc-400">Pending</div>
                   </div>
                 </div>
               </div>
 
-              <div>
+              <div className="pt-2">
                 <Link
                   href="/dashboard"
-                  className={cn(buttonVariants({ variant: "outline" }), "text-xs")}
+                  className={cn(buttonVariants({ variant: "outline" }), "text-xs font-medium")}
                 >
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Return to Claims Dashboard
+                  <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Return to Claims Dashboard
                 </Link>
               </div>
             </CardContent>

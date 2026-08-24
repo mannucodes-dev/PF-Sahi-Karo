@@ -16,11 +16,11 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         <Badge
           variant="outline"
           className={cn(
-            "bg-emerald-50 text-emerald-700 border-emerald-200 gap-1 font-medium",
+            "bg-emerald-50 text-emerald-800 border-emerald-300/80 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <CheckCircle2 className="w-3.5 h-3.5" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           Approved
         </Badge>
       );
@@ -29,11 +29,11 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         <Badge
           variant="outline"
           className={cn(
-            "bg-amber-50 text-amber-700 border-amber-200 gap-1 font-medium",
+            "bg-amber-50 text-amber-800 border-amber-300/80 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <Clock className="w-3.5 h-3.5" />
+          <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
           Under review
         </Badge>
       );
@@ -42,11 +42,11 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         <Badge
           variant="outline"
           className={cn(
-            "bg-rose-50 text-rose-700 border-rose-200 gap-1 font-medium",
+            "bg-rose-50 text-rose-800 border-rose-300/90 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <XCircle className="w-3.5 h-3.5" />
+          <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
           Rejected
         </Badge>
       );

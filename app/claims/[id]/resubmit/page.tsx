@@ -107,48 +107,49 @@ export default function ClaimResubmitPage() {
         {/* SCREEN 5: Confirmation State */}
         {isSubmitted ? (
           <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
-            <Card className="border-emerald-200 bg-white shadow-md overflow-hidden text-center">
-              <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white">
-                <div className="w-16 h-16 mx-auto bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg mb-3">
-                  <CheckCircle2 className="w-10 h-10" />
+            <Card className="border-emerald-200 bg-white shadow-md overflow-hidden text-center rounded-2xl">
+              <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-teal-800 p-7 sm:p-10 text-white">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-white text-emerald-600 rounded-full flex items-center justify-center shadow-lg mb-4">
+                  <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-bold">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
                   Resubmitted Successfully!
                 </h1>
-                <p className="text-emerald-100 text-sm mt-1 max-w-md mx-auto">
+                <p className="text-teal-100 text-xs sm:text-sm mt-2 max-w-md mx-auto leading-relaxed">
                   Your corrected claim documents and resolution confirmation have been submitted for EPFO processing.
                 </p>
               </div>
 
-              <CardContent className="p-6 sm:p-8 space-y-6">
+              <CardContent className="p-5 sm:p-8 space-y-6">
                 {/* Timeline Box */}
-                <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 sm:p-5 text-left space-y-3">
-                  <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
-                    <Clock className="w-4 h-4 text-emerald-700" />
+                <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-xl p-4 sm:p-5 text-left space-y-2.5">
+                  <div className="flex items-center gap-2 text-emerald-950 font-bold text-sm sm:text-base">
+                    <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
                     Expected Review Timeline
                   </div>
-                  <p className="text-sm text-emerald-950">
-                    <strong>Expected update within 15 working days.</strong> Your field office will review the rectified details against your Aadhaar record.
+                  <p className="text-xs sm:text-sm text-emerald-900 leading-relaxed">
+                    <strong>Expected update within 15 working days.</strong> Regional field office will review your rectified records against the Aadhaar central database.
                   </p>
                 </div>
 
                 {/* Submission Details */}
-                <div className="border border-zinc-200 rounded-xl p-4 text-left space-y-2.5 text-xs text-zinc-600 bg-zinc-50/50">
-                  <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
-                    <span className="text-zinc-500">Resubmission Ref No.</span>
+                <div className="border border-slate-200 rounded-xl p-4 sm:p-5 text-left space-y-3 text-xs sm:text-sm text-zinc-600 bg-slate-50/70">
+                  <div className="flex justify-between items-center pb-2.5 border-b border-slate-200">
+                    <span className="text-zinc-500 font-sans">Resubmission Ref No.</span>
                     <span className="font-mono font-bold text-zinc-900">{referenceId}</span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
-                    <span className="text-zinc-500">Claim Type</span>
-                    <span className="font-medium text-zinc-900">{claim.claim_type}</span>
+                  <div className="flex justify-between items-center pb-2.5 border-b border-slate-200">
+                    <span className="text-zinc-500 font-sans">Claim Type</span>
+                    <span className="font-semibold text-zinc-900">{claim.claim_type}</span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
-                    <span className="text-zinc-500">Claim Amount</span>
-                    <span className="font-medium text-zinc-900">₹{claim.amount.toLocaleString("en-IN")}</span>
+                  <div className="flex justify-between items-center pb-2.5 border-b border-slate-200">
+                    <span className="text-zinc-500 font-sans">Claim Amount</span>
+                    <span className="font-semibold text-zinc-900">₹{claim.amount.toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-zinc-500">Reason Corrected</span>
-                    <span className="font-medium text-emerald-700">
+                    <span className="text-zinc-500 font-sans">Correction Verified</span>
+                    <span className="font-semibold text-emerald-700 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
                       {decoderResult ? decoderResult.code : "Discrepancy Rectified"}
                     </span>
                   </div>
@@ -160,7 +161,7 @@ export default function ClaimResubmitPage() {
                     href="/dashboard"
                     className={cn(
                       buttonVariants({ size: "default" }),
-                      "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-8 py-3 rounded-lg shadow-sm inline-flex items-center justify-center gap-2"
+                      "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-8 py-3 rounded-lg shadow-sm inline-flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm"
                     )}
                   >
                     Back to Dashboard <ArrowRight className="w-4 h-4" />
@@ -172,29 +173,29 @@ export default function ClaimResubmitPage() {
         ) : (
           /* SCREEN 4: Guided Resubmit Form */
           <div className="space-y-6">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 flex items-center gap-2">
-                <RefreshCw className="w-6 h-6 text-teal-700" />
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 flex items-center gap-2.5 tracking-tight">
+                <RefreshCw className="w-6 h-6 text-teal-700 shrink-0" />
                 Guided Claim Resubmission
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-                Verify your corrections before resubmitting to ensure 100% approval
+              <p className="text-xs sm:text-sm text-zinc-500">
+                Verify your corrections before resubmitting to ensure smooth EPFO clearance
               </p>
             </div>
 
             {/* 1. Fix Required Recap */}
-            <Card className="border-teal-200 bg-teal-50/60 shadow-xs">
+            <Card className="border-teal-200 bg-gradient-to-r from-teal-50/90 to-emerald-50/50 shadow-2xs rounded-xl overflow-hidden">
               <CardContent className="p-4 sm:p-5 flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-teal-700 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div className="space-y-1">
-                  <div className="text-xs font-bold text-teal-900 uppercase tracking-wide">
-                    Recap: Required Resolution
+                  <div className="text-xs font-bold text-teal-950 uppercase tracking-wide">
+                    Recap: Required Fix
                   </div>
-                  <p className="text-sm font-medium text-teal-950">
+                  <p className="text-xs sm:text-sm font-medium text-teal-900 leading-relaxed">
                     {decoderResult?.code === "NAME_MISMATCH"
-                      ? "Ensure your name spelling on Member Sewa matches your Aadhaar card exactly before submitting."
+                      ? "Ensure your name spelling on EPFO Member Sewa portal matches your Aadhaar card character-for-character before submitting."
                       : decoderResult?.plain_explanation ||
                         "Resolve the specific remark items noted in the rejection report."}
                   </p>
@@ -204,58 +205,58 @@ export default function ClaimResubmitPage() {
 
             {/* Resubmit Form */}
             <form onSubmit={handleSubmit}>
-              <Card className="border-zinc-200 bg-white shadow-sm">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base font-bold text-zinc-900">
+              <Card className="border-slate-200 bg-white shadow-sm rounded-xl overflow-hidden">
+                <CardHeader className="pb-4 pt-5 px-5 sm:px-6 border-b border-slate-100">
+                  <CardTitle className="text-base sm:text-lg font-bold text-zinc-900">
                     Correction Checklist & Supporting Document
                   </CardTitle>
                   <CardDescription className="text-xs text-zinc-500">
-                    Confirm your details to avoid automatic system rejection
+                    Confirm rectified details before dispatching to EPFO
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-5 p-5 sm:p-6">
                   {/* Verification Checkboxes */}
-                  <div className="space-y-3 bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <div className="space-y-3">
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-teal-50/40 hover:border-teal-200 cursor-pointer transition-colors select-none">
                       <input
                         type="checkbox"
                         checked={hasConfirmedFix}
                         onChange={(e) => setHasConfirmedFix(e.target.checked)}
-                        className="mt-1 h-4 w-4 rounded border-zinc-300 text-teal-600 focus:ring-teal-500"
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500 shrink-0 cursor-pointer"
                       />
-                      <span className="text-xs sm:text-sm text-zinc-800 leading-snug">
+                      <span className="text-xs sm:text-sm text-zinc-800 leading-snug font-medium">
                         I have verified my Aadhaar and updated my profile details on the EPFO Member Sewa portal.
                       </span>
                     </label>
 
-                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-teal-50/40 hover:border-teal-200 cursor-pointer transition-colors select-none">
                       <input
                         type="checkbox"
                         defaultChecked
-                        className="mt-1 h-4 w-4 rounded border-zinc-300 text-teal-600 focus:ring-teal-500"
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-500 shrink-0 cursor-pointer"
                       />
-                      <span className="text-xs sm:text-sm text-zinc-800 leading-snug">
-                        I confirm that the bank account ending in <strong>{MOCK_USER.bank_account_last4}</strong> is active and linked with my UAN.
+                      <span className="text-xs sm:text-sm text-zinc-800 leading-snug font-medium">
+                        I confirm that the bank account ending in <strong className="font-mono">{MOCK_USER.bank_account_last4}</strong> is active and linked with my UAN.
                       </span>
                     </label>
                   </div>
 
                   {/* Mock Document Upload Area */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-zinc-700 block">
+                    <label className="text-xs font-semibold text-zinc-700 block">
                       Upload Corrected Supporting Document (Optional for Demo)
                     </label>
-                    <div className="border-2 border-dashed border-zinc-200 hover:border-teal-400 rounded-xl p-6 text-center bg-zinc-50/50 transition-colors">
-                      <UploadCloud className="w-8 h-8 mx-auto text-zinc-400 mb-2" />
-                      <div className="text-xs text-zinc-600 mb-1">
+                    <div className="border-2 border-dashed border-slate-300 hover:border-teal-400 rounded-xl p-6 sm:p-7 text-center bg-slate-50/60 transition-colors">
+                      <UploadCloud className="w-8 h-8 sm:w-10 sm:h-10 mx-auto text-slate-400 mb-2" />
+                      <div className="text-xs sm:text-sm text-zinc-700 mb-1">
                         {selectedFile ? (
-                          <span className="font-semibold text-teal-700 flex items-center justify-center gap-1">
-                            <FileCheck className="w-4 h-4" /> {selectedFile} (Attached)
+                          <span className="font-bold text-teal-800 flex items-center justify-center gap-1.5">
+                            <FileCheck className="w-4 h-4 text-teal-600" /> {selectedFile} (Attached)
                           </span>
                         ) : (
                           <span>
-                            Click to upload updated Aadhaar copy or Joint Declaration Form
+                            Click or drag to attach updated Aadhaar copy or Joint Declaration Form
                           </span>
                         )}
                       </div>
@@ -265,18 +266,18 @@ export default function ClaimResubmitPage() {
                       <input
                         type="file"
                         onChange={handleMockFileChange}
-                        className="mt-3 block w-full text-xs text-zinc-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer"
+                        className="mt-4 block w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-teal-100/70 file:text-teal-900 hover:file:bg-teal-200 cursor-pointer mx-auto max-w-xs"
                       />
                     </div>
                   </div>
 
                   {/* Submission Action */}
-                  <div className="pt-3 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="pt-3 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
                     <Link
                       href={`/claims/${claim.id}`}
                       className={cn(
                         buttonVariants({ variant: "ghost", size: "sm" }),
-                        "text-zinc-500 hover:text-zinc-800"
+                        "text-zinc-500 hover:text-zinc-800 w-full sm:w-auto text-center font-medium"
                       )}
                     >
                       Cancel
@@ -285,7 +286,7 @@ export default function ClaimResubmitPage() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-2.5 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-7 py-2.5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] cursor-pointer text-sm"
                     >
                       {isSubmitting ? (
                         <>
