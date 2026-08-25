@@ -2,13 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
-import { Claim } from "@/lib/mock-data";
+import { ClaimRow } from "@/lib/data/claims";
 import { StatusBadge } from "./status-badge";
-import { IndianRupee, ArrowRight, AlertTriangle } from "lucide-react";
-import { cn, formatDisplayDate } from "@/lib/utils";
+import { ArrowRight, AlertTriangle } from "lucide-react";
+import { cn, formatDisplayDate, formatCurrency } from "@/lib/utils";
 
 interface ClaimCardProps {
-  claim: Claim;
+  claim: ClaimRow;
 }
 
 export function ClaimCard({ claim }: ClaimCardProps) {
@@ -24,7 +24,7 @@ export function ClaimCard({ claim }: ClaimCardProps) {
       )}
     >
       {isRejected && (
-        <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-rose-500" />
+        <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-rose-500" aria-hidden="true" />
       )}
       <CardContent className="p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-2 max-w-lg w-full sm:w-auto">
@@ -36,20 +36,23 @@ export function ClaimCard({ claim }: ClaimCardProps) {
           </div>
 
           <div className="text-xs text-zinc-500 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <span>Submitted: <strong className="text-zinc-700 font-medium">{formatDisplayDate(claim.submitted_date)}</strong></span>
-            {claim.settled_date && (
+            <span>
+              Submitted: <strong className="text-zinc-700 font-medium">{formatDisplayDate(claim.submitted_at)}</strong>
+            </span>
+            {claim.settled_at && (
               <>
-                <span className="text-zinc-300">•</span>
+                <span className="text-zinc-300" aria-hidden="true">•</span>
                 <span className="text-emerald-700 font-medium">
-                  Settled: {formatDisplayDate(claim.settled_date)}
+                  Settled: {formatDisplayDate(claim.settled_at)}
                 </span>
               </>
             )}
             {isRejected && (
               <>
-                <span className="text-zinc-300">•</span>
+                <span className="text-zinc-300" aria-hidden="true">•</span>
                 <span className="text-rose-700 font-semibold flex items-center gap-1">
-                  <AlertTriangle className="w-3.5 h-3.5 inline text-rose-600 shrink-0" /> Action required
+                  <AlertTriangle className="w-3.5 h-3.5 inline text-rose-600 shrink-0" aria-hidden="true" />
+                  Action required
                 </span>
               </>
             )}
@@ -62,8 +65,7 @@ export function ClaimCard({ claim }: ClaimCardProps) {
               Claim Amount
             </div>
             <div className="font-bold text-zinc-900 text-base sm:text-xl flex items-center sm:justify-end">
-              <IndianRupee className="w-4 h-4 text-zinc-700 shrink-0" />
-              {claim.amount.toLocaleString("en-IN")}
+              {formatCurrency(claim.amount)}
             </div>
           </div>
 
@@ -79,10 +81,11 @@ export function ClaimCard({ claim }: ClaimCardProps) {
                 ? "bg-rose-600 hover:bg-rose-700 text-white font-semibold shadow-xs px-4 sm:px-5 py-2.5 flex items-center gap-1.5 text-sm"
                 : "border-slate-300 text-zinc-700 hover:bg-slate-50 px-3.5 py-2 text-xs font-medium"
             )}
+            aria-label={`${isRejected ? "See why claim was rejected" : "View details"} for ${claim.claim_type}`}
           >
             {isRejected ? (
               <>
-                See why <ArrowRight className="w-4 h-4 ml-0.5" />
+                See why & fix <ArrowRight className="w-4 h-4 ml-0.5" aria-hidden="true" />
               </>
             ) : (
               "View details"

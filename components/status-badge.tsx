@@ -1,11 +1,20 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { ClaimStatus } from "@/lib/mock-data";
-import { CheckCircle2, Clock, XCircle } from "lucide-react";
+import { ClaimStatus } from "@/lib/supabase/types";
+import {
+  CheckCircle2,
+  Clock,
+  XCircle,
+  FileText,
+  AlertTriangle,
+  RotateCw,
+  HelpCircle,
+  CheckCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StatusBadgeProps {
-  status: ClaimStatus;
+  status: ClaimStatus | string;
   className?: string;
 }
 
@@ -15,39 +24,128 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       return (
         <Badge
           variant="outline"
+          aria-label="Status: Settled & Disbursed"
           className={cn(
-            "bg-emerald-50 text-emerald-800 border-emerald-300/80 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            "bg-emerald-50 text-emerald-900 border-emerald-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-          Approved
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" aria-hidden="true" />
+          Settled
         </Badge>
       );
+    case "under_review":
     case "pending":
       return (
         <Badge
           variant="outline"
+          aria-label="Status: Under Field Office Review"
           className={cn(
-            "bg-amber-50 text-amber-800 border-amber-300/80 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            "bg-amber-50 text-amber-900 border-amber-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-          Under review
+          <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" aria-hidden="true" />
+          Under Review
         </Badge>
       );
     case "rejected":
       return (
         <Badge
           variant="outline"
+          aria-label="Status: Rejected - Action Required"
           className={cn(
-            "bg-rose-50 text-rose-800 border-rose-300/90 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            "bg-rose-50 text-rose-900 border-rose-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
             className
           )}
         >
-          <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+          <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" aria-hidden="true" />
           Rejected
+        </Badge>
+      );
+    case "submitted":
+      return (
+        <Badge
+          variant="outline"
+          aria-label="Status: Submitted"
+          className={cn(
+            "bg-blue-50 text-blue-900 border-blue-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <FileText className="w-3.5 h-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+          Submitted
+        </Badge>
+      );
+    case "resubmitted":
+      return (
+        <Badge
+          variant="outline"
+          aria-label="Status: Rectification Resubmitted"
+          className={cn(
+            "bg-teal-50 text-teal-900 border-teal-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <RotateCw className="w-3.5 h-3.5 text-teal-600 shrink-0" aria-hidden="true" />
+          Resubmitted
+        </Badge>
+      );
+    case "correction_started":
+    case "resubmission_pending":
+      return (
+        <Badge
+          variant="outline"
+          aria-label="Status: Correction in Progress"
+          className={cn(
+            "bg-purple-50 text-purple-900 border-purple-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <AlertTriangle className="w-3.5 h-3.5 text-purple-600 shrink-0" aria-hidden="true" />
+          Correction In Progress
+        </Badge>
+      );
+    case "pending_information":
+      return (
+        <Badge
+          variant="outline"
+          aria-label="Status: Pending Information from Employer"
+          className={cn(
+            "bg-orange-50 text-orange-900 border-orange-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <HelpCircle className="w-3.5 h-3.5 text-orange-600 shrink-0" aria-hidden="true" />
+          Pending Info
+        </Badge>
+      );
+    case "closed":
+      return (
+        <Badge
+          variant="outline"
+          aria-label="Status: Closed"
+          className={cn(
+            "bg-zinc-100 text-zinc-800 border-zinc-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <CheckCheck className="w-3.5 h-3.5 text-zinc-600 shrink-0" aria-hidden="true" />
+          Closed
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="outline"
+          aria-label={`Status: ${status}`}
+          className={cn(
+            "bg-slate-100 text-slate-800 border-slate-300 gap-1.5 font-semibold px-2.5 py-0.5 rounded-full text-xs shadow-2xs",
+            className
+          )}
+        >
+          <FileText className="w-3.5 h-3.5 text-slate-600 shrink-0" aria-hidden="true" />
+          {status}
         </Badge>
       );
   }

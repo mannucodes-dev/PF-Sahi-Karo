@@ -1,16 +1,20 @@
 import React from "react";
-import { RemarkCode } from "@/lib/mock-data";
+import { RemarkCodeRow } from "@/lib/data/remark-codes";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   FileWarning,
   Sparkles,
   CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
+  ExternalLink,
+  ShieldCheck,
+  Building2,
+  UserCheck,
+  Clock,
 } from "lucide-react";
+import { formatDisplayDate } from "@/lib/utils";
 
 interface DecoderPanelProps {
-  remark: RemarkCode;
+  remark: RemarkCodeRow;
 }
 
 export function DecoderPanel({ remark }: DecoderPanelProps) {
@@ -18,94 +22,108 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
     <div className="space-y-5">
       {/* 1. What EPFO said (Official Cryptic Portal Remark) */}
       <Card className="border-slate-800 bg-slate-950 text-slate-100 shadow-md overflow-hidden rounded-xl">
-        {/* Terminal Header Bar */}
-        <div className="bg-slate-900/90 px-4 py-2.5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+        <div className="bg-slate-900 px-4 py-2.5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" aria-hidden="true" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" aria-hidden="true" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
             <span className="text-xs font-mono text-slate-400 font-medium ml-1">
-              EPFO Portal · Automated System Notice
+              Official EPFO Portal Automated System Notice
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono bg-rose-950/80 text-rose-300 border border-rose-800/60 px-2 py-0.5 rounded font-semibold">
-              REMARK: {remark.code}
+            <span className="text-[11px] font-mono bg-rose-950/90 text-rose-300 border border-rose-800/80 px-2 py-0.5 rounded font-semibold">
+              CODE: {remark.code}
             </span>
           </div>
         </div>
 
-        {/* Terminal Content */}
         <CardContent className="p-4 sm:p-5 font-mono">
-          <div className="text-[11px] uppercase tracking-wider text-slate-500 mb-2 font-sans font-medium flex items-center gap-1.5">
-            <FileWarning className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>1. What EPFO said (Raw rejection reason on portal)</span>
+          <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-2 font-sans font-medium flex items-center gap-1.5">
+            <FileWarning className="w-3.5 h-3.5 text-amber-400 shrink-0" aria-hidden="true" />
+            <span>1. Raw Rejection Reason Recorded on Member Portal</span>
           </div>
 
-          <div className="bg-black/50 border border-slate-800 rounded-lg p-3.5 sm:p-4 text-xs sm:text-sm text-amber-300 leading-relaxed font-mono select-all">
-            &ldquo;{remark.raw_remark}&rdquo;
+          <div className="bg-black/60 border border-slate-800 rounded-lg p-3.5 sm:p-4 text-xs sm:text-sm text-amber-300 leading-relaxed font-mono select-all">
+            &ldquo;{remark.official_text}&rdquo;
           </div>
 
           <p className="text-[11px] text-slate-400 mt-2.5 font-sans">
-            ⚠️ Sent to member portal without explanation, context, or clear resolution instructions.
+            Notice: Generated automatically by regional EPFO processing gateway without contextual breakdown.
           </p>
         </CardContent>
       </Card>
 
-      {/* Visual Transformation Bridge */}
-      <div className="flex items-center justify-center my-1">
-        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-teal-100 animate-spin-slow" />
-          <span>Decoded into Plain English · Zero Jargon</span>
-          <ArrowRight className="w-3.5 h-3.5 text-teal-100" />
-        </div>
-      </div>
-
-      {/* 2. What this actually means (Plain English Decode) */}
+      {/* 2. What this actually means (Plain Language Guidance) */}
       <Card className="border-teal-200 bg-gradient-to-br from-teal-50/70 via-white to-emerald-50/40 shadow-sm ring-1 ring-teal-500/20 overflow-hidden rounded-xl">
         <CardHeader className="pb-2 pt-4 sm:pt-5 px-5 sm:px-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 text-teal-950 text-sm sm:text-base font-bold">
               <div className="w-7 h-7 rounded-lg bg-teal-700 text-white flex items-center justify-center shadow-xs shrink-0">
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4" aria-hidden="true" />
               </div>
-              <span>2. What this actually means</span>
+              <span>2. Guidance Based on This Rejection Remark</span>
             </div>
-            <span className="text-[11px] font-semibold bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-full">
-              Verified Decode
+            <span className="text-[11px] font-semibold bg-teal-100 text-teal-900 border border-teal-200 px-2.5 py-0.5 rounded-full w-fit">
+              Plain-Language Explanation
             </span>
           </div>
         </CardHeader>
-        <CardContent className="px-5 sm:px-6 pb-6 pt-1 space-y-3">
+        <CardContent className="px-5 sm:px-6 pb-6 pt-1 space-y-4">
           <p className="text-sm sm:text-base text-zinc-900 leading-relaxed font-normal bg-white border border-teal-100/80 rounded-lg p-4 shadow-2xs">
-            {remark.plain_explanation}
+            {remark.plain_text}
           </p>
 
-          <div className="p-3 bg-teal-50/80 border border-teal-100 rounded-lg text-xs text-teal-900 flex items-start gap-2">
-            <span className="font-bold text-teal-700 shrink-0">💡 Quick Insight:</span>
-            <span>
-              Yeh common clerical issue hai. EPFO automated checks require exact character-to-character matching. Correcting this usually resolves the claim smoothly.
-            </span>
+          {/* Citizen vs Authority Responsibility Breakdown */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs">
+              <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-teal-950">
+                <UserCheck className="w-4 h-4 text-teal-700 shrink-0" aria-hidden="true" />
+                <span>What you can do right now</span>
+              </div>
+              <ul className="space-y-1 text-zinc-700 list-disc list-inside">
+                {remark.citizen_actions && remark.citizen_actions.length > 0 ? (
+                  remark.citizen_actions.map((act, i) => <li key={i}>{act}</li>)
+                ) : (
+                  <li>Follow the numbered resolution steps below.</li>
+                )}
+              </ul>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs">
+              <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-slate-900">
+                <Building2 className="w-4 h-4 text-slate-700 shrink-0" aria-hidden="true" />
+                <span>What employer / EPFO must do</span>
+              </div>
+              <ul className="space-y-1 text-zinc-700 list-disc list-inside">
+                {remark.authority_actions && remark.authority_actions.length > 0 ? (
+                  remark.authority_actions.map((act, i) => <li key={i}>{act}</li>)
+                ) : (
+                  <li>Field office verification upon submission.</li>
+                )}
+              </ul>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 3. How to fix it (Numbered Concrete Steps) */}
+      {/* 3. Step-by-Step Resolution Path */}
       <Card className="border-slate-200 bg-white shadow-sm rounded-xl overflow-hidden">
         <CardHeader className="pb-3 pt-4 sm:pt-5 px-5 sm:px-6 border-b border-slate-100">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 text-zinc-900 text-sm sm:text-base font-bold">
               <div className="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center font-mono text-xs shadow-xs shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" aria-hidden="true" />
               </div>
-              <span>3. How to fix it (Step-by-Step Resolution)</span>
+              <span>3. How to Fix It (Step-by-Step Resolution)</span>
             </div>
-            <span className="text-[11px] font-medium text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-md w-fit">
-              Estimated resolution: 2–3 working days
-            </span>
+            <div className="flex items-center gap-1 text-[11px] font-medium text-zinc-600 bg-zinc-100 px-2.5 py-1 rounded-md w-fit">
+              <Clock className="w-3.5 h-3.5 text-zinc-500" aria-hidden="true" />
+              <span>Estimated timeline: {remark.estimated_days}</span>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="px-5 sm:px-6 pb-6 pt-4">
+        <CardContent className="px-5 sm:px-6 pb-6 pt-4 space-y-4">
           <ol className="space-y-3">
             {remark.fix_steps.map((step, index) => (
               <li
@@ -119,6 +137,31 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
               </li>
             ))}
           </ol>
+
+          {/* Official Source & Verification Metadata */}
+          <div className="mt-4 pt-4 border-t border-slate-100 bg-slate-50/60 -mx-5 -mb-6 p-4 sm:px-6 rounded-b-xl flex flex-wrap items-center justify-between gap-3 text-[11px] text-zinc-500">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-700" aria-hidden="true" />
+                <span>Source: <strong>{remark.source_reference}</strong></span>
+              </span>
+              <span>•</span>
+              <span>Reviewed on: <strong>{formatDisplayDate(remark.reviewed_at)}</strong></span>
+              <span>•</span>
+              <span>Reviewer: <strong>{remark.reviewed_by}</strong></span>
+            </div>
+
+            {remark.source_url && (
+              <a
+                href={remark.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-700 hover:text-teal-900 font-semibold inline-flex items-center gap-1 underline underline-offset-2"
+              >
+                View Official Circular <ExternalLink className="w-3 h-3" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>

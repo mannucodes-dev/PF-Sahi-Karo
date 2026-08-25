@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/lib/i18n/context";
+import { SkipToContent } from "@/components/skip-to-content";
+import { FAQWidget } from "@/components/faq-widget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,11 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PF Sahi Karo — EPFO Claim Rejection Decoder",
-  description: "Understand why your EPFO PF claim was rejected in plain English, and follow a guided path to fix and resubmit it.",
+  title: "PF Sahi Karo — EPFO Claim Rejection Decoder & Resolution Guidance",
+  description:
+    "An independent citizen service helping Indian workers understand EPFO Provident Fund rejection reasons in plain English and Hindi with verified correction steps.",
 };
-
-import { FAQWidget } from "@/components/faq-widget";
 
 export default function RootLayout({
   children,
@@ -29,9 +31,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col relative">
-        {children}
-        <FAQWidget />
+      <body className="min-h-full flex flex-col relative bg-slate-50 text-zinc-900 selection:bg-teal-100 selection:text-teal-900">
+        <LanguageProvider>
+          <SkipToContent />
+          {children}
+          <FAQWidget />
+        </LanguageProvider>
       </body>
     </html>
   );
