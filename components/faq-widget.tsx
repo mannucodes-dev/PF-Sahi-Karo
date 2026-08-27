@@ -16,6 +16,7 @@ import {
   LifeBuoy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n/context";
 
 interface FAQItem {
   id: string;
@@ -24,7 +25,7 @@ interface FAQItem {
   officialRef: string;
 }
 
-const FAQ_DATA: FAQItem[] = [
+const FAQ_DATA_EN: FAQItem[] = [
   {
     id: "form-10c",
     question: "What is Form 10C and when should I file it?",
@@ -62,7 +63,48 @@ const FAQ_DATA: FAQItem[] = [
   },
 ];
 
+const FAQ_DATA_HI: FAQItem[] = [
+  {
+    id: "form-10c",
+    question: "फॉर्म 10C क्या है और इसे कब दाखिल करना चाहिए?",
+    officialRef: "ईपीएफओ योजना नियम पैरा 68",
+    answer:
+      "फॉर्म 10C का उपयोग 10 वर्ष से कम सेवा पर नौकरी छोड़ने के बाद ईपीएस (पेंशन) राशि निकालने या स्कीम सर्टिफिकेट प्राप्त करने के लिए किया जाता है।",
+  },
+  {
+    id: "uan-inactive",
+    question: "पोर्टल पर मेरा यूएएन निष्क्रिय (Inactive) क्यों दिख रहा है?",
+    officialRef: "ईपीएफओ मेंबर पोर्टल परिपत्र 2023",
+    answer:
+      "यदि यूएएन एक्टिवेट नहीं किया गया है या अनिवार्य आधार-ओटीपी लिंकिंग पूरी नहीं हुई है, तो यूएएन निष्क्रिय रहता है। मेंबर सेवा पोर्टल पर 'Activate UAN' चुनें।",
+  },
+  {
+    id: "resubmit-timeline",
+    question: "पुनः सबमिट किए गए दावे के निपटान में कितना समय लगता है?",
+    officialRef: "नागरिक चार्टर 2024 (15 कार्य दिवस)",
+    answer:
+      "नियोक्ता द्वारा यूनिफाइड पोर्टल पर डिजिटल अनुमोदन के बाद क्षेत्रीय कार्यालय द्वारा सामान्यतः 10 से 15 कार्य दिवस लगते हैं।",
+  },
+  {
+    id: "missing-document",
+    question: "यदि कंपनी एचआर मेरा केवाईसी अप्रूव न करे तो क्या करें?",
+    officialRef: "ईपीएफओ नियोक्ता डीएससी मास्टर परिपत्र",
+    answer:
+      "कंपनी के एचआर/पीएफ डेस्क से संपर्क करें। यदि कंपनी बंद हो चुकी है या सहयोग नहीं कर रही है, तो बैंक प्रबंधक या स्थानीय ईपीएफओ पीआरओ द्वारा सत्यापित संयुक्त घोषणा (Joint Declaration) पत्र जमा करें।",
+  },
+  {
+    id: "partial-withdraw",
+    question: "क्या नौकरी में रहते हुए पीएफ एडवांस निकाला जा सकता है?",
+    officialRef: "फॉर्म 31 दिशानिर्देश (पैरा 68B, 68H, 68K)",
+    answer:
+      "हाँ, फॉर्म 31 द्वारा चिकित्सा आपातकाल, गृह निर्माण, बच्चों की उच्च शिक्षा या विवाह के लिए बिना नौकरी छोड़े गैर-वापसी योग्य एडवांस निकाला जा सकता है।",
+  },
+];
+
 export function FAQWidget() {
+  const { locale, t } = useTranslation();
+  const faqData = locale === "hi" ? FAQ_DATA_HI : FAQ_DATA_EN;
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFAQ, setSelectedFAQ] = useState<FAQItem | null>(null);
   const [chatHistory, setChatHistory] = useState<FAQItem[]>([]);
@@ -117,7 +159,7 @@ export function FAQWidget() {
           ref={triggerButtonRef}
           type="button"
           onClick={() => setIsOpen(true)}
-          className="bg-teal-700 hover:bg-teal-800 text-white font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2.5 transition-all duration-200 active:scale-95 cursor-pointer border border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-400/50"
+          className="bg-teal-700 hover:bg-teal-800 text-white font-extrabold px-4 py-3 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2.5 transition-all duration-200 active:scale-95 cursor-pointer border border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-400/50"
           aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-label="Open Claim Assistance FAQ dialog"
@@ -125,9 +167,11 @@ export function FAQWidget() {
           <div className="w-6 h-6 rounded-full bg-teal-800 flex items-center justify-center" aria-hidden="true">
             <MessageCircleQuestion className="w-4 h-4 text-teal-200" />
           </div>
-          <span className="text-xs sm:text-sm">Claim Help & FAQ</span>
+          <span className="text-xs sm:text-sm">
+            {locale === "hi" ? "सहायक एवं अक्सर पूछे जाने वाले प्रश्न" : "Claim Help & FAQ"}
+          </span>
           <Badge className="bg-teal-900 text-teal-200 border-teal-700 text-[10px] px-1.5 py-0 font-mono">
-            Guidance
+            {locale === "hi" ? "मार्गदर्शन" : "Guidance"}
           </Badge>
         </button>
       )}
@@ -151,11 +195,11 @@ export function FAQWidget() {
                 </div>
                 <div>
                   <CardTitle id="faq-dialog-title" className="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
-                    EPFO Claim Assistance FAQ
+                    {locale === "hi" ? "ईपीएफओ दावा सहायक" : "EPFO Claim Assistance FAQ"}
                     <Sparkles className="w-3.5 h-3.5 text-teal-300" aria-hidden="true" />
                   </CardTitle>
                   <p className="text-[11px] text-teal-200/85">
-                    Rules-based guidance · Not an official decision-maker
+                    {locale === "hi" ? "सत्यापित नियमों पर आधारित मार्गदर्शन" : "Rules-based guidance · Verified by circulars"}
                   </p>
                 </div>
               </div>
@@ -188,7 +232,7 @@ export function FAQWidget() {
             <CardContent className="p-4 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm bg-slate-50/60">
               {/* Disclaimer Notice */}
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-900 leading-relaxed">
-                <strong>Notice:</strong> This assistant provides informational assistance based on published EPFO rules. For official grievance filing, visit{" "}
+                <strong>Notice:</strong> This assistant provides guidance based on official published circulars. For official grievance filing, visit{" "}
                 <a
                   href="https://epfigms.gov.in"
                   target="_blank"
@@ -206,7 +250,9 @@ export function FAQWidget() {
                 </div>
                 <div className="bg-white border border-slate-200/80 rounded-2xl rounded-tl-xs p-3 shadow-2xs text-zinc-800 space-y-1 max-w-[88%]">
                   <p className="font-medium">
-                    Namaste! Select a topic below to view verified explanations and guidelines:
+                    {locale === "hi"
+                      ? "नमस्ते! नीचे दिए गए किसी भी विषय पर क्लिक करके स्पष्टीकरण देखें:"
+                      : "Namaste! Select a topic below to view verified explanations and guidelines:"}
                   </p>
                 </div>
               </div>
@@ -242,18 +288,18 @@ export function FAQWidget() {
               {/* FAQ Questions List */}
               <div className="pt-2 space-y-2">
                 <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                  Common Topics:
+                  {locale === "hi" ? "प्रमुख विषय:" : "Common Topics:"}
                 </div>
                 <div className="flex flex-col gap-2">
-                  {FAQ_DATA.map((faq) => (
+                  {faqData.map((faq) => (
                     <button
                       key={faq.id}
                       type="button"
                       onClick={() => handleSelectQuestion(faq)}
                       className={cn(
-                        "text-left p-2.5 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-2 cursor-pointer focus:ring-2 focus:ring-teal-600 focus:outline-none",
+                        "text-left p-2.5 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between gap-2 cursor-pointer focus:ring-2 focus:ring-teal-600 focus:outline-none",
                         selectedFAQ?.id === faq.id
-                          ? "bg-teal-50 border-teal-300 text-teal-950 shadow-2xs"
+                          ? "bg-teal-50 border-teal-300 text-teal-950 shadow-2xs font-semibold"
                           : "bg-white border-slate-200 text-zinc-800 hover:bg-slate-100 hover:border-slate-300"
                       )}
                     >
@@ -270,13 +316,13 @@ export function FAQWidget() {
 
             {/* Footer with escalation link */}
             <div className="bg-slate-100 px-4 py-2.5 border-t border-slate-200 flex items-center justify-between text-[11px] text-zinc-600 shrink-0">
-              <span>Still have questions?</span>
+              <span>{locale === "hi" ? "अन्य प्रश्न हैं?" : "Still have questions?"}</span>
               <Link
                 href="/contact"
                 onClick={handleClose}
                 className="font-semibold text-teal-700 hover:text-teal-900 inline-flex items-center gap-1"
               >
-                <LifeBuoy className="w-3 h-3" aria-hidden="true" /> Contact Support
+                <LifeBuoy className="w-3 h-3" aria-hidden="true" /> {locale === "hi" ? "संपर्क करें" : "Contact Support"}
               </Link>
             </div>
           </Card>

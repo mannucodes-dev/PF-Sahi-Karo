@@ -19,8 +19,7 @@ export async function middleware(request: NextRequest) {
   );
 
   const isDemo =
-    process.env.NODE_ENV !== "production" &&
-    process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true" || !isSupabaseConfigured;
 
   const protectedRoutes = ["/dashboard", "/claims"];
   const isProtectedRoute = protectedRoutes.some((route) =>

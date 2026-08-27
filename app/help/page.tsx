@@ -6,9 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle, BookOpen, Clock, ShieldCheck, ExternalLink, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { formatDisplayDate } from "@/lib/utils";
+import { getServerTranslation } from "@/lib/i18n/server";
 
-export default function HelpPage() {
-  const remarkCodes = getAllBuiltinRemarkCodes("en");
+export default async function HelpPage() {
+  const { locale, t } = await getServerTranslation();
+  const langKey = locale === "hi" ? "hi" : "en";
+  const remarkCodes = getAllBuiltinRemarkCodes(langKey);
 
   const GLOSSARY_ITEMS = [
     {
@@ -39,21 +42,21 @@ export default function HelpPage() {
 
       <main id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 space-y-10">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full">
             <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Knowledge Base &amp; Decoder Rules</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-900">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
             EPFO Rejection Reasons &amp; Resolution Rules
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-600 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-zinc-600 max-w-2xl leading-relaxed">
             Browse official rejection remark definitions, plain-language translations, action checklists, and policy circulars.
           </p>
         </div>
 
         {/* Rejection Codes List */}
         <section className="space-y-4">
-          <h2 className="text-lg sm:text-xl font-bold text-zinc-900 flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-teal-700" aria-hidden="true" />
             Published Rejection Decoder Catalog
           </h2>
@@ -87,34 +90,34 @@ export default function HelpPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <div className="text-xs font-bold text-zinc-900">
+                    <div className="text-xs sm:text-sm font-bold text-zinc-900">
                       Step-by-Step Resolution Steps:
                     </div>
-                    <ol className="space-y-1.5 list-decimal list-inside text-zinc-700">
+                    <ol className="space-y-1.5 list-decimal list-inside text-zinc-700 leading-relaxed">
                       {rule.fix_steps.map((step, idx) => (
-                        <li key={idx} className="leading-relaxed">
+                        <li key={idx}>
                           {step}
                         </li>
                       ))}
                     </ol>
                   </div>
 
-                  <div className="border-t border-slate-100 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-teal-700" aria-hidden="true" />
-                      <span>Reference: <strong>{rule.source_reference}</strong></span>
-                      <span>•</span>
-                      <span>Reviewed: {formatDisplayDate(rule.reviewed_at)}</span>
-                    </div>
+                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500">
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-teal-700" aria-hidden="true" />
+                      <span>Source: <strong>{rule.source_reference}</strong></span>
+                    </span>
 
-                    <a
-                      href={rule.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-teal-700 hover:text-teal-900 font-semibold inline-flex items-center gap-1 underline"
-                    >
-                      Official Source <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                    </a>
+                    {rule.source_url && (
+                      <a
+                        href={rule.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-teal-700 hover:text-teal-900 font-semibold inline-flex items-center gap-1 underline underline-offset-2"
+                      >
+                        View Official Circular <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                      </a>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -122,36 +125,22 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* Glossary of Terms */}
-        <section className="space-y-4 pt-4 border-t border-slate-200">
-          <h2 className="text-lg sm:text-xl font-bold text-zinc-900">
-            Key EPFO Terminology Glossary
+        {/* EPFO Terms Glossary */}
+        <section className="space-y-4">
+          <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-teal-700" aria-hidden="true" />
+            EPFO Glossary &amp; Technical Concepts
           </h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {GLOSSARY_ITEMS.map((item, idx) => (
-              <Card key={idx} className="border-slate-200 bg-white p-5 rounded-xl space-y-1.5 shadow-2xs">
+            {GLOSSARY_ITEMS.map((item, index) => (
+              <Card key={index} className="border-slate-200 bg-white p-5 rounded-xl space-y-2 shadow-2xs">
                 <h3 className="font-bold text-sm text-zinc-900">{item.term}</h3>
                 <p className="text-xs text-zinc-600 leading-relaxed">{item.description}</p>
               </Card>
             ))}
           </div>
         </section>
-
-        {/* CTA to Login */}
-        <div className="bg-gradient-to-r from-teal-800 to-teal-950 text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="space-y-1 text-center sm:text-left">
-            <h2 className="text-lg sm:text-xl font-bold">Have a rejected claim to decode?</h2>
-            <p className="text-xs sm:text-sm text-teal-200">
-              Sign in with your UAN to decode your specific rejection notice and initiate a guided resubmission.
-            </p>
-          </div>
-          <Link
-            href="/login"
-            className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-6 py-2.5 rounded-lg text-xs sm:text-sm inline-flex items-center gap-1.5 shrink-0"
-          >
-            Access My Claims <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
-        </div>
       </main>
 
       <SiteFooter />

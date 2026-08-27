@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { RemarkCodeRow } from "@/lib/data/remark-codes";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -10,14 +12,33 @@ import {
   Building2,
   UserCheck,
   Clock,
+  Copy,
+  Check,
 } from "lucide-react";
 import { formatDisplayDate } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n/context";
 
 interface DecoderPanelProps {
   remark: RemarkCodeRow;
 }
 
 export function DecoderPanel({ remark }: DecoderPanelProps) {
+  const { locale, t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyHrMessage = () => {
+    const hrText =
+      locale === "hi"
+        ? `आदरणीय एचआर टीम,\n\nमेरा ईपीएफओ दावा इस आधिकारिक कारण से अस्वीकृत हुआ है:\n"${remark.official_text}"\n\nईपीएफओ परिपत्र (${remark.source_reference}) के अनुसार, कृपया कंपनी के यूनिफाइड पोर्टल पर डिजिटल हस्ताक्षर (DSC) द्वारा मेरे यूएएन प्रोफाइल/केवाईसी को अनुमोदित करें ताकि मैं पुनः दावा सबमिट कर सकूं।\n\nधन्यवाद।`
+        : `Dear HR Team,\n\nMy EPFO PF claim was returned with official system remark:\n"${remark.official_text}"\n\nAs per official EPFO guidance (${remark.source_reference}), this requires digital approval from the establishment via Class 3 DSC on the Unified Employer Portal.\n\nKindly approve the pending submission for my UAN record so I can resubmit the claim.\n\nThank you.`;
+
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(hrText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* 1. What EPFO said (Official Cryptic Portal Remark) */}
@@ -28,11 +49,11 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500" aria-hidden="true" />
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
             <span className="text-xs font-mono text-slate-400 font-medium ml-1">
-              Official EPFO Portal Automated System Notice
+              {t.claimDetail.whatEpfoSaid}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono bg-rose-950/90 text-rose-300 border border-rose-800/80 px-2 py-0.5 rounded font-semibold">
+            <span className="text-[11px] font-mono bg-rose-950/90 text-rose-300 border border-rose-800/80 px-2.5 py-0.5 rounded font-semibold">
               CODE: {remark.code}
             </span>
           </div>
@@ -41,7 +62,7 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
         <CardContent className="p-4 sm:p-5 font-mono">
           <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-2 font-sans font-medium flex items-center gap-1.5">
             <FileWarning className="w-3.5 h-3.5 text-amber-400 shrink-0" aria-hidden="true" />
-            <span>1. Raw Rejection Reason Recorded on Member Portal</span>
+            <span>Raw Rejection Reason Recorded on Member Portal</span>
           </div>
 
           <div className="bg-black/60 border border-slate-800 rounded-lg p-3.5 sm:p-4 text-xs sm:text-sm text-amber-300 leading-relaxed font-mono select-all">
@@ -49,7 +70,7 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
           </div>
 
           <p className="text-[11px] text-slate-400 mt-2.5 font-sans">
-            Notice: Generated automatically by regional EPFO processing gateway without contextual breakdown.
+            {t.claimDetail.rawNoticeDesc}
           </p>
         </CardContent>
       </Card>
@@ -62,10 +83,10 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
               <div className="w-7 h-7 rounded-lg bg-teal-700 text-white flex items-center justify-center shadow-xs shrink-0">
                 <Sparkles className="w-4 h-4" aria-hidden="true" />
               </div>
-              <span>2. Guidance Based on This Rejection Remark</span>
+              <span>{t.claimDetail.whatItMeans}</span>
             </div>
             <span className="text-[11px] font-semibold bg-teal-100 text-teal-900 border border-teal-200 px-2.5 py-0.5 rounded-full w-fit">
-              Plain-Language Explanation
+              {t.claimDetail.plainBadge}
             </span>
           </div>
         </CardHeader>
@@ -76,10 +97,10 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
 
           {/* Citizen vs Authority Responsibility Breakdown */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs">
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs sm:text-sm">
               <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-teal-950">
                 <UserCheck className="w-4 h-4 text-teal-700 shrink-0" aria-hidden="true" />
-                <span>What you can do right now</span>
+                <span>{t.claimDetail.citizenCanDo}</span>
               </div>
               <ul className="space-y-1 text-zinc-700 list-disc list-inside">
                 {remark.citizen_actions && remark.citizen_actions.length > 0 ? (
@@ -90,10 +111,10 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
               </ul>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs">
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 space-y-2 text-xs sm:text-sm">
               <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-slate-900">
                 <Building2 className="w-4 h-4 text-slate-700 shrink-0" aria-hidden="true" />
-                <span>What employer / EPFO must do</span>
+                <span>{t.claimDetail.authorityMustDo}</span>
               </div>
               <ul className="space-y-1 text-zinc-700 list-disc list-inside">
                 {remark.authority_actions && remark.authority_actions.length > 0 ? (
@@ -115,7 +136,7 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
               <div className="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center font-mono text-xs shadow-xs shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" aria-hidden="true" />
               </div>
-              <span>3. How to Fix It (Step-by-Step Resolution)</span>
+              <span>{t.claimDetail.stepByStepTitle}</span>
             </div>
             <div className="flex items-center gap-1 text-[11px] font-medium text-zinc-600 bg-zinc-100 px-2.5 py-1 rounded-md w-fit">
               <Clock className="w-3.5 h-3.5 text-zinc-500" aria-hidden="true" />
@@ -124,7 +145,7 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
           </div>
         </CardHeader>
         <CardContent className="px-5 sm:px-6 pb-6 pt-4 space-y-4">
-          <ol className="space-y-3">
+          <ol className="list-none p-0 m-0 space-y-3">
             {remark.fix_steps.map((step, index) => (
               <li
                 key={index}
@@ -137,6 +158,27 @@ export function DecoderPanel({ remark }: DecoderPanelProps) {
               </li>
             ))}
           </ol>
+
+          {/* WhatsApp Share Action Button */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={handleCopyHrMessage}
+              className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-200" aria-hidden="true" />
+                  <span>Message Copied! Forward to Company HR via WhatsApp</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 text-emerald-200" aria-hidden="true" />
+                  <span>{t.claimDetail.shareHrBtn}</span>
+                </>
+              )}
+            </button>
+          </div>
 
           {/* Official Source & Verification Metadata */}
           <div className="mt-4 pt-4 border-t border-slate-100 bg-slate-50/60 -mx-5 -mb-6 p-4 sm:px-6 rounded-b-xl flex flex-wrap items-center justify-between gap-3 text-[11px] text-zinc-500">

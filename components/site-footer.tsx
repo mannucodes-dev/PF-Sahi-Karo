@@ -1,16 +1,19 @@
 import React from "react";
 import Link from "next/link";
 import { ShieldAlert, ExternalLink } from "lucide-react";
+import { getServerTranslation } from "@/lib/i18n/server";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { t } = await getServerTranslation();
+
   return (
     <footer className="border-t border-slate-200 bg-white mt-auto text-xs text-zinc-600">
       {/* Official Disclaimer Banner */}
       <div className="bg-slate-50 border-b border-slate-200 py-3.5 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-start gap-2.5 text-[11px] text-zinc-600 leading-relaxed">
+        <div className="max-w-6xl mx-auto flex items-start gap-2.5 text-xs text-zinc-600 leading-relaxed">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
           <p>
-            <strong>Important Government Disclaimer:</strong> PF Sahi Karo is an independent civic-tech assistance tool designed to help citizens understand rejection remarks. PF Sahi Karo is <strong>not affiliated with, authorized by, or endorsed by the Employees&apos; Provident Fund Organisation (EPFO)</strong> or the Ministry of Labour &amp; Employment. All official claim decisions, fund disbursements, and record rectifications rest exclusively with the respective regional EPFO field offices. For official portals, visit{" "}
+            <strong>Important Government Disclaimer:</strong> {t.common.officialDisclaimer} For official portals, visit{" "}
             <a
               href="https://www.epfindia.gov.in"
               target="_blank"
@@ -37,22 +40,22 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
           <div className="space-y-2">
             <div className="font-bold text-zinc-900 text-xs uppercase tracking-wider">
-              Service
+              Citizen Tools
             </div>
             <ul className="space-y-1.5">
               <li>
-                <Link href="/" className="hover:text-zinc-900 transition-colors">
-                  Home
+                <Link href="/#instant-decoder" className="hover:text-zinc-900 transition-colors">
+                  {t.nav.decoder}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-zinc-900 transition-colors">
-                  About PF Sahi Karo
+                <Link href="/#tax-calculator" className="hover:text-zinc-900 transition-colors">
+                  {t.nav.taxCalc}
                 </Link>
               </li>
               <li>
-                <Link href="/service-status" className="hover:text-zinc-900 transition-colors">
-                  Service Health &amp; Uptime
+                <Link href="/#office-directory" className="hover:text-zinc-900 transition-colors">
+                  {t.nav.officeFinder}
                 </Link>
               </li>
             </ul>
@@ -65,23 +68,18 @@ export function SiteFooter() {
             <ul className="space-y-1.5">
               <li>
                 <Link href="/help" className="hover:text-zinc-900 transition-colors">
-                  Rejection Rules Directory
+                  {t.nav.help}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-zinc-900 transition-colors">
-                  Contact &amp; Grievance
+                <Link href="/about" className="hover:text-zinc-900 transition-colors">
+                  {t.nav.about}
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://epfigms.gov.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-zinc-900 transition-colors inline-flex items-center gap-1"
-                >
-                  Official EPFiGMS <ExternalLink className="w-2.5 h-2.5 text-zinc-400" aria-hidden="true" />
-                </a>
+                <Link href="/service-status" className="hover:text-zinc-900 transition-colors">
+                  {t.nav.serviceStatus}
+                </Link>
               </li>
             </ul>
           </div>

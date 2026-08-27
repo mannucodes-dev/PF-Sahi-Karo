@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { SkipToContent } from "@/components/skip-to-content";
 import { FAQWidget } from "@/components/faq-widget";
+import { getServerLocale } from "@/lib/i18n/server";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -21,18 +25,20 @@ export const metadata: Metadata = {
     "An independent citizen service helping Indian workers understand EPFO Provident Fund rejection reasons in plain English and Hindi with verified correction steps.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialLocale = await getServerLocale();
+
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang={initialLocale}
+      className={`${jakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col relative bg-slate-50 text-zinc-900 selection:bg-teal-100 selection:text-teal-900">
-        <LanguageProvider>
+      <body className="min-h-full flex flex-col relative bg-slate-50 text-zinc-900 selection:bg-teal-100 selection:text-teal-900 font-sans text-base">
+        <LanguageProvider initialLocale={initialLocale}>
           <SkipToContent />
           {children}
           <FAQWidget />
