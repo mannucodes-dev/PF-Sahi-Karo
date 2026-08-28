@@ -4,6 +4,7 @@ import {
   RemarkCodeRow,
 } from "./data/remark-constants";
 
+export { BUILTIN_REMARK_CODES, getAllBuiltinRemarkCodes };
 export type { RemarkCodeRow };
 
 /**

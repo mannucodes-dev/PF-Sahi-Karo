@@ -1,38 +1,38 @@
 "use client";
 
 import React, { useState } from "react";
-import { Info, Check, PiggyBank } from "lucide-react";
+import { Info, Check, ShieldCheck } from "lucide-react";
 
 export function PfTaxCalculator() {
-  const [claimAmount, setClaimAmount] = useState<number>(50000);
+  const [claimAmount, setClaimAmount] = useState<number>(125000);
   const [duration, setDuration] = useState<"less" | "more">("less");
   const [isPanLinked, setIsPanLinked] = useState<boolean>(true);
   const [hasForm15G, setHasForm15G] = useState<boolean>(false);
 
-  // Formatting helper with Indian commas (e.g. 50,000 or 10,00,000)
+  // Formatting helper with Indian commas (e.g. 1,25,000)
   const formatNum = (num: number) => {
     return num.toLocaleString("en-IN");
   };
 
-  // Section 192A Rule Calculation matching Stitch HTML logic
+  // Section 192A Rule Calculation matching official rules & screenshot
   let rate = 0;
   let reason = "";
 
   if (duration === "more") {
     rate = 0;
-    reason = "Service >= 5 yrs, TDS Nil";
+    reason = "Service >= 5 continuous years: Entire PF withdrawal is completely tax-exempt.";
   } else if (claimAmount < 50000) {
     rate = 0;
-    reason = "Amount < ₹50k, TDS Nil";
+    reason = "Claim amount < ₹50,000: No TDS deduction under Section 192A threshold.";
   } else if (hasForm15G) {
     rate = 0;
-    reason = "Form 15G submitted, TDS Nil";
+    reason = "Form 15G/15H submitted with verified PAN: 0% TDS applicable.";
   } else if (isPanLinked) {
     rate = 10;
-    reason = "PAN submitted, 10% TDS";
+    reason = "Service < 5 years & Amount >= ₹50,000: 10% standard TDS deducted with verified PAN.";
   } else {
-    rate = 30; // Max marginal rate under Section 192A / 206AA
-    reason = "No PAN, 30% TDS";
+    rate = 30; // Max marginal rate
+    reason = "No PAN linked: Higher TDS rate of 30% applied under Section 192A.";
   }
 
   const tdsAmount = Math.round((claimAmount * rate) / 100);
@@ -63,7 +63,7 @@ export function PfTaxCalculator() {
               >
                 Withdrawal Amount
               </label>
-              <div className="text-2xl sm:text-[26px] font-bold text-[#005c55] font-mono tracking-tight">
+              <div className="text-2xl sm:text-[26px] font-bold text-[#015d55] font-mono tracking-tight">
                 ₹<span id="amountDisplay">{formatNum(claimAmount)}</span>
               </div>
             </div>
@@ -94,9 +94,9 @@ export function PfTaxCalculator() {
               <button
                 type="button"
                 onClick={() => setDuration("less")}
-                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[80px] cursor-pointer ${
+                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[76px] cursor-pointer ${
                   duration === "less"
-                    ? "border-[#005c55] bg-[#005c55]/5 text-[#005c55] font-bold shadow-2xs"
+                    ? "border-[#015d55] bg-[#015d55]/5 text-[#015d55] font-bold shadow-2xs"
                     : "border-slate-200 bg-white text-slate-700 font-semibold hover:border-slate-300"
                 }`}
               >
@@ -106,9 +106,9 @@ export function PfTaxCalculator() {
               <button
                 type="button"
                 onClick={() => setDuration("more")}
-                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[80px] cursor-pointer ${
+                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[76px] cursor-pointer ${
                   duration === "more"
-                    ? "border-[#005c55] bg-[#005c55]/5 text-[#005c55] font-bold shadow-2xs"
+                    ? "border-[#015d55] bg-[#015d55]/5 text-[#015d55] font-bold shadow-2xs"
                     : "border-slate-200 bg-white text-slate-700 font-semibold hover:border-slate-300"
                 }`}
               >
@@ -122,7 +122,7 @@ export function PfTaxCalculator() {
             </p>
           </div>
 
-          {/* Document Status Card */}
+          {/* Document Submission Status Card */}
           <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col gap-6">
             <h3 className="text-sm sm:text-base font-semibold text-slate-900">
               Document Submission Status
@@ -195,95 +195,73 @@ export function PfTaxCalculator() {
           </div>
         </div>
 
-        {/* Right Column: Results & Education */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
-          {/* Real-time Results Card with dynamic background */}
+        {/* Right Column: Exact Card matching uploaded image media_1787892307861.png */}
+        <div className="lg:col-span-5 flex flex-col">
           <div
-            className={`rounded-xl p-6 sm:p-7 text-white relative overflow-hidden shadow-lg transition-colors duration-300 ${
-              rate > 0 ? "bg-[#e11d48]" : "bg-[#005c55]"
-            }`}
+            style={{ backgroundColor: "#015d55" }}
+            className="rounded-[28px] p-7 sm:p-9 text-white shadow-xl flex flex-col"
           >
-            {/* Decorative background element */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-xl pointer-events-none" />
-
-            <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-white tracking-tight">
-              TDS Breakdown
-            </h2>
-
-            <div className="flex flex-col gap-4">
-              {/* Gross Amount */}
-              <div className="flex justify-between items-center border-b border-white/20 pb-4">
-                <span className="text-sm sm:text-base text-white/90">
-                  Gross Withdrawal Amount
-                </span>
-                <span className="font-mono text-base sm:text-lg font-bold">
-                  ₹{formatNum(claimAmount)}
-                </span>
-              </div>
-
-              {/* TDS Rate & Amount */}
-              <div className="flex justify-between items-center border-b border-white/20 pb-4">
-                <div className="flex flex-col">
-                  <span className="text-sm sm:text-base text-white/90">
-                    TDS Applicable Rate
-                  </span>
-                  <span className="text-xs text-white/75 mt-0.5 font-medium">
-                    {reason}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="bg-white/20 px-2.5 py-1 rounded text-xs font-bold text-white">
-                    {rate}%
-                  </span>
-                  <span className="font-mono text-base sm:text-lg font-bold text-[#ffddb8]">
-                    -₹{formatNum(tdsAmount)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Final Disbursement */}
-              <div className="flex justify-between items-center pt-2">
-                <span className="text-base sm:text-lg font-bold text-white">
-                  Final Bank Disbursement
-                </span>
-                <span className="font-mono text-3xl sm:text-4xl font-extrabold text-[#a3faef] tracking-tight">
-                  ₹{formatNum(finalAmount)}
-                </span>
-              </div>
+            {/* Top Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl sm:text-[26px] font-bold text-white tracking-tight">
+                TDS Breakdown
+              </h2>
+              <span className="text-sm font-mono text-white bg-white/15 px-3.5 py-1 rounded-full border border-white/20">
+                Rate: {rate}%
+              </span>
             </div>
 
-            {/* Disclaimer note */}
-            <div className="mt-6 pt-4 border-t border-white/20 flex gap-2 items-start text-xs text-white/90 leading-relaxed">
-              <Info className="w-4 h-4 text-[#ffddb8] shrink-0 mt-0.5" />
-              <p>
-                Disclaimer: This is an estimate based on Section 192A rules. Actual deductions may vary based on EPFO processing and current IT rules.
+            {/* Divider */}
+            <div className="border-b border-white/20 my-5" />
+
+            {/* Row 1: Gross Claim */}
+            <div className="flex justify-between items-center py-1">
+              <span className="text-white/90 text-base font-normal">
+                Gross PF Claim:
+              </span>
+              <span className="font-mono text-lg font-bold text-white">
+                ₹{formatNum(claimAmount)}
+              </span>
+            </div>
+
+            {/* Row 2: TDS Deducted */}
+            <div className="flex justify-between items-center py-1">
+              <span className="text-white/90 text-base font-normal">
+                TDS Deducted (Sec 192A):
+              </span>
+              <span className="font-mono text-lg font-bold text-[#facc15]">
+                {tdsAmount > 0 ? `- ₹${formatNum(tdsAmount)}` : "₹0"}
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="border-b border-white/20 my-5" />
+
+            {/* Row 3: Estimated Net Bank Credit */}
+            <div className="flex justify-between items-center py-1">
+              <span className="text-white font-bold text-base sm:text-lg">
+                Estimated Net Bank Credit:
+              </span>
+              <span className="font-mono text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                ₹{formatNum(finalAmount)}
+              </span>
+            </div>
+
+            {/* Rule Application Inset Card */}
+            <div className="rounded-2xl border border-white/25 bg-white/5 p-4 sm:p-5 mt-6">
+              <div className="flex items-center gap-2 text-white font-bold text-base">
+                <ShieldCheck className="w-5 h-5 text-white stroke-[2.25]" />
+                <span>Rule Application</span>
+              </div>
+              <p className="text-xs sm:text-sm text-white/90 leading-relaxed mt-2">
+                {reason}
               </p>
             </div>
-          </div>
 
-          {/* Educational Warning Box: Form 15G */}
-          <div className="bg-[#fcf8f0] border border-[#fea619]/30 rounded-xl p-5 sm:p-6 flex flex-col gap-3 shadow-2xs">
-            <div className="flex items-center gap-2 text-[#855300] font-bold">
-              <PiggyBank className="w-5 h-5 text-[#855300] shrink-0" />
-              <h3 className="text-base sm:text-lg font-bold">
-                How Form 15G Saves Your Money
-              </h3>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              If your total annual income (including PF withdrawal) is below the basic exemption limit (₹2.5 Lakh / ₹3 Lakh depending on regime), submitting Form 15G (or 15H for senior citizens) prevents EPFO from deducting TDS.
+            {/* Bottom Tip */}
+            <p className="mt-6 text-xs sm:text-sm text-white/90 leading-relaxed">
+              <strong>Tip:</strong> Tax-Saving Advisory: If your total taxable income is below basic exemption limit (₹3 Lakh), submit Form 15G online on Member Sewa to stop the 10% TDS deduction completely.
             </p>
-
-            <div className="bg-white p-4 rounded-lg border border-slate-200/60 mt-1">
-              <h4 className="text-xs sm:text-sm font-bold text-slate-900 mb-2">
-                When to submit:
-              </h4>
-              <ul className="list-disc pl-5 text-xs sm:text-sm text-slate-600 space-y-1.5 leading-relaxed">
-                <li>Withdrawal amount is ₹50,000 or more.</li>
-                <li>Service duration is less than 5 years.</li>
-                <li>Total income is not taxable.</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>

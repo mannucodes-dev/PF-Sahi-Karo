@@ -2,36 +2,16 @@
 
 import React, { useState } from "react";
 import { useTranslation } from "@/lib/i18n/context";
-import { BUILTIN_REMARK_CODES } from "@/lib/data/remark-constants";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  FileSearch,
-  Sparkles,
-  CheckCircle2,
-  Building2,
-  UserCheck,
-  Clock,
-  ExternalLink,
-  Copy,
-  Check,
-  FileWarning,
-  ArrowRight,
-  ShieldCheck,
-} from "lucide-react";
+import { BUILTIN_REMARK_CODES, type RemarkCodeRow } from "@/lib/decoder-rules";
+import { Search, Gavel, Languages, BookOpen, ExternalLink, Send, Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
-interface QuickCategory {
-  label: string;
-  code: string;
-}
-
-const QUICK_CATEGORIES: QuickCategory[] = [
+const QUICK_CATEGORIES = [
+  { label: "KYC Pending", code: "KYC_INCOMPLETE" },
+  { label: "Aadhaar Not Seeded", code: "UAN_AADHAAR_UNLINKED" },
+  { label: "Date of Joining Mismatch", code: "SERVICE_PERIOD" },
   { label: "Aadhaar Name Mismatch", code: "NAME_MISMATCH" },
-  { label: "Employer KYC Pending", code: "KYC_INCOMPLETE" },
-  { label: "Bank NEFT Failed", code: "BANK_MISMATCH" },
-  { label: "Date of Exit Missing", code: "SERVICE_PERIOD" },
-  { label: "UAN Aadhaar Unlinked", code: "UAN_AADHAAR_UNLINKED" },
+  { label: "Bank Account Mismatch", code: "BANK_MISMATCH" },
 ];
 
 export function RejectionSearchTool() {
@@ -40,8 +20,10 @@ export function RejectionSearchTool() {
 
   const [selectedCode, setSelectedCode] = useState<string>("NAME_MISMATCH");
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"citizen" | "employer">("citizen");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const currentRule =
+  const currentRule: RemarkCodeRow =
     BUILTIN_REMARK_CODES[selectedCode]?.[langKey] ||
     BUILTIN_REMARK_CODES[selectedCode]?.en ||
     BUILTIN_REMARK_CODES["NAME_MISMATCH"].en;
@@ -59,9 +41,6 @@ export function RejectionSearchTool() {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<"citizen" | "employer">("citizen");
-  const [searchTerm, setSearchTerm] = useState("");
-
   const handleSelectCode = (code: string) => {
     setSelectedCode(code);
     const rule = BUILTIN_REMARK_CODES[code]?.[langKey] || BUILTIN_REMARK_CODES[code]?.en;
@@ -72,7 +51,7 @@ export function RejectionSearchTool() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const term = searchTerm.trim().toUpperCase();
+    const term = (searchTerm || "").trim().toUpperCase();
     if (!term) return;
 
     // Find best match in codes
@@ -91,41 +70,39 @@ export function RejectionSearchTool() {
   };
 
   return (
-    <section id="instant-decoder" className="scroll-mt-24 space-y-8">
-      {/* Title & Introduction */}
-      <div className="max-w-3xl">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight mb-3">
-          {t.decoderTool.title}
+    <section id="instant-decoder" className="scroll-mt-24 w-full">
+      {/* Title & Introduction matching Stitch Screen 5 */}
+      <div className="mb-6 sm:mb-8 max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-bold text-slate-900 mb-2 tracking-tight">
+          Rejection Decoder
         </h2>
-        <p className="text-base sm:text-lg text-on-surface-variant leading-relaxed">
-          {t.decoderTool.subtitle}
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+          Paste or search your EPFO rejection remark below to understand exactly what went wrong and how to fix it.
         </p>
       </div>
 
       {/* Search Section Card */}
-      <div className="glass-card rounded-2xl p-6 sm:p-8">
+      <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs mb-8">
         <label
           htmlFor="epfo-remark"
-          className="block text-xs font-bold text-on-surface-variant mb-2.5 uppercase tracking-wider"
+          className="block text-xs font-bold text-slate-500 mb-2.5 uppercase tracking-wider"
         >
-          {t.decoderTool.selectLabel}
+          Search Official Remarks
         </label>
 
-        <form onSubmit={handleSearchSubmit} className="relative">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">
-            search
-          </span>
+        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+          <Search className="w-5 h-5 text-slate-400 absolute left-4 pointer-events-none stroke-[2]" />
           <input
             id="epfo-remark"
             type="text"
             value={searchTerm || currentRule.official_text}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="e.g. 'FATHER NAME DIFFERS' or 'KYC PENDING'"
-            className="w-full h-14 pl-12 pr-28 rounded-xl bg-surface-container-low border border-outline-variant text-sm sm:text-base font-medium text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-2xs"
+            className="w-full h-12 sm:h-14 pl-12 pr-24 sm:pr-28 rounded-lg bg-slate-50 border border-slate-200 text-sm sm:text-base font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#005c55] focus:border-[#005c55] transition-all"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-on-primary h-10 px-5 rounded-lg font-bold text-xs sm:text-sm hover:bg-surface-tint transition-colors cursor-pointer"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#005c55] hover:bg-[#004742] text-white h-9 sm:h-10 px-4 sm:px-6 rounded-md font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-center shadow-2xs"
           >
             Decode
           </button>
@@ -133,17 +110,17 @@ export function RejectionSearchTool() {
 
         {/* Popular Quick Pills */}
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          <span className="text-xs font-bold text-on-surface-variant mr-1">Popular:</span>
+          <span className="text-xs font-semibold text-slate-500 mr-1 self-center">Popular:</span>
           {QUICK_CATEGORIES.map((cat) => (
             <button
               key={cat.code}
               type="button"
               onClick={() => handleSelectCode(cat.code)}
               className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                "px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer",
                 selectedCode === cat.code
-                  ? "bg-primary text-on-primary shadow-2xs"
-                  : "bg-surface-container-highest text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container"
+                  ? "bg-[#005c55] text-white shadow-2xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               )}
             >
               {cat.label}
@@ -153,108 +130,119 @@ export function RejectionSearchTool() {
       </div>
 
       {/* Decoder Results Grid (2 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-stretch">
         {/* 1. What EPFO Said */}
-        <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full border-l-4 border-l-alert-crimson shadow-xs">
-          <div className="bg-surface-container p-4 sm:p-5 border-b border-outline-variant/30 flex justify-between items-center">
-            <h3 className="text-sm sm:text-base font-bold text-on-surface flex items-center gap-2">
-              <span className="material-symbols-outlined text-alert-crimson text-[20px]">gavel</span>
-              <span>{t.decoderTool.officialRemarkLabel}</span>
+        <div className="bg-white rounded-xl border border-slate-200/90 border-l-4 border-l-[#e11d48] overflow-hidden flex flex-col h-full shadow-xs">
+          <div className="bg-slate-50/80 p-4 sm:p-4.5 border-b border-slate-200/80 flex justify-between items-center">
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+              <Gavel className="w-5 h-5 text-[#e11d48] stroke-[2.25]" />
+              <span>What EPFO Said</span>
             </h3>
-            <span className="bg-error-container text-on-error-container px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase font-data-mono">
-              {currentRule.code}
+            <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[11px] font-extrabold uppercase font-mono tracking-wider">
+              REJECTED
             </span>
           </div>
-          <div className="p-6 bg-surface-container-lowest flex-grow flex items-center justify-center">
-            <p className="font-data-mono text-xs sm:text-sm text-alert-crimson bg-error-container/25 p-4 rounded-xl border border-error-container/60 w-full break-words leading-relaxed">
+          <div className="p-5 sm:p-6 bg-white flex-grow flex items-center justify-center">
+            <p className="font-mono text-xs sm:text-sm text-[#e11d48] bg-red-50/70 p-4 rounded-lg border border-red-200/70 w-full break-words leading-relaxed">
               &ldquo;{currentRule.official_text}&rdquo;
             </p>
           </div>
         </div>
 
         {/* 2. What It Actually Means */}
-        <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full border-l-4 border-l-primary shadow-xs">
-          <div className="bg-primary/10 p-4 sm:p-5 border-b border-outline-variant/30 flex justify-between items-center">
-            <h3 className="text-sm sm:text-base font-bold text-primary flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-[20px]">translate</span>
-              <span>{t.decoderTool.plainMeaningLabel}</span>
+        <div className="bg-white rounded-xl border border-slate-200/90 border-l-4 border-l-[#005c55] overflow-hidden flex flex-col h-full shadow-xs">
+          <div className="bg-teal-50/50 p-4 sm:p-4.5 border-b border-slate-200/80 flex justify-between items-center">
+            <h3 className="text-sm sm:text-base font-bold text-[#005c55] flex items-center gap-2">
+              <Languages className="w-5 h-5 text-[#005c55] stroke-[2.25]" />
+              <span>What It Actually Means</span>
             </h3>
           </div>
-          <div className="p-6 bg-surface-container-lowest flex-grow space-y-4">
-            <p className="text-sm sm:text-base text-on-surface font-semibold leading-relaxed">
+          <div className="p-5 sm:p-6 bg-white flex-grow flex flex-col justify-between space-y-4">
+            <p className="text-sm sm:text-base text-slate-900 font-medium leading-relaxed">
               {currentRule.plain_text}
             </p>
-            <ul className="space-y-2 text-xs sm:text-sm text-on-surface-variant list-disc list-inside leading-relaxed">
-              <li>EPFO system enforces exact string match across Aadhaar and employer records.</li>
-              <li>Official Authority: <strong className="text-primary font-mono">{currentRule.source_reference}</strong></li>
-              <li>Estimated Resolution Time: <strong className="text-on-surface font-mono">{currentRule.estimated_days}</strong></li>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-600 list-disc list-inside leading-relaxed pt-2 border-t border-slate-100">
+              <li>EPFO automated rules enforce exact character and spacing matches.</li>
+              <li>
+                Official Circular: <strong className="text-[#005c55] font-mono">{currentRule.source_reference}</strong>
+              </li>
+              <li>
+                Estimated Resolution: <strong className="text-slate-900 font-mono">{currentRule.estimated_days}</strong>
+              </li>
             </ul>
           </div>
         </div>
       </div>
 
       {/* Resolution Pathway Card */}
-      <div className="glass-card rounded-2xl overflow-hidden shadow-xs">
-        <div className="bg-surface p-6 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-xs">
+        <div className="bg-slate-50/80 p-5 sm:p-6 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-xl font-bold text-on-surface mb-1">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1">
               Resolution Pathway
             </h3>
-            <p className="text-xs text-on-surface-variant flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-primary">menu_book</span>
-              <span>Authorized guidance based on {currentRule.source_reference}</span>
+            <p className="text-xs text-slate-500 flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-[#005c55]" />
+              <span>Based on EPFO Circular No. {currentRule.source_reference}</span>
             </p>
           </div>
           <a
             href={currentRule.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-bold text-primary hover:underline flex items-center gap-1 self-start sm:self-auto"
+            className="text-xs font-bold text-[#005c55] hover:underline flex items-center gap-1 self-start sm:self-auto"
           >
-            <span>{t.decoderTool.circularLabel}</span>
-            <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+            <span>View Official Circular</span>
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
 
         {/* Citizen vs Employer Tabs */}
-        <div className="flex border-b border-outline-variant/30 bg-surface-container-lowest">
+        <div className="flex border-b border-slate-200/80 bg-white">
           <button
             type="button"
             onClick={() => setActiveTab("citizen")}
-            className={`flex-1 py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
+            className={`flex-1 py-3.5 sm:py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
               activeTab === "citizen"
-                ? "border-primary text-primary bg-surface-container-low"
-                : "border-transparent text-on-surface-variant hover:bg-surface-container-low"
+                ? "border-[#005c55] text-[#005c55] bg-slate-50/60"
+                : "border-transparent text-slate-600 hover:bg-slate-50"
             }`}
           >
-            {t.decoderTool.citizenMustDo}
+            Citizen Action
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("employer")}
-            className={`flex-1 py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
+            className={`flex-1 py-3.5 sm:py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
               activeTab === "employer"
-                ? "border-primary text-primary bg-surface-container-low"
-                : "border-transparent text-on-surface-variant hover:bg-surface-container-low"
+                ? "border-[#005c55] text-[#005c55] bg-slate-50/60"
+                : "border-transparent text-slate-600 hover:bg-slate-50"
             }`}
           >
-            {t.decoderTool.employerMustDo}
+            Employer / HR Action
           </button>
         </div>
 
-        {/* Pathway Steps with timeline */}
-        <div className="p-6 sm:p-8 bg-surface-container-lowest">
+        {/* Pathway Steps with Timeline */}
+        <div className="p-5 sm:p-8 bg-white">
           {activeTab === "citizen" ? (
-            <div className="relative border-l-2 border-outline-variant/50 ml-4 sm:ml-6 space-y-8 py-2">
-              {currentRule.fix_steps.map((step, idx) => (
+            <div className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-8 py-2">
+              {currentRule.fix_steps.map((step: string, idx: number) => (
                 <div key={idx} className="relative pl-8 sm:pl-10">
-                  <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-surface-container-lowest">
+                  <div
+                    className={cn(
+                      "absolute -left-[17px] top-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-white",
+                      idx === 0
+                        ? "bg-[#005c55] text-white"
+                        : "bg-slate-100 text-slate-700 border border-slate-300"
+                    )}
+                  >
                     {idx + 1}
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-on-surface mb-1.5">
-                    Step {idx + 1}
+                  <h4 className="text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                    Step {idx + 1}: {step.split(".")[0]}
                   </h4>
-                  <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-2">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-2.5">
                     {step}
                   </p>
                   {idx === 0 && (
@@ -262,10 +250,10 @@ export function RejectionSearchTool() {
                       href="https://unifiedportal-mem.epfindia.gov.in"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary font-bold hover:underline text-xs"
+                      className="inline-flex items-center gap-1 text-[#005c55] font-bold hover:underline text-xs"
                     >
-                      <span>Open UAN Member Portal</span>
-                      <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                      <span>Open Member Portal</span>
+                      <ExternalLink className="w-3 h-3 ml-0.5" />
                     </a>
                   )}
                 </div>
@@ -273,32 +261,41 @@ export function RejectionSearchTool() {
 
               {/* Action: Copy WhatsApp Action Plan */}
               <div className="relative pl-8 sm:pl-10 pt-2">
-                <div className="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 space-y-3">
-                  <h5 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 sm:p-5 space-y-3">
+                  <h5 className="text-xs font-bold text-slate-600 uppercase tracking-wider">
                     Shareable Action Plan for HR
                   </h5>
                   <button
                     type="button"
                     onClick={handleCopyHrMessage}
-                    className="w-full sm:w-auto bg-[#25D366] text-white min-h-[44px] px-6 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-colors shadow-xs cursor-pointer"
+                    className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] text-white min-h-[44px] px-6 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[18px]">send</span>
-                    <span>{copied ? t.decoderTool.copiedNotice : "📲 Copy Ready-to-Send Action Plan for HR"}</span>
+                    {copied ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        <span>Action Plan Copied to Clipboard!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>📲 Copy Ready-to-Send Action Plan for HR</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="relative border-l-2 border-outline-variant/50 ml-4 sm:ml-6 space-y-6 py-2">
-              {currentRule.authority_actions.map((action, idx) => (
+            <div className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-6 py-2">
+              {currentRule.authority_actions.map((action: string, idx: number) => (
                 <div key={idx} className="relative pl-8 sm:pl-10">
-                  <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-surface-container-lowest">
+                  <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-[#855300] text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-white">
                     {idx + 1}
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-on-surface mb-1">
+                  <h4 className="text-sm sm:text-base font-bold text-slate-900 mb-1">
                     Employer Action Requirement {idx + 1}
                   </h4>
-                  <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     {action}
                   </p>
                 </div>

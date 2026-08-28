@@ -58,6 +58,7 @@
   --color-surface-container-high: #e6e8ea;
   --color-surface-container-highest: #e0e3e5;
   --color-surface-variant: #e0e3e5;
+  --color-alert-crimson: #e11d48;
   --color-surface-tint: #006a63;
   --color-on-surface: #191c1e;
   --color-on-surface-variant: #3e4947;
@@ -340,4 +341,13 @@
   cursor: pointer;
   background: #e2e8f0;
   border-radius: 4px;
+}
+
+/* Explicit color utilities */
+.bg-alert-crimson {
+  background-color: #e11d48 !important;
+}
+
+.bg-primary-teal {
+  background-color: #005c55 !important;
 }
