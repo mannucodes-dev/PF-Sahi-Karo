@@ -21,6 +21,7 @@ import {
   Zap,
   FileUp,
   Image as ImageIcon,
+  Check,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { getServerTranslation } from "@/lib/i18n/server";
@@ -221,47 +222,138 @@ export default async function LandingPage() {
           <EpfoOfficeLocator />
         </div>
 
-        {/* Trust Boundaries & Scope */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-6">
-          <Card className="border-slate-200 bg-white rounded-2xl overflow-hidden shadow-sm">
-            <div className="bg-slate-900 text-white p-6 sm:p-8 space-y-2">
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2.5">
-                <ShieldCheck className="w-6 h-6 text-teal-400" aria-hidden="true" />
-                {t.trust.title}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300">
-                {t.trust.subtitle}
-              </p>
+        {/* Trust Boundaries & Scope Section matching reference card design */}
+        <section className="max-w-[1240px] mx-auto px-4 sm:px-8 lg:px-12">
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.06)] overflow-hidden">
+            {/* Dark Navy Header Banner */}
+            <div className="bg-[#0b1b36] text-white px-6 sm:px-8 lg:px-10 py-6 sm:py-7">
+              <div className="flex items-center gap-4 sm:gap-5">
+                {/* Shield Outline with Inner Shield Outline */}
+                <div className="shrink-0">
+                  <svg
+                    className="w-10 h-10 sm:w-11 sm:h-11 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path
+                      d="M12 18.5s5.5-2.8 5.5-7V6.5l-5.5-2-5.5 2v5c0 4.2 5.5 7 5.5 7z"
+                      strokeWidth="1.3"
+                    />
+                  </svg>
+                </div>
+
+                <div>
+                  <h2 className="text-xl sm:text-2xl lg:text-[25px] font-bold text-white tracking-tight leading-tight">
+                    {t.trust.title}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 font-normal mt-1 leading-normal">
+                    {t.trust.subtitle}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <CardContent className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-              {/* What we do */}
-              <div className="space-y-3">
-                <h3 className="font-bold text-emerald-800 text-base flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" aria-hidden="true" />
-                  {t.trust.weProvideTitle}
-                </h3>
-                <ul className="space-y-2 text-zinc-700 list-disc list-inside leading-relaxed">
+            {/* Two-Column Content Area */}
+            <div className="p-6 sm:p-8 lg:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-0">
+              {/* Left Column: What PF Sahi Karo provides */}
+              <div className="md:pr-8 lg:pr-12">
+                {/* Column Header */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-6 h-6 rounded-full bg-[#237834] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Check className="w-3.5 h-3.5 text-white stroke-[3.2]" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                    {t.trust.weProvideTitle}
+                  </h3>
+                </div>
+
+                {/* List Items */}
+                <ul className="space-y-4 sm:space-y-5">
                   {t.trust.weProvideItems.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                    <li key={idx} className="flex items-start gap-3 sm:gap-3.5">
+                      <div className="w-5 h-5 rounded-full bg-[#237834] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <Check className="w-3 h-3 text-white stroke-[3.2]" />
+                      </div>
+                      <span className="text-[14.5px] sm:text-[15px] text-slate-800 leading-relaxed font-normal">
+                        {item}
+                      </span>
+                    </li>
                   ))}
                 </ul>
               </div>
 
-              {/* What we cannot do */}
-              <div className="space-y-3">
-                <h3 className="font-bold text-rose-800 text-base flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" aria-hidden="true" />
-                  {t.trust.weDoNotTitle}
-                </h3>
-                <ul className="space-y-2 text-zinc-700 list-disc list-inside leading-relaxed">
+              {/* Right Column: What PF Sahi Karo does NOT do */}
+              <div className="md:border-l border-slate-200/90 md:pl-8 lg:pl-12">
+                {/* Column Header */}
+                <div className="flex items-center gap-3 mb-6">
+                  <svg
+                    className="w-6 h-6 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                      fill="#b91c1c"
+                    />
+                    <line
+                      x1="12"
+                      y1="9"
+                      x2="12"
+                      y2="13.5"
+                      stroke="white"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="12" cy="17" r="1.1" fill="white" />
+                  </svg>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                    {t.trust.weDoNotTitle}
+                  </h3>
+                </div>
+
+                {/* List Items */}
+                <ul className="space-y-4 sm:space-y-5">
                   {t.trust.weDoNotItems.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                    <li key={idx} className="flex items-start gap-3 sm:gap-3.5">
+                      <svg
+                        className="w-5 h-5 shrink-0 mt-0.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                          fill="#b91c1c"
+                        />
+                        <line
+                          x1="12"
+                          y1="9"
+                          x2="12"
+                          y2="13.5"
+                          stroke="white"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                        />
+                        <circle cx="12" cy="17" r="1.1" fill="white" />
+                      </svg>
+                      <span className="text-[14.5px] sm:text-[15px] text-slate-800 leading-relaxed font-normal">
+                        {item}
+                      </span>
+                    </li>
                   ))}
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
       </div>
 
