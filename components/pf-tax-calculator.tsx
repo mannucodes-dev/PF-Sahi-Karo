@@ -1,241 +1,288 @@
 "use client";
 
 import React, { useState } from "react";
-import { useTranslation } from "@/lib/i18n/context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, AlertTriangle, CheckCircle2, Info, ArrowRight, ShieldAlert } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { Info, Check, PiggyBank } from "lucide-react";
 
 export function PfTaxCalculator() {
-  const { t } = useTranslation();
-
-  const [claimAmount, setClaimAmount] = useState<number>(75000);
-  const [serviceYears, setServiceYears] = useState<number>(3);
+  const [claimAmount, setClaimAmount] = useState<number>(50000);
+  const [duration, setDuration] = useState<"less" | "more">("less");
   const [isPanLinked, setIsPanLinked] = useState<boolean>(true);
   const [hasForm15G, setHasForm15G] = useState<boolean>(false);
 
-  // Section 192A Tax Calculation Logic
-  const isExemptByService = serviceYears >= 5;
-  const isExemptByAmount = claimAmount < 50000;
-  const isExemptByForm15G = hasForm15G && isPanLinked;
+  // Formatting helper with Indian commas (e.g. 50,000 or 10,00,000)
+  const formatNum = (num: number) => {
+    return num.toLocaleString("en-IN");
+  };
 
-  let tdsRate = 0;
+  // Section 192A Rule Calculation matching Stitch HTML logic
+  let rate = 0;
   let reason = "";
 
-  if (isExemptByService) {
-    tdsRate = 0;
-    reason = "Service >= 5 continuous years: Entire PF withdrawal is completely tax-exempt.";
-  } else if (isExemptByAmount) {
-    tdsRate = 0;
-    reason = "Claim amount < ₹50,000: No TDS deduction under Section 192A threshold.";
-  } else if (isExemptByForm15G) {
-    tdsRate = 0;
-    reason = "Form 15G/15H submitted with verified PAN: 0% TDS applicable.";
+  if (duration === "more") {
+    rate = 0;
+    reason = "Service >= 5 yrs, TDS Nil";
+  } else if (claimAmount < 50000) {
+    rate = 0;
+    reason = "Amount < ₹50k, TDS Nil";
+  } else if (hasForm15G) {
+    rate = 0;
+    reason = "Form 15G submitted, TDS Nil";
   } else if (isPanLinked) {
-    tdsRate = 0.10; // 10% TDS with PAN
-    reason = "Service < 5 years & Amount >= ₹50,000: 10% standard TDS deducted with verified PAN.";
+    rate = 10;
+    reason = "PAN submitted, 10% TDS";
   } else {
-    tdsRate = 0.20; // 20% TDS without PAN (Section 192A amendment)
-    reason = "PAN not linked: Higher TDS rate of 20% applied under Section 192A.";
+    rate = 30; // Max marginal rate under Section 192A / 206AA
+    reason = "No PAN, 30% TDS";
   }
 
-  const tdsAmount = Math.round(claimAmount * tdsRate);
-  const netCredit = claimAmount - tdsAmount;
+  const tdsAmount = Math.round((claimAmount * rate) / 100);
+  const finalAmount = claimAmount - tdsAmount;
 
   return (
-    <section id="tax-calculator" className="scroll-mt-24">
-      <div className="mb-6 space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold w-fit">
-          <span className="material-symbols-outlined text-[16px]">calculate</span>
-          <span>{t.taxCalc.badge}</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-on-surface">
-          {t.taxCalc.title}
+    <section id="tax-calculator" className="scroll-mt-24 w-full">
+      {/* Header Section */}
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-bold text-slate-900 mb-2 tracking-tight">
+          Section 192A PF TDS Tax Calculator
         </h2>
-        <p className="text-sm sm:text-base text-on-surface-variant max-w-3xl leading-relaxed">
-          {t.taxCalc.subtitle}
+        <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          Estimate your tax deduction on Provident Fund withdrawals before you apply. Avoid unexpected deductions with clear insights into rules regarding PAN and Form 15G.
         </p>
       </div>
 
+      {/* Main Grid: Left Inputs (7 cols), Right Results (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        {/* Controls Column (7 cols) */}
+        {/* Left Column: Calculator Inputs */}
         <div className="lg:col-span-7 flex flex-col gap-5">
-          {/* Amount Slider Card */}
-          <div className="glass-card rounded-2xl p-6">
+          {/* Amount Input Card */}
+          <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs">
             <div className="flex justify-between items-end mb-4">
-              <label htmlFor="claim-amount" className="text-sm font-bold text-on-surface">
-                {t.taxCalc.amountLabel}
+              <label
+                htmlFor="withdrawalAmount"
+                className="text-sm sm:text-base font-semibold text-slate-900"
+              >
+                Withdrawal Amount
               </label>
-              <div className="text-2xl sm:text-3xl text-primary font-data-mono font-bold tracking-tight">
-                {formatCurrency(claimAmount)}
+              <div className="text-2xl sm:text-[26px] font-bold text-[#005c55] font-mono tracking-tight">
+                ₹<span id="amountDisplay">{formatNum(claimAmount)}</span>
               </div>
             </div>
+
             <input
-              id="claim-amount"
+              id="withdrawalAmount"
               type="range"
               min={10000}
               max={1000000}
               step={5000}
               value={claimAmount}
               onChange={(e) => setClaimAmount(Number(e.target.value))}
-              className="w-full h-2.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer mb-2 accent-primary"
+              className="pf-slider w-full appearance-none cursor-pointer mb-2"
             />
-            <div className="flex justify-between text-xs text-on-surface-variant font-data-mono font-medium">
+
+            <div className="flex justify-between text-xs font-semibold text-slate-500">
               <span>₹10,000</span>
-              <span>₹5,00,000</span>
-              <span>₹10,00,000</span>
+              <span>₹10L</span>
             </div>
           </div>
 
           {/* Service Duration Card */}
-          <div className="glass-card rounded-2xl p-6">
-            <h3 className="text-sm font-bold text-on-surface mb-3">
-              {t.taxCalc.serviceLabel}
+          <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs">
+            <h3 className="text-sm sm:text-base font-semibold text-slate-900 mb-4">
+              Continuous Service Duration
             </h3>
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <button
                 type="button"
-                onClick={() => setServiceYears(3)}
-                className={`p-4 rounded-xl border-2 transition-all text-center flex flex-col justify-center min-h-[72px] cursor-pointer ${
-                  serviceYears < 5
-                    ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                    : "border-outline-variant/60 bg-surface-container-lowest text-on-surface font-medium hover:bg-surface-container-low"
+                onClick={() => setDuration("less")}
+                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[80px] cursor-pointer ${
+                  duration === "less"
+                    ? "border-[#005c55] bg-[#005c55]/5 text-[#005c55] font-bold shadow-2xs"
+                    : "border-slate-200 bg-white text-slate-700 font-semibold hover:border-slate-300"
                 }`}
               >
-                <span className="text-sm font-bold">Less than 5 Years</span>
-                <span className="text-[11px] opacity-75 mt-0.5">Subject to Sec 192A</span>
+                <span className="text-sm sm:text-base">Less than 5 Years</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setServiceYears(5)}
-                className={`p-4 rounded-xl border-2 transition-all text-center flex flex-col justify-center min-h-[72px] cursor-pointer ${
-                  serviceYears >= 5
-                    ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
-                    : "border-outline-variant/60 bg-surface-container-lowest text-on-surface font-medium hover:bg-surface-container-low"
+                onClick={() => setDuration("more")}
+                className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col justify-center min-h-[80px] cursor-pointer ${
+                  duration === "more"
+                    ? "border-[#005c55] bg-[#005c55]/5 text-[#005c55] font-bold shadow-2xs"
+                    : "border-slate-200 bg-white text-slate-700 font-semibold hover:border-slate-300"
                 }`}
               >
-                <span className="text-sm font-bold">5 Years or More</span>
-                <span className="text-[11px] opacity-75 mt-0.5">100% Tax-Exempt</span>
+                <span className="text-sm sm:text-base">5 Years or More</span>
               </button>
             </div>
-            <p className="text-xs text-on-surface-variant mt-3 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-primary">info</span>
-              Service includes continuous tenure from previous employers if PF was transferred.
+
+            <p className="text-xs text-slate-500 mt-3 flex items-start gap-1.5 leading-relaxed">
+              <Info className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+              <span>Service includes tenure from previous employers if PF was transferred.</span>
             </p>
           </div>
 
           {/* Document Status Card */}
-          <div className="glass-card rounded-2xl p-6 flex flex-col gap-5">
-            <h3 className="text-sm font-bold text-on-surface">Document Submission Status</h3>
+          <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col gap-6">
+            <h3 className="text-sm sm:text-base font-semibold text-slate-900">
+              Document Submission Status
+            </h3>
 
             {/* PAN Card Toggle */}
-            <div className="flex items-center justify-between gap-4 py-2 border-b border-outline-variant/30">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <div className="text-sm font-bold text-on-surface">
-                  {t.taxCalc.panLinkedLabel}
+                <div className="text-sm sm:text-base font-semibold text-slate-900">
+                  PAN Card linked/submitted?
                 </div>
-                <div className="text-xs text-on-surface-variant">
-                  Required to prevent higher marginal tax rate (20%).
+                <div className="text-xs text-slate-500 mt-0.5">
+                  Required to avoid maximum marginal tax rate.
                 </div>
               </div>
+
               <button
                 type="button"
-                role="switch"
+                role="checkbox"
                 aria-checked={isPanLinked}
+                aria-label="PAN Card linked or submitted"
                 onClick={() => {
-                  const nextState = !isPanLinked;
-                  setIsPanLinked(nextState);
-                  if (!nextState) setHasForm15G(false);
+                  const nextVal = !isPanLinked;
+                  setIsPanLinked(nextVal);
+                  if (!nextVal) setHasForm15G(false);
                 }}
-                className={`w-14 h-8 rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer flex items-center shrink-0 ${
-                  isPanLinked ? "bg-primary" : "bg-surface-container-high"
-                }`}
+                className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2563eb] rounded-full"
               >
-                <div
-                  className={`w-6 h-6 rounded-full bg-white shadow-xs transform transition-transform duration-200 ease-in-out ${
-                    isPanLinked ? "translate-x-6" : "translate-x-0"
-                  }`}
-                />
+                {isPanLinked ? (
+                  <div className="w-6 h-6 rounded-full bg-[#2563eb] text-white flex items-center justify-center shadow-xs transition-all">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 rounded-full border-2 border-slate-300 bg-white hover:border-slate-400 transition-all" />
+                )}
               </button>
             </div>
 
             {/* Form 15G/15H Toggle */}
-            <div className="flex items-center justify-between gap-4 py-1">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <div className="text-sm font-bold text-on-surface">
-                  {t.taxCalc.form15gLabel}
+                <div className="text-sm sm:text-base font-semibold text-slate-900">
+                  Form 15G/15H submitted?
                 </div>
-                <div className="text-xs text-on-surface-variant">
-                  Applicable if total annual income is below the taxable threshold.
+                <div className="text-xs text-slate-500 mt-0.5">
+                  Applicable if total income is below taxable limit.
                 </div>
               </div>
+
               <button
                 type="button"
-                role="switch"
+                role="checkbox"
                 aria-checked={hasForm15G}
+                aria-label="Form 15G or 15H submitted"
                 disabled={!isPanLinked}
                 onClick={() => setHasForm15G(!hasForm15G)}
-                className={`w-14 h-8 rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer flex items-center shrink-0 ${
-                  !isPanLinked ? "opacity-40 cursor-not-allowed bg-surface-container-high" : hasForm15G ? "bg-primary" : "bg-surface-container-high"
+                className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2563eb] rounded-full ${
+                  !isPanLinked ? "opacity-40 cursor-not-allowed" : ""
                 }`}
               >
-                <div
-                  className={`w-6 h-6 rounded-full bg-white shadow-xs transform transition-transform duration-200 ease-in-out ${
-                    hasForm15G ? "translate-x-6" : "translate-x-0"
-                  }`}
-                />
+                {hasForm15G ? (
+                  <div className="w-6 h-6 rounded-full bg-[#2563eb] text-white flex items-center justify-center shadow-xs transition-all">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 rounded-full border-2 border-slate-300 bg-white hover:border-slate-400 transition-all" />
+                )}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Results Column (Right, 5 cols) */}
+        {/* Right Column: Results & Education */}
         <div className="lg:col-span-5 flex flex-col gap-5">
-          <div className="bg-primary text-on-primary rounded-2xl p-6 sm:p-8 deep-shadow relative overflow-hidden">
-            {/* Glowing blur orb */}
-            <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-8 -mt-8" />
+          {/* Real-time Results Card with dynamic background */}
+          <div
+            className={`rounded-xl p-6 sm:p-7 text-white relative overflow-hidden shadow-lg transition-colors duration-300 ${
+              rate > 0 ? "bg-[#e11d48]" : "bg-[#005c55]"
+            }`}
+          >
+            {/* Decorative background element */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-xl pointer-events-none" />
 
-            <div className="flex items-center justify-between mb-6 border-b border-white/15 pb-4">
-              <h3 className="text-xl font-bold">TDS Breakdown</h3>
-              <span className="bg-white/20 text-white text-xs font-data-mono font-bold px-3 py-1 rounded-full border border-white/20">
-                Rate: {tdsRate * 100}%
-              </span>
-            </div>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-white tracking-tight">
+              TDS Breakdown
+            </h2>
 
-            <div className="space-y-4 font-data-mono">
-              <div className="flex justify-between items-center text-sm text-teal-100">
-                <span className="font-sans font-medium">{t.taxCalc.grossAmount}:</span>
-                <span className="font-bold text-white text-base">{formatCurrency(claimAmount)}</span>
-              </div>
-
-              <div className="flex justify-between items-center text-sm text-teal-100">
-                <span className="font-sans font-medium">{t.taxCalc.tdsDeduction}:</span>
-                <span className={`font-bold text-base ${tdsAmount > 0 ? "text-amber-300" : "text-emerald-300"}`}>
-                  {tdsAmount > 0 ? `- ${formatCurrency(tdsAmount)}` : "₹0 (Exempt)"}
+            <div className="flex flex-col gap-4">
+              {/* Gross Amount */}
+              <div className="flex justify-between items-center border-b border-white/20 pb-4">
+                <span className="text-sm sm:text-base text-white/90">
+                  Gross Withdrawal Amount
+                </span>
+                <span className="font-mono text-base sm:text-lg font-bold">
+                  ₹{formatNum(claimAmount)}
                 </span>
               </div>
 
-              <div className="pt-4 border-t border-white/20 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                <span className="font-sans font-bold text-white text-base">{t.taxCalc.netCredit}:</span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-primary-fixed tracking-tight">
-                  {formatCurrency(netCredit)}
+              {/* TDS Rate & Amount */}
+              <div className="flex justify-between items-center border-b border-white/20 pb-4">
+                <div className="flex flex-col">
+                  <span className="text-sm sm:text-base text-white/90">
+                    TDS Applicable Rate
+                  </span>
+                  <span className="text-xs text-white/75 mt-0.5 font-medium">
+                    {reason}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="bg-white/20 px-2.5 py-1 rounded text-xs font-bold text-white">
+                    {rate}%
+                  </span>
+                  <span className="font-mono text-base sm:text-lg font-bold text-[#ffddb8]">
+                    -₹{formatNum(tdsAmount)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Final Disbursement */}
+              <div className="flex justify-between items-center pt-2">
+                <span className="text-base sm:text-lg font-bold text-white">
+                  Final Bank Disbursement
+                </span>
+                <span className="font-mono text-3xl sm:text-4xl font-extrabold text-[#a3faef] tracking-tight">
+                  ₹{formatNum(finalAmount)}
                 </span>
               </div>
             </div>
 
-            {/* Rule explanation card */}
-            <div className="mt-6 p-4 rounded-xl bg-white/10 border border-white/15 text-xs text-teal-50 leading-relaxed space-y-1">
-              <div className="font-bold text-white flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-primary-fixed">verified</span>
-                <span>Rule Application</span>
-              </div>
-              <p>{reason}</p>
+            {/* Disclaimer note */}
+            <div className="mt-6 pt-4 border-t border-white/20 flex gap-2 items-start text-xs text-white/90 leading-relaxed">
+              <Info className="w-4 h-4 text-[#ffddb8] shrink-0 mt-0.5" />
+              <p>
+                Disclaimer: This is an estimate based on Section 192A rules. Actual deductions may vary based on EPFO processing and current IT rules.
+              </p>
+            </div>
+          </div>
+
+          {/* Educational Warning Box: Form 15G */}
+          <div className="bg-[#fcf8f0] border border-[#fea619]/30 rounded-xl p-5 sm:p-6 flex flex-col gap-3 shadow-2xs">
+            <div className="flex items-center gap-2 text-[#855300] font-bold">
+              <PiggyBank className="w-5 h-5 text-[#855300] shrink-0" />
+              <h3 className="text-base sm:text-lg font-bold">
+                How Form 15G Saves Your Money
+              </h3>
             </div>
 
-            {/* Advisory note */}
-            <div className="mt-4 p-3.5 rounded-xl bg-black/20 text-xs text-teal-100/90 leading-relaxed">
-              <strong>Tip:</strong> {t.taxCalc.taxTip}
+            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              If your total annual income (including PF withdrawal) is below the basic exemption limit (₹2.5 Lakh / ₹3 Lakh depending on regime), submitting Form 15G (or 15H for senior citizens) prevents EPFO from deducting TDS.
+            </p>
+
+            <div className="bg-white p-4 rounded-lg border border-slate-200/60 mt-1">
+              <h4 className="text-xs sm:text-sm font-bold text-slate-900 mb-2">
+                When to submit:
+              </h4>
+              <ul className="list-disc pl-5 text-xs sm:text-sm text-slate-600 space-y-1.5 leading-relaxed">
+                <li>Withdrawal amount is ₹50,000 or more.</li>
+                <li>Service duration is less than 5 years.</li>
+                <li>Total income is not taxable.</li>
+              </ul>
             </div>
           </div>
         </div>
