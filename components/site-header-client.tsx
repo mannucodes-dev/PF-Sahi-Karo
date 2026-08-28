@@ -196,7 +196,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         {/* Left: Logo & Brand Name */}
         <Link
           href="/"
-          className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-[#005f56] rounded-lg p-0.5"
+          className="flex items-center gap-3 shrink-0 focus:outline-none rounded-lg p-0.5"
           onClick={() => {
             setIsMobileMenuOpen(false);
             if (pathname === "/") {
