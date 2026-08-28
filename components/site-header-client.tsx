@@ -33,20 +33,20 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    id: "instant-decoder",
-    label: "Instant Decoder",
-    mobileLabel: "Instant Rejection Decoder",
-    href: "/#instant-decoder",
-    badge: "Primary",
-    icon: Sparkles,
-  },
-  {
     id: "tds-calculator",
     label: "TDS Calculator",
     mobileLabel: "PF TDS Tax Calculator",
     href: "/#tax-calculator",
     subtext: "Section 192A",
     icon: Calculator,
+  },
+  {
+    id: "instant-decoder",
+    label: "Instant Decoder",
+    mobileLabel: "Instant Rejection Decoder",
+    href: "/#instant-decoder",
+    badge: "Primary",
+    icon: Sparkles,
   },
   {
     id: "office-directory",
@@ -95,70 +95,7 @@ function resolveActiveId(pathname: string, hash: string): string {
 export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeId, setActiveId] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return resolveActiveId(pathname, window.location.hash);
-    }
-    return pathname.startsWith("/help") ? "rules-faq" : "instant-decoder";
-  });
-
   const menuRef = useRef<HTMLDivElement>(null);
-  const isClickingRef = useRef(false);
-
-  // Synchronize active state with pathname and window hash
-  useEffect(() => {
-    const syncActiveState = () => {
-      const currentHash = typeof window !== "undefined" ? window.location.hash : "";
-      const resolved = resolveActiveId(pathname, currentHash);
-      if (resolved) {
-        setActiveId(resolved);
-      }
-    };
-
-    syncActiveState();
-
-    window.addEventListener("hashchange", syncActiveState);
-    window.addEventListener("popstate", syncActiveState);
-
-    return () => {
-      window.removeEventListener("hashchange", syncActiveState);
-      window.removeEventListener("popstate", syncActiveState);
-    };
-  }, [pathname]);
-
-  // Scroll observer on homepage to update active state as user scrolls
-  useEffect(() => {
-    if (pathname !== "/") return;
-
-    const sectionElements = [
-      { id: "instant-decoder", target: document.getElementById("instant-decoder") },
-      { id: "tds-calculator", target: document.getElementById("tax-calculator") || document.getElementById("tds-calculator") },
-      { id: "office-directory", target: document.getElementById("office-directory") },
-    ].filter((item): item is { id: string; target: HTMLElement } => item.target !== null);
-
-    if (sectionElements.length === 0) return;
-
-    const handleScroll = () => {
-      if (isClickingRef.current) return;
-
-      const scrollPosition = window.scrollY + 160;
-
-      for (let i = sectionElements.length - 1; i >= 0; i--) {
-        const el = sectionElements[i].target;
-        if (el.offsetTop <= scrollPosition) {
-          setActiveId(sectionElements[i].id);
-          return;
-        }
-      }
-
-      if (window.scrollY < 200) {
-        setActiveId("instant-decoder");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
 
   // Close mobile menu on resize to desktop or ESC key
   useEffect(() => {
@@ -181,13 +118,8 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
     };
   }, []);
 
-  const handleNavClick = (item: NavItem) => {
-    setActiveId(item.id);
+  const handleNavClick = () => {
     setIsMobileMenuOpen(false);
-    isClickingRef.current = true;
-    setTimeout(() => {
-      isClickingRef.current = false;
-    }, 800);
   };
 
   return (
@@ -199,9 +131,6 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
           className="flex items-center gap-3 shrink-0 focus:outline-none rounded-lg p-0.5"
           onClick={() => {
             setIsMobileMenuOpen(false);
-            if (pathname === "/") {
-              setActiveId("instant-decoder");
-            }
           }}
         >
           <img
@@ -217,18 +146,12 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         {/* Center: Navigation Links (Desktop: >= 1024px) */}
         <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-8 text-[15px]">
           {NAV_ITEMS.map((item) => {
-            const isActive = activeId === item.id;
             return (
               <Link
                 key={item.id}
                 href={item.href}
-                onClick={() => handleNavClick(item)}
-                className={`transition-all whitespace-nowrap pb-1 ${
-                  isActive
-                    ? "text-[#005f56] font-bold"
-                    : "text-slate-600 hover:text-[#005f56] font-medium"
-                }`}
-                aria-current={isActive ? "page" : undefined}
+                onClick={handleNavClick}
+                className="transition-all whitespace-nowrap pb-1 text-slate-600 hover:text-[#005f56] font-medium"
               >
                 {item.label}
               </Link>
@@ -287,22 +210,16 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
             {/* Primary Navigation Links */}
             <div className="space-y-1.5">
               {NAV_ITEMS.map((item) => {
-                const isActive = activeId === item.id;
                 const IconComponent = item.icon;
                 return (
                   <Link
                     key={item.id}
                     href={item.href}
-                    onClick={() => handleNavClick(item)}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm transition-colors ${
-                      isActive
-                        ? "font-bold text-[#005f56] bg-teal-50/80 border border-teal-200/80"
-                        : "font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] border border-transparent"
-                    }`}
-                    aria-current={isActive ? "page" : undefined}
+                    onClick={handleNavClick}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm transition-colors font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] border border-transparent"
                   >
                     <div className="flex items-center gap-2.5">
-                      <IconComponent className={`w-4 h-4 ${isActive ? "text-[#005f56]" : "text-slate-500"}`} />
+                      <IconComponent className="w-4 h-4 text-slate-500" />
                       <span>{item.mobileLabel}</span>
                     </div>
                     {item.badge && (
