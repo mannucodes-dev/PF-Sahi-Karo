@@ -159,20 +159,22 @@ export function FAQWidget() {
           ref={triggerButtonRef}
           type="button"
           onClick={() => setIsOpen(true)}
-          className="bg-teal-700 hover:bg-teal-800 text-white font-extrabold px-4 py-3 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2.5 transition-all duration-200 active:scale-95 cursor-pointer border border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-400/50"
+          className="group bg-teal-700 hover:bg-teal-800 text-white font-extrabold p-3 rounded-full shadow-lg hover:shadow-xl flex items-center transition-all duration-300 active:scale-95 cursor-pointer border border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-400/50"
           aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-label="Open Claim Assistance FAQ dialog"
         >
-          <div className="w-6 h-6 rounded-full bg-teal-800 flex items-center justify-center" aria-hidden="true">
+          <div className="w-6 h-6 rounded-full bg-teal-800 flex items-center justify-center shrink-0" aria-hidden="true">
             <MessageCircleQuestion className="w-4 h-4 text-teal-200" />
           </div>
-          <span className="text-xs sm:text-sm">
-            {locale === "hi" ? "सहायक एवं अक्सर पूछे जाने वाले प्रश्न" : "Claim Help & FAQ"}
-          </span>
-          <Badge className="bg-teal-900 text-teal-200 border-teal-700 text-[10px] px-1.5 py-0 font-mono">
-            {locale === "hi" ? "मार्गदर्शन" : "Guidance"}
-          </Badge>
+          <div className="flex items-center overflow-hidden max-w-0 group-hover:max-w-[300px] group-hover:ml-2.5 transition-all duration-300 ease-in-out opacity-0 group-hover:opacity-100 whitespace-nowrap gap-2">
+            <span className="text-xs sm:text-sm">
+              {locale === "hi" ? "सहायक एवं अक्सर पूछे जाने वाले प्रश्न" : "Claim Help & FAQ"}
+            </span>
+            <Badge className="bg-teal-900 text-teal-200 border-teal-700 text-[10px] px-1.5 py-0 font-mono shrink-0">
+              {locale === "hi" ? "मार्गदर्शन" : "Guidance"}
+            </Badge>
+          </div>
         </button>
       )}
 

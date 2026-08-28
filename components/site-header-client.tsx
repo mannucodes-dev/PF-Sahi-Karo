@@ -2,7 +2,18 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Zap, CircleUserRound, Menu, X, ArrowRight, ShieldAlert, Sparkles, MapPin, Calculator, BookOpen } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  Zap,
+  CircleUserRound,
+  Menu,
+  X,
+  ArrowRight,
+  Sparkles,
+  MapPin,
+  Calculator,
+  BookOpen,
+} from "lucide-react";
 import { LanguageSwitcher } from "./language-switcher";
 import type { CitizenUser } from "@/lib/auth/session";
 
@@ -10,9 +21,144 @@ interface SiteHeaderClientProps {
   user: CitizenUser | null;
 }
 
+interface NavItem {
+  id: string;
+  label: string;
+  mobileLabel: string;
+  href: string;
+  badge?: string;
+  subtext?: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    id: "instant-decoder",
+    label: "Instant Decoder",
+    mobileLabel: "Instant Rejection Decoder",
+    href: "/#instant-decoder",
+    badge: "Primary",
+    icon: Sparkles,
+  },
+  {
+    id: "tds-calculator",
+    label: "TDS Calculator",
+    mobileLabel: "PF TDS Tax Calculator",
+    href: "/#tax-calculator",
+    subtext: "Section 192A",
+    icon: Calculator,
+  },
+  {
+    id: "office-directory",
+    label: "Office Directory",
+    mobileLabel: "EPFO Office Directory",
+    href: "/#office-directory",
+    subtext: "138+ Offices",
+    icon: MapPin,
+  },
+  {
+    id: "rules-faq",
+    label: "Rules & FAQ",
+    mobileLabel: "Rejection Rules & FAQ",
+    href: "/help",
+    icon: BookOpen,
+  },
+];
+
+function resolveActiveId(pathname: string, hash: string): string {
+  if (pathname.startsWith("/help")) {
+    return "rules-faq";
+  }
+
+  const cleanHash = (hash || "").toLowerCase().replace(/^#/, "");
+
+  if (cleanHash === "tds-calculator" || cleanHash === "tax-calculator" || cleanHash === "calculator") {
+    return "tds-calculator";
+  }
+  if (cleanHash === "office-directory" || cleanHash === "offices" || cleanHash === "office-locator") {
+    return "office-directory";
+  }
+  if (cleanHash === "instant-decoder" || cleanHash === "decoder" || cleanHash === "rejection-decoder") {
+    return "instant-decoder";
+  }
+  if (cleanHash === "rules-faq" || cleanHash === "faq" || cleanHash === "rules") {
+    return "rules-faq";
+  }
+
+  if (pathname === "/") {
+    return "instant-decoder";
+  }
+
+  return "";
+}
+
 export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return resolveActiveId(pathname, window.location.hash);
+    }
+    return pathname.startsWith("/help") ? "rules-faq" : "instant-decoder";
+  });
+
   const menuRef = useRef<HTMLDivElement>(null);
+  const isClickingRef = useRef(false);
+
+  // Synchronize active state with pathname and window hash
+  useEffect(() => {
+    const syncActiveState = () => {
+      const currentHash = typeof window !== "undefined" ? window.location.hash : "";
+      const resolved = resolveActiveId(pathname, currentHash);
+      if (resolved) {
+        setActiveId(resolved);
+      }
+    };
+
+    syncActiveState();
+
+    window.addEventListener("hashchange", syncActiveState);
+    window.addEventListener("popstate", syncActiveState);
+
+    return () => {
+      window.removeEventListener("hashchange", syncActiveState);
+      window.removeEventListener("popstate", syncActiveState);
+    };
+  }, [pathname]);
+
+  // Scroll observer on homepage to update active state as user scrolls
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sectionElements = [
+      { id: "instant-decoder", target: document.getElementById("instant-decoder") },
+      { id: "tds-calculator", target: document.getElementById("tax-calculator") || document.getElementById("tds-calculator") },
+      { id: "office-directory", target: document.getElementById("office-directory") },
+    ].filter((item): item is { id: string; target: HTMLElement } => item.target !== null);
+
+    if (sectionElements.length === 0) return;
+
+    const handleScroll = () => {
+      if (isClickingRef.current) return;
+
+      const scrollPosition = window.scrollY + 160;
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i].target;
+        if (el.offsetTop <= scrollPosition) {
+          setActiveId(sectionElements[i].id);
+          return;
+        }
+      }
+
+      if (window.scrollY < 200) {
+        setActiveId("instant-decoder");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   // Close mobile menu on resize to desktop or ESC key
   useEffect(() => {
@@ -35,6 +181,15 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
     };
   }, []);
 
+  const handleNavClick = (item: NavItem) => {
+    setActiveId(item.id);
+    setIsMobileMenuOpen(false);
+    isClickingRef.current = true;
+    setTimeout(() => {
+      isClickingRef.current = false;
+    }, 800);
+  };
+
   return (
     <header className="w-full bg-white border-b border-slate-200/60 sticky top-0 z-50 transition-all">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
@@ -42,7 +197,12 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         <Link
           href="/"
           className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-[#005f56] rounded-lg p-0.5"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={() => {
+            setIsMobileMenuOpen(false);
+            if (pathname === "/") {
+              setActiveId("instant-decoder");
+            }
+          }}
         >
           <img
             alt="PF Sahi Karo Logo"
@@ -56,30 +216,24 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
 
         {/* Center: Navigation Links (Desktop: >= 1024px) */}
         <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-8 text-[15px]">
-          <Link
-            href="/#instant-decoder"
-            className="text-[#005f56] font-bold border-b-2 border-[#005f56] pb-1 transition-all whitespace-nowrap"
-          >
-            Instant Decoder
-          </Link>
-          <Link
-            href="/#tax-calculator"
-            className="text-slate-600 hover:text-[#005f56] font-medium transition-colors whitespace-nowrap"
-          >
-            TDS Calculator
-          </Link>
-          <Link
-            href="/#office-directory"
-            className="text-slate-600 hover:text-[#005f56] font-medium transition-colors whitespace-nowrap"
-          >
-            Office Directory
-          </Link>
-          <Link
-            href="/help"
-            className="text-slate-600 hover:text-[#005f56] font-medium transition-colors whitespace-nowrap"
-          >
-            Rules & FAQ
-          </Link>
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeId === item.id;
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                onClick={() => handleNavClick(item)}
+                className={`transition-all whitespace-nowrap pb-1 ${
+                  isActive
+                    ? "text-[#005f56] font-bold"
+                    : "text-slate-600 hover:text-[#005f56] font-medium"
+                }`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right: Actions */}
@@ -132,55 +286,39 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
           <div className="max-w-[1240px] mx-auto px-4 sm:px-6 py-5 space-y-4">
             {/* Primary Navigation Links */}
             <div className="space-y-1.5">
-              <Link
-                href="/#instant-decoder"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#005f56] bg-teal-50/70 border border-teal-100/60 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Sparkles className="w-4 h-4 text-[#005f56]" />
-                  <span>Instant Rejection Decoder</span>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-[#005f56] text-white px-2 py-0.5 rounded-full">
-                  Primary
-                </span>
-              </Link>
-
-              <Link
-                href="/#tax-calculator"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Calculator className="w-4 h-4 text-slate-500" />
-                  <span>PF TDS Tax Calculator</span>
-                </div>
-                <span className="text-[11px] text-slate-400 font-normal">Section 192A</span>
-              </Link>
-
-              <Link
-                href="/#office-directory"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <MapPin className="w-4 h-4 text-slate-500" />
-                  <span>EPFO Office Directory</span>
-                </div>
-                <span className="text-[11px] text-slate-400 font-normal">138+ Offices</span>
-              </Link>
-
-              <Link
-                href="/help"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <BookOpen className="w-4 h-4 text-slate-500" />
-                  <span>Rejection Rules & FAQ</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-              </Link>
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeId === item.id;
+                const IconComponent = item.icon;
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => handleNavClick(item)}
+                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm transition-colors ${
+                      isActive
+                        ? "font-bold text-[#005f56] bg-teal-50/80 border border-teal-200/80"
+                        : "font-medium text-slate-700 hover:bg-slate-50 hover:text-[#005f56] border border-transparent"
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <IconComponent className={`w-4 h-4 ${isActive ? "text-[#005f56]" : "text-slate-500"}`} />
+                      <span>{item.mobileLabel}</span>
+                    </div>
+                    {item.badge && (
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-[#005f56] text-white px-2 py-0.5 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                    {item.subtext && (
+                      <span className="text-[11px] text-slate-400 font-normal">{item.subtext}</span>
+                    )}
+                    {item.id === "rules-faq" && !item.badge && !item.subtext && (
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Mobile User Actions Footer */}
