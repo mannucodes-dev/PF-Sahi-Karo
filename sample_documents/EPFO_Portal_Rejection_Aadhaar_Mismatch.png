@@ -1,0 +1,48 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <!-- Window Header -->
+  <rect width="800" height="500" fill="#f8fafc" rx="8" />
+  <rect width="800" height="40" fill="#0b1b36" rx="8 8 0 0" />
+  <circle cx="20" cy="20" r="5" fill="#ef4444" />
+  <circle cx="35" cy="20" r="5" fill="#f59e0b" />
+  <circle cx="50" cy="20" r="5" fill="#10b981" />
+  <text x="70" y="24" fill="#94a3b8" font-size="12" font-weight="600">EPFO Unified Member Portal — Track Claim Status (unifiedportal-mem.epfindia.gov.in)</text>
+
+  <!-- Portal Header Bar -->
+  <rect x="20" y="55" width="760" height="60" fill="#005f56" rx="6" />
+  <text x="40" y="90" fill="#ffffff" font-size="18" font-weight="bold">Employees' Provident Fund Organisation, India</text>
+  <text x="40" y="105" fill="#99f6e4" font-size="11">Online Services → Track Claim Status</text>
+  <text x="640" y="90" fill="#ffffff" font-size="12" font-weight="bold">UAN: 100928374821</text>
+
+  <!-- Claim Details Card -->
+  <rect x="20" y="130" width="760" height="345" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" rx="6" />
+  
+  <text x="40" y="165" fill="#1e293b" font-size="15" font-weight="bold">Claim Status Details</text>
+  <line x1="40" y1="180" x2="740" y2="180" stroke="#f1f5f9" stroke-width="1.5" />
+
+  <!-- Info Grid -->
+  <text x="40" y="210" fill="#64748b" font-size="12">Tracking ID:</text>
+  <text x="160" y="210" fill="#0f172a" font-size="12" font-weight="bold">EPFO/MH/2026/99381</text>
+
+  <text x="400" y="210" fill="#64748b" font-size="12">Claim Form:</text>
+  <text x="520" y="210" fill="#0f172a" font-size="12" font-weight="bold">Form 19 (Final Settlement)</text>
+
+  <text x="40" y="240" fill="#64748b" font-size="12">Member Name:</text>
+  <text x="160" y="240" fill="#0f172a" font-size="12" font-weight="bold">SURESH KUMAR</text>
+
+  <text x="400" y="240" fill="#64748b" font-size="12">Submitted Date:</text>
+  <text x="520" y="240" fill="#0f172a" font-size="12" font-weight="bold">02-Aug-2026</text>
+
+  <text x="40" y="270" fill="#64748b" font-size="12">Current Status:</text>
+  <rect x="160" y="255" width="90" height="22" fill="#fee2e2" rx="4" />
+  <text x="175" y="270" fill="#b91c1c" font-size="11" font-weight="bold">REJECTED</text>
+
+  <!-- Rejection Remark Banner (Prominent Red) -->
+  <rect x="40" y="305" width="700" height="85" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5" rx="6" />
+  <text x="60" y="330" fill="#991b1b" font-size="11" font-weight="bold" letter-spacing="1">OFFICIAL REJECTION REASON / REMARKS:</text>
+  <text x="60" y="355" fill="#b91c1c" font-size="13" font-weight="bold">"Claim Rejected - Name as per Aadhaar does not match EPFO records. Refer Circular No. HO/Compliance/2023."</text>
+  <text x="60" y="375" fill="#7f1d1d" font-size="11">Field Office: Bandra (Mumbai-I) | Rejection Date: 12-Aug-2026</text>
+
+  <!-- Footer Notice -->
+  <text x="40" y="425" fill="#64748b" font-size="11">Note: Please verify your identity records with your employer or submit Joint Declaration with Aadhaar copy.</text>
+  <rect x="40" y="445" width="700" height="15" fill="#f8fafc" rx="3" />
+</svg>

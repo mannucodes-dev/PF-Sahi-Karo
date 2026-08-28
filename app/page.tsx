@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { RejectionSearchTool } from "@/components/rejection-search-tool";
+import { HeroNoticeUpload } from "@/components/hero-notice-upload";
 import { PfTaxCalculator } from "@/components/pf-tax-calculator";
 import { EpfoOfficeLocator } from "@/components/epfo-office-locator";
 import {
@@ -103,53 +104,9 @@ export default async function LandingPage() {
             </div>
           </div>
 
-          {/* Right Column: Upload Notice Card - Positioned in line with headline */}
-          <div className="lg:col-span-5 relative z-10 w-full max-w-[430px] mx-auto lg:ml-auto mt-6 lg:mt-2">
-            <div className="bg-white rounded-2xl p-7 sm:p-9 lg:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 relative text-center">
-              {/* Floating Top-Right Shield Badge */}
-              <div className="absolute -top-3.5 -right-3.5 w-11 h-11 bg-white rounded-full shadow-md border border-slate-100 flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6 text-emerald-600 stroke-[2.25]" />
-              </div>
-
-              {/* Upload Document Icon */}
-              <div className="w-20 h-20 bg-slate-100/90 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FileUp className="w-8 h-8 text-slate-500 stroke-[1.75]" />
-              </div>
-
-              {/* Title */}
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Upload Notice
-              </h2>
-
-              {/* Description */}
-              <p className="text-sm text-slate-500 leading-relaxed max-w-[270px] mx-auto mb-6">
-                Upload PDF or Image of your EPFO rejection message for instant analysis.
-              </p>
-
-              {/* Select File Button */}
-              <div className="w-full space-y-3">
-                <label
-                  htmlFor="hero-upload-file"
-                  className="w-full bg-[#e2e8f0]/90 hover:bg-[#e2e8f0] text-slate-800 py-3 px-4 rounded-lg font-medium text-sm flex items-center justify-center gap-2 border border-slate-300/50 shadow-2xs cursor-pointer transition-colors"
-                >
-                  <ImageIcon className="w-4 h-4 text-slate-700" />
-                  <span>Select File</span>
-                </label>
-                <input
-                  type="file"
-                  id="hero-upload-file"
-                  className="sr-only"
-                  accept=".pdf,image/*"
-                />
-
-                <a
-                  href="#instant-decoder"
-                  className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider hover:text-[#005f56] transition-colors pt-1"
-                >
-                  OR PASTE REJECTION TEXT BELOW
-                </a>
-              </div>
-            </div>
+          {/* Right Column: Interactive Upload Notice Card */}
+          <div className="lg:col-span-5 relative z-10 w-full max-w-[440px] mx-auto lg:ml-auto mt-6 lg:mt-2">
+            <HeroNoticeUpload />
           </div>
         </div>
       </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n/context";
 import { BUILTIN_REMARK_CODES, type RemarkCodeRow } from "@/lib/decoder-rules";
 import { Search, Gavel, Languages, BookOpen, ExternalLink, Send, Check, Sparkles } from "lucide-react";
@@ -22,6 +22,24 @@ export function RejectionSearchTool() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"citizen" | "employer">("citizen");
   const [searchTerm, setSearchTerm] = useState("");
+  const [highlighted, setHighlighted] = useState(false);
+
+  useEffect(() => {
+    const handleCustomDecode = (e: Event) => {
+      const customEvent = e as CustomEvent<{ code: string; officialText?: string }>;
+      if (customEvent.detail?.code) {
+        setSelectedCode(customEvent.detail.code);
+        if (customEvent.detail.officialText) {
+          setSearchTerm(customEvent.detail.officialText);
+        }
+        setHighlighted(true);
+        setTimeout(() => setHighlighted(false), 2500);
+      }
+    };
+
+    window.addEventListener("pf-decode-remark", handleCustomDecode);
+    return () => window.removeEventListener("pf-decode-remark", handleCustomDecode);
+  }, []);
 
   const currentRule: RemarkCodeRow =
     BUILTIN_REMARK_CODES[selectedCode]?.[langKey] ||
@@ -82,7 +100,12 @@ export function RejectionSearchTool() {
       </div>
 
       {/* Search Section Card */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs mb-8">
+      <div
+        className={cn(
+          "bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs mb-8 transition-all duration-500",
+          highlighted && "ring-2 ring-[#005f56] ring-offset-2 shadow-lg bg-teal-50/20"
+        )}
+      >
         <label
           htmlFor="epfo-remark"
           className="block text-xs font-bold text-slate-500 mb-2.5 uppercase tracking-wider"
