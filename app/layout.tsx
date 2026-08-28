@@ -37,7 +37,13 @@ export default async function RootLayout({
       lang={initialLocale}
       className={`${jakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col relative bg-slate-50 text-zinc-900 selection:bg-teal-100 selection:text-teal-900 font-sans text-base">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+      </head>
+      <body className="min-h-full flex flex-col relative bg-[#f7f9fb] text-[#191c1e] selection:bg-[#a3faef] selection:text-[#00201d] font-sans text-base">
         <LanguageProvider initialLocale={initialLocale}>
           <SkipToContent />
           {children}

@@ -146,138 +146,178 @@ export function EpfoOfficeLocator() {
   };
 
   return (
-    <section id="office-directory" className="scroll-mt-20">
-      <Card className="border-slate-200 bg-white shadow-md rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-teal-950 via-slate-900 to-slate-950 text-white p-6 sm:p-8 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/80 border border-teal-700 text-teal-200 text-xs font-semibold w-fit">
-            <MapPin className="w-3.5 h-3.5 text-teal-300" aria-hidden="true" />
-            <span>{t.offices.badge}</span>
-          </div>
-          <CardTitle className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            {t.offices.title}
-          </CardTitle>
-          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            {t.offices.subtitle}
-          </p>
-        </CardHeader>
+    <section id="office-directory" className="scroll-mt-24 space-y-6">
+      {/* Header */}
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold w-fit">
+          <span className="material-symbols-outlined text-[16px]">location_city</span>
+          <span>{t.offices.badge}</span>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-on-surface">
+          {t.offices.title}
+        </h2>
+        <p className="text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
+          {t.offices.subtitle}
+        </p>
+      </div>
 
-        <CardContent className="p-6 sm:p-8 space-y-6">
-          {/* Search & State Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" aria-hidden="true" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.offices.searchPlaceholder}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white shadow-2xs"
-              />
-            </div>
+      {/* Filter Chips & Search Bar */}
+      <div className="glass-card rounded-2xl p-6 space-y-4">
+        {/* Search Input */}
+        <div className="relative">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">
+            search
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.offices.searchPlaceholder}
+            className="w-full h-12 pl-12 pr-4 bg-surface-container-low border border-outline-variant rounded-xl text-sm sm:text-base font-medium text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-2xs"
+          />
+        </div>
 
-            <select
-              value={selectedState}
-              onChange={(e) => setSelectedState(e.target.value)}
-              className="bg-slate-50 border border-slate-300 text-zinc-900 text-sm font-medium rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white shadow-2xs"
+        {/* State / City Filter Chips */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => setSelectedState("all")}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              selectedState === "all"
+                ? "bg-primary text-on-primary shadow-2xs"
+                : "bg-surface-container-highest text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container"
+            }`}
+          >
+            {t.offices.allStates}
+          </button>
+          {states.map((st) => (
+            <button
+              key={st}
+              type="button"
+              onClick={() => setSelectedState(st)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                selectedState === st
+                  ? "bg-primary text-on-primary shadow-2xs"
+                  : "bg-surface-container-highest text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container"
+              }`}
             >
-              <option value="all">{t.offices.allStates}</option>
-              {states.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
+              {st}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          {/* Directory Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredOffices.length > 0 ? (
-              filteredOffices.map((office) => (
-                <div
-                  key={office.id}
-                  className="border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-teal-300/80 rounded-xl p-5 space-y-3.5 transition-all shadow-2xs"
-                >
-                  <div className="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-2.5">
-                    <div>
-                      <h4 className="font-bold text-sm sm:text-base text-zinc-900 leading-snug">
-                        {office.name}
-                      </h4>
-                      <span className="text-xs font-semibold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded mt-1 inline-block">
-                        {office.city}, {office.state}
-                      </span>
-                    </div>
+      {/* Directory Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {filteredOffices.length > 0 ? (
+          filteredOffices.map((office) => (
+            <div
+              key={office.id}
+              className="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 hover:border-primary/50 transition-all shadow-xs"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-3 border-b border-outline-variant/30 pb-3">
+                  <div>
+                    <h3 className="font-bold text-base text-on-surface leading-snug">
+                      {office.name}
+                    </h3>
+                    <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-md mt-1.5 inline-block">
+                      {office.city}, {office.state}
+                    </span>
                   </div>
-
-                  <div className="space-y-2 text-xs text-zinc-700">
-                    <p className="flex items-start gap-2 leading-relaxed">
-                      <Building2 className="w-4 h-4 text-zinc-400 shrink-0 mt-0.5" />
-                      <span>{office.address} — <strong>PIN: {office.pincode}</strong></span>
-                    </p>
-
-                    <p className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-zinc-400 shrink-0" />
-                      <span>Helpline: <strong>{office.helpline}</strong></span>
-                    </p>
-
-                    <p className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-zinc-400 shrink-0" />
-                      <span>Hours: {office.workingHours}</span>
-                    </p>
-                  </div>
-
-                  {/* PRO Email Contact & Action Bar */}
-                  <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleCopyEmail(office.proEmail)}
-                      className="text-xs font-semibold text-teal-700 hover:text-teal-900 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-teal-50 transition-colors cursor-pointer"
-                    >
-                      {copiedEmail === office.proEmail ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Copied PRO Email</span>
-                        </>
-                      ) : (
-                        <>
-                          <Mail className="w-3.5 h-3.5 text-teal-700" />
-                          <span>Copy PRO Email ({office.proEmail})</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  <span className="material-symbols-outlined text-outline text-[24px]">
+                    apartment
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-2 text-center py-10 border border-dashed border-slate-200 rounded-xl space-y-2">
-                <p className="text-sm font-semibold text-zinc-600">
-                  No regional office found matching &ldquo;{searchQuery}&rdquo;.
-                </p>
-                <p className="text-xs text-zinc-400">
-                  Try searching by city name like Bengaluru, Delhi, Mumbai, Hyderabad, or Chennai.
-                </p>
-              </div>
-            )}
-          </div>
 
-          {/* Grievance Escalation Link Banner */}
-          <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs sm:text-sm text-zinc-700 space-y-0.5 text-center sm:text-left">
-              <strong>Need to Escalate Directly to Ministry of Labour?</strong>
-              <p className="text-zinc-500 text-xs">
-                Submit an online grievance ticket on EPFiGMS with your UAN and Claim ID.
-              </p>
+                <div className="space-y-2 text-xs sm:text-sm text-on-surface-variant">
+                  <p className="flex items-start gap-2 leading-relaxed">
+                    <span className="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">
+                      location_on
+                    </span>
+                    <span>{office.address} — <strong className="font-data-mono font-bold">PIN: {office.pincode}</strong></span>
+                  </p>
+
+                  <p className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[18px] text-primary shrink-0">
+                      call
+                    </span>
+                    <span>Helpline: <a href={`tel:${office.helpline.replace(/-/g, '')}`} className="font-data-mono font-bold text-on-surface hover:underline">{office.helpline}</a></span>
+                  </p>
+
+                  <p className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[18px] text-primary shrink-0">
+                      schedule
+                    </span>
+                    <span>Hours: <strong className="text-on-surface">{office.workingHours}</strong></span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-3 border-t border-outline-variant/30 flex flex-wrap items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleCopyEmail(office.proEmail)}
+                  className="text-xs font-bold text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 flex items-center gap-1.5 transition-colors cursor-pointer min-h-[38px]"
+                >
+                  {copiedEmail === office.proEmail ? (
+                    <>
+                      <span className="material-symbols-outlined text-[16px] text-success-emerald">check</span>
+                      <span className="text-success-emerald">Copied PRO Email</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-[16px]">mail</span>
+                      <span>Copy PRO Email</span>
+                    </>
+                  )}
+                </button>
+
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(office.name + ' ' + office.city)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-on-surface-variant hover:text-primary flex items-center gap-1 py-2 px-3 rounded-lg hover:bg-surface-container-low transition-colors min-h-[38px]"
+                >
+                  <span className="material-symbols-outlined text-[16px]">directions</span>
+                  <span>Get Directions</span>
+                </a>
+              </div>
             </div>
-            <a
-              href="https://epfigms.gov.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white hover:bg-slate-50 border border-slate-300 text-zinc-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-2xs inline-flex items-center gap-1.5 shrink-0 transition-colors"
-            >
-              {t.offices.epfigmsBtn} <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+          ))
+        ) : (
+          <div className="col-span-1 md:col-span-2 text-center py-12 glass-card rounded-2xl space-y-2">
+            <p className="text-sm font-bold text-on-surface">
+              No regional office found matching &ldquo;{searchQuery}&rdquo;.
+            </p>
+            <p className="text-xs text-on-surface-variant">
+              Try searching by city name like Bengaluru, Delhi, Mumbai, Hyderabad, or Chennai.
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
+
+      {/* EPFiGMS Grievance Escalation Banner */}
+      <div className="glass-card rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-outline-variant/40">
+        <div className="text-xs sm:text-sm text-on-surface space-y-1 text-center sm:text-left">
+          <strong className="text-on-surface text-sm block">
+            Need to Escalate Directly to Ministry of Labour?
+          </strong>
+          <p className="text-on-surface-variant text-xs">
+            Submit an official online grievance ticket on EPFiGMS with your UAN and rejection details.
+          </p>
+        </div>
+        <a
+          href="https://epfigms.gov.in"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-primary text-on-primary hover:bg-surface-tint font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs inline-flex items-center gap-1.5 shrink-0 transition-colors min-h-[44px]"
+        >
+          <span>{t.offices.epfigmsBtn}</span>
+          <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+        </a>
+      </div>
     </section>
   );
 }

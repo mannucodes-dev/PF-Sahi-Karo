@@ -35,18 +35,18 @@ export function RejectionScenarioView({
   return (
     <div className="space-y-6">
       {/* Evaluator Scenario Switcher */}
-      <div className="bg-slate-100/90 border border-slate-200 rounded-xl p-3.5 sm:p-4 space-y-2.5 shadow-2xs">
+      <div className="glass-card rounded-2xl p-4 sm:p-5 space-y-3 shadow-2xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-700">
-            <Layers className="w-3.5 h-3.5 text-teal-700" aria-hidden="true" />
+          <div className="flex items-center gap-2 text-xs font-bold text-on-surface">
+            <span className="material-symbols-outlined text-[18px] text-primary">science</span>
             <span>Judge Evaluation Tool: Test Different Rejection Scenarios</span>
           </div>
-          <span className="text-[11px] font-mono text-zinc-600 bg-white border border-slate-200 px-2 py-0.5 rounded font-bold">
+          <span className="text-[11px] font-mono text-on-surface-variant bg-surface-container-high border border-outline-variant/40 px-2.5 py-0.5 rounded-md font-bold">
             Active: {selectedCode}
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 pt-1" role="group" aria-label="Rejection scenarios">
+        <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label="Rejection scenarios">
           {SCENARIOS.map((scenario) => {
             const isSelected = selectedCode === scenario.code;
             return (
@@ -56,10 +56,10 @@ export function RejectionScenarioView({
                 onClick={() => setSelectedCode(scenario.code)}
                 aria-pressed={isSelected}
                 className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer select-none",
+                  "px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer select-none",
                   isSelected
-                    ? "bg-teal-700 text-white shadow-xs font-bold"
-                    : "bg-white border border-slate-200 text-zinc-700 hover:bg-slate-50 hover:border-slate-300"
+                    ? "bg-primary text-on-primary shadow-xs font-bold"
+                    : "bg-surface-container-highest text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container"
                 )}
                 title={scenario.label}
               >
@@ -74,28 +74,26 @@ export function RejectionScenarioView({
       <DecoderPanel remark={activeRemark} />
 
       {/* Action Bar / Primary CTA */}
-      <Card className="border-teal-300 bg-gradient-to-r from-teal-50/90 via-teal-50/50 to-emerald-50/50 shadow-sm p-4 sm:p-6 rounded-xl">
+      <div className="glass-card border-primary/30 rounded-2xl p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="font-extrabold text-base sm:text-lg text-teal-950 flex items-center gap-2 justify-center sm:justify-start">
-              <Sparkles className="w-4 h-4 text-teal-700" aria-hidden="true" />
-              {t.claimDetail.readyToResolve}
+            <h3 className="font-extrabold text-base sm:text-lg text-on-surface flex items-center gap-2 justify-center sm:justify-start">
+              <span className="material-symbols-outlined text-[20px] text-primary">auto_fix_high</span>
+              <span>{t.claimDetail.readyToResolve}</span>
             </h3>
-            <p className="text-xs sm:text-sm text-teal-800">
+            <p className="text-xs sm:text-sm text-on-surface-variant">
               {t.claimDetail.readySubtitle}
             </p>
           </div>
           <Link
             href={`/claims/${claimId}/resubmit?code=${selectedCode}`}
-            className={cn(
-              buttonVariants({ size: "default" }),
-              "w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-extrabold px-7 py-3.5 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm cursor-pointer"
-            )}
+            className="w-full sm:w-auto bg-primary hover:bg-surface-tint text-on-primary font-bold px-8 py-3.5 rounded-xl shadow-xs flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm cursor-pointer min-h-[44px]"
           >
-            {t.claimDetail.startResubmitBtn} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            <span>{t.claimDetail.startResubmitBtn}</span>
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Link>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

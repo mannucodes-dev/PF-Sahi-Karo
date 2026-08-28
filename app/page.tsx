@@ -16,6 +16,11 @@ import {
   Calculator,
   MapPin,
   ExternalLink,
+  AlertTriangle,
+  Search,
+  Zap,
+  FileUp,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { getServerTranslation } from "@/lib/i18n/server";
@@ -24,78 +29,132 @@ export default async function LandingPage() {
   const { t } = await getServerTranslation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-zinc-900">
+    <div className="min-h-screen flex flex-col bg-[#fafbfb] text-slate-900 antialiased selection:bg-teal-100 selection:text-teal-900">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 space-y-12 sm:space-y-16 pb-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-teal-900 via-teal-850 to-teal-950 text-white pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-500/15 via-transparent to-transparent pointer-events-none" />
+      {/* Main Hero Section matching reference image exactly */}
+      <main className="w-full px-6 sm:px-10 lg:px-16 py-12 lg:py-20 max-w-[1240px] mx-auto min-h-[75vh] flex flex-col justify-center relative overflow-hidden">
+        {/* Atmospheric Glow Elements */}
+        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-gradient-to-br from-teal-200/35 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-amber-200/40 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
-          <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-            {/* National Initiative Badge */}
-            <div className="inline-flex items-center gap-2 bg-teal-800/90 border border-teal-600/70 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-teal-200 shadow-sm">
-              <Sparkles className="w-4 h-4 text-teal-300" aria-hidden="true" />
-              <span>{t.hero.badge}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* Left Column (Hero Text Content) */}
+          <div className="lg:col-span-7 flex flex-col z-10">
+            {/* National Rejection Rate Warning Pill */}
+            <div className="inline-flex items-center gap-1.5 bg-[#fef2f2] border border-[#fecaca] px-3.5 py-1 rounded-full text-[11px] font-bold text-[#b91c1c] uppercase tracking-wider mb-6 w-max shadow-2xs">
+              <AlertTriangle className="w-3.5 h-3.5 text-[#dc2626] stroke-[2.25]" />
+              <span>34% NATIONAL REJECTION RATE</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight sm:leading-tight">
-              {t.hero.headline}
+            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-slate-900 leading-[1.12] tracking-tight mb-6">
+              Claim Rejected by EPFO? <br />
+              <span className="text-[#005f56]">We Decode Why</span> and Help <br className="hidden lg:block" />
+              You Fix It.
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-base sm:text-xl text-teal-100/95 max-w-3xl mx-auto leading-relaxed font-normal">
-              {t.hero.subheadline}
+            {/* Subtext */}
+            <p className="text-[16px] sm:text-[17px] text-slate-600 leading-relaxed max-w-xl mb-8">
+              Navigating Provident Fund rejections can be confusing. Upload your rejection notice, and our secure, civic tech tool will instantly explain the issue and guide you on the exact steps to resolution.
             </p>
 
-            {/* Primary Action Buttons */}
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            {/* Dual CTA Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4 mb-10">
+              <a
+                href="#instant-decoder"
+                className="bg-[#005953] hover:bg-[#004742] text-white px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 h-[44px] shadow-sm transition-all cursor-pointer"
+              >
+                <Search className="w-4 h-4 text-white stroke-[2.5]" />
+                <span>Decode Rejection Notice</span>
+              </a>
+
               <Link
                 href="/dashboard"
-                className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-8 py-4 rounded-xl shadow-lg shadow-emerald-950/25 inline-flex items-center justify-center gap-2.5 transition-transform active:scale-[0.98] text-base cursor-pointer"
+                className="bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 h-[44px] shadow-sm transition-all cursor-pointer"
               >
-                <span>{t.hero.ctaPrimary}</span>
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="#instant-decoder"
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/25 font-bold px-6 py-4 rounded-xl inline-flex items-center justify-center gap-2 transition-colors text-base"
-              >
-                <FileSearch className="w-4 h-4 text-teal-300" aria-hidden="true" />
-                <span>{t.hero.ctaSecondary}</span>
+                <Zap className="w-4 h-4 text-[#291500] fill-[#291500]" />
+                <span>Judge Demo Evaluation</span>
               </Link>
             </div>
 
-            {/* Impact Metric Counters */}
-            <div className="pt-8 grid grid-cols-3 gap-3 sm:gap-6 border-t border-teal-800/80 max-w-2xl mx-auto">
-              <div className="space-y-0.5">
-                <span className="font-extrabold text-xl sm:text-3xl text-white block">
-                  {t.hero.statsSubscribers}
-                </span>
-                <span className="text-xs sm:text-sm text-teal-200/80 block">
-                  {t.hero.statsSubscribersLabel}
-                </span>
+            {/* Stats Row */}
+            <div className="flex items-center gap-8 pt-6 border-t border-slate-200/80 max-w-md">
+              <div>
+                <div className="text-2xl lg:text-[28px] font-extrabold text-[#005f56]">
+                  29+ Crore
+                </div>
+                <div className="text-sm text-slate-500 font-normal mt-0.5">
+                  Active Members
+                </div>
               </div>
-              <div className="space-y-0.5 border-x border-teal-800/80">
-                <span className="font-extrabold text-xl sm:text-3xl text-rose-400 block">
-                  {t.hero.statsRejection}
-                </span>
-                <span className="text-xs sm:text-sm text-teal-200/80 block">
-                  {t.hero.statsRejectionLabel}
-                </span>
-              </div>
-              <div className="space-y-0.5">
-                <span className="font-extrabold text-xl sm:text-3xl text-emerald-400 block">
-                  {t.hero.statsZeroCost}
-                </span>
-                <span className="text-xs sm:text-sm text-teal-200/80 block">
-                  {t.hero.statsZeroCostLabel}
-                </span>
+              <div className="h-10 w-px bg-slate-200" />
+              <div>
+                <div className="text-2xl lg:text-[28px] font-extrabold text-[#005f56]">
+                  ₹0
+                </div>
+                <div className="text-sm text-slate-500 font-normal mt-0.5">
+                  Free Public Service
+                </div>
               </div>
             </div>
           </div>
-        </section>
+
+          {/* Right Column: Upload Card */}
+          <div className="lg:col-span-5 relative z-10">
+            <div className="relative w-full max-w-[420px] mx-auto lg:ml-auto">
+              <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-[0_20px_45px_rgba(0,0,0,0.06)] border border-slate-100 relative text-center">
+                {/* Floating Top-Right Shield Badge */}
+                <div className="absolute -top-3.5 -right-3.5 w-10 h-10 bg-white rounded-full shadow-md border border-slate-100 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6 text-emerald-600 stroke-[2.25]" />
+                </div>
+
+                {/* Upload Document Icon */}
+                <div className="w-20 h-20 bg-slate-100/90 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FileUp className="w-8 h-8 text-slate-500 stroke-[1.75]" />
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                  Upload Notice
+                </h2>
+
+                {/* Description */}
+                <p className="text-sm text-slate-500 leading-relaxed max-w-[270px] mx-auto mb-6">
+                  Upload PDF or Image of your EPFO rejection message for instant analysis.
+                </p>
+
+                {/* Select File Button */}
+                <div className="w-full space-y-3">
+                  <label
+                    htmlFor="hero-upload-file"
+                    className="w-full bg-[#e2e8f0]/90 hover:bg-[#e2e8f0] text-slate-800 py-3 px-4 rounded-lg font-medium text-sm flex items-center justify-center gap-2 border border-slate-300/50 shadow-2xs cursor-pointer transition-colors"
+                  >
+                    <ImageIcon className="w-4 h-4 text-slate-700" />
+                    <span>Select File</span>
+                  </label>
+                  <input
+                    type="file"
+                    id="hero-upload-file"
+                    className="sr-only"
+                    accept=".pdf,image/*"
+                  />
+
+                  <a
+                    href="#instant-decoder"
+                    className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider hover:text-[#005f56] transition-colors pt-1"
+                  >
+                    OR PASTE REJECTION TEXT BELOW
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Embedded Tools: Instant Decoder, TDS Calculator, Offices */}
+      <div className="w-full space-y-16 pb-16">
 
         {/* Feature 1: Instant Public Rejection Remark Decoder (No Login Needed) */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -204,7 +263,7 @@ export default async function LandingPage() {
             </CardContent>
           </Card>
         </section>
-      </main>
+      </div>
 
       <SiteFooter />
     </div>

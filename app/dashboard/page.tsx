@@ -32,174 +32,260 @@ export default async function DashboardPage() {
   const totalBalance = 184320;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-zinc-900 flex flex-col">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-teal-600 rounded-xl p-1"
-          >
-            <div className="bg-gradient-to-br from-teal-700 to-teal-900 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
-            </div>
-            <div>
-              <span className="font-extrabold text-base sm:text-lg tracking-tight text-zinc-900">
-                PF Sahi Karo
-              </span>
-              <span className="hidden sm:inline-block text-xs font-semibold text-zinc-500 ml-2 border-l border-slate-200 pl-2">
-                {t.dashboard.memberAccount}
-              </span>
-            </div>
+    <div className="min-h-screen bg-background text-on-surface flex flex-col md:flex-row">
+      {/* Desktop Left Sidebar (Stitch Screen 7) */}
+      <aside className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant/30 py-6 space-y-4 z-40">
+        {/* Brand & Identity */}
+        <div className="px-6 mb-4 flex flex-col items-center">
+          <Link href="/" className="flex items-center gap-2 mb-6 self-start">
+            <img src="/logo.png" alt="PF Sahi Karo Logo" className="h-8 w-8 object-contain rounded-lg" />
+            <span className="font-bold text-lg text-primary tracking-tight">PF Sahi Karo</span>
           </Link>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xl mb-3 shadow-xs">
+            SK
+          </div>
+          <h2 className="text-base font-bold text-primary text-center">
+            {user.full_name}
+          </h2>
+          <p className="text-xs text-on-surface-variant text-center mt-0.5 font-data-mono">
+            UAN: {user.masked_uan}
+          </p>
+        </div>
+
+        {/* Navigation Links */}
+        <div className="px-3 flex-1 overflow-y-auto">
+          <ul className="space-y-1.5">
+            <li>
+              <Link
+                href="/dashboard"
+                className="flex items-center px-4 py-3 bg-primary-container text-on-primary-container font-bold rounded-xl transition-all shadow-2xs"
+              >
+                <span className="material-symbols-outlined mr-3 text-[20px]">dashboard</span>
+                <span className="text-xs font-bold">{t.nav.dashboard}</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#instant-decoder"
+                className="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all group"
+              >
+                <span className="material-symbols-outlined mr-3 text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">
+                  troubleshoot
+                </span>
+                <span className="text-xs font-semibold">{t.nav.decoder}</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#tax-calculator"
+                className="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all group"
+              >
+                <span className="material-symbols-outlined mr-3 text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">
+                  calculate
+                </span>
+                <span className="text-xs font-semibold">{t.nav.taxCalc}</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#office-directory"
+                className="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all group"
+              >
+                <span className="material-symbols-outlined mr-3 text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">
+                  location_city
+                </span>
+                <span className="text-xs font-semibold">{t.nav.officeFinder}</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Start New Claim CTA */}
+        <div className="px-4 mb-2">
+          <Link
+            href="/#instant-decoder"
+            className="w-full bg-primary hover:bg-surface-tint text-on-primary font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center min-h-[44px] text-xs shadow-2xs"
+          >
+            <span className="material-symbols-outlined mr-2 text-[18px]">add</span>
+            <span>Start New Claim</span>
+          </Link>
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="px-3 pb-2 border-t border-outline-variant/30 pt-3 mt-auto space-y-1">
+          <div className="px-3 pb-2">
             <LanguageSwitcher />
+          </div>
+          <Link
+            href="/help"
+            className="flex items-center px-4 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all text-xs font-semibold"
+          >
+            <span className="material-symbols-outlined mr-3 text-[18px]">help</span>
+            <span>{t.nav.help}</span>
+          </Link>
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              className="w-full flex items-center px-4 py-2.5 text-on-surface-variant hover:text-alert-crimson hover:bg-error-container/20 rounded-xl transition-all text-xs font-semibold cursor-pointer"
+            >
+              <span className="material-symbols-outlined mr-3 text-[18px]">logout</span>
+              <span>{t.common.signOut}</span>
+            </button>
+          </form>
+        </div>
+      </aside>
 
-            <div className="flex items-center gap-2 text-xs text-zinc-700 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/80">
-              <User className="w-3.5 h-3.5 text-teal-700 shrink-0" aria-hidden="true" />
-              <span className="font-bold">{user.full_name}</span>
-              <span className="text-zinc-300 hidden md:inline">|</span>
-              <span className="font-mono text-[11px] text-zinc-500 hidden md:inline">
-                UAN: {user.masked_uan}
-              </span>
-            </div>
-
+      {/* Main Content Area */}
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+        {/* Mobile Header (Hidden on md) */}
+        <header className="md:hidden glass-nav border-b border-outline-variant/30 px-4 py-3 sticky top-0 z-30 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="PF Sahi Karo Logo" className="h-8 w-8 object-contain rounded-lg" />
+            <span className="font-bold text-base text-primary">PF Sahi Karo</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <form action={signOutAction}>
               <button
                 type="submit"
-                className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1.5 py-1.5 px-2.5 rounded-lg hover:bg-slate-100 transition-colors font-semibold cursor-pointer"
-                title="Sign out from session"
-                aria-label="Sign out"
+                className="p-2 text-on-surface-variant hover:text-alert-crimson rounded-lg"
+                title="Sign out"
               >
-                <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
-                <span className="hidden sm:inline">{t.common.signOut}</span>
+                <span className="material-symbols-outlined text-[20px]">logout</span>
               </button>
             </form>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main id="main-content" className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
-        {/* Quick Action Navigation Pills */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-zinc-700">
-          <span className="text-zinc-400 font-medium mr-1">Quick Tools:</span>
-          <Link
-            href="/#tax-calculator"
-            className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs transition-colors text-teal-900"
-          >
-            <Calculator className="w-3.5 h-3.5 text-teal-700" />
-            <span>{t.nav.taxCalc}</span>
-          </Link>
-          <Link
-            href="/#office-directory"
-            className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs transition-colors text-teal-900"
-          >
-            <MapPin className="w-3.5 h-3.5 text-teal-700" />
-            <span>{t.nav.officeFinder}</span>
-          </Link>
-          <a
-            href="https://epfigms.gov.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs transition-colors text-zinc-700"
-          >
-            <span>EPFiGMS Grievance</span>
-            <ExternalLink className="w-3 h-3 text-zinc-400" />
-          </a>
-        </div>
+        {/* Main Canvas */}
+        <main id="main-content" className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-[1280px] w-full mx-auto relative overflow-x-hidden">
+          {/* Subtle Ambient Background Gradient */}
+          <div className="absolute top-0 left-0 w-full h-80 bg-gradient-to-b from-primary/5 to-transparent -z-10 pointer-events-none" />
 
-        {/* Profile & PF Balance Banner */}
-        <Card className="border-teal-800/20 bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white shadow-md overflow-hidden relative rounded-2xl">
-          <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-72 h-72 bg-teal-400/10 rounded-full blur-3xl pointer-events-none" />
-          <CardContent className="p-6 sm:p-8 relative z-10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="space-y-2.5">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/90 border border-teal-700/80 text-teal-200 text-xs font-bold shadow-2xs">
-                  <Landmark className="w-3.5 h-3.5" aria-hidden="true" /> {t.dashboard.memberAccount}
-                </div>
-                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-                  {t.dashboard.greeting}, {user.full_name}
-                </h1>
-                <p className="text-xs sm:text-sm text-teal-100/90 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <span>
-                    UAN: <strong className="font-mono text-white">{user.masked_uan}</strong>
-                  </span>
-                  <span className="hidden sm:inline text-teal-400" aria-hidden="true">•</span>
-                  <span>
-                    Bank: ending in <strong className="font-mono text-white">{user.masked_bank_account}</strong>
-                  </span>
-                </p>
+          {/* Section 1: Profile Banner from Stitch Screen 7 */}
+          <section className="w-full glass-card rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            {/* Subtle internal blur blob */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -z-10 transform translate-x-1/2 -translate-y-1/2" />
+
+            <div className="space-y-3 z-10">
+              <div className="inline-flex items-center gap-1.5 bg-success-emerald/10 text-success-emerald px-3 py-1.5 rounded-full border border-success-emerald/25 shadow-2xs">
+                <span
+                  className="material-symbols-outlined text-[16px]"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  verified
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  Verified Member Account
+                </span>
               </div>
 
-              {/* PF Balance Display */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 text-left sm:text-right min-w-[240px] shadow-sm">
-                <div className="text-xs uppercase tracking-wider text-teal-200 font-bold mb-1">
-                  {t.dashboard.totalBalance}
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">
+                {t.dashboard.greeting}, {user.full_name}
+              </h1>
+
+              <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
+                <div className="flex items-center gap-2 text-on-surface-variant text-xs sm:text-sm">
+                  <span className="material-symbols-outlined text-[18px]">badge</span>
+                  <span className="font-data-mono">
+                    UAN: <span className="tracking-widest">••••••••</span>{user.masked_uan.slice(-4)}
+                  </span>
                 </div>
-                <div className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white flex items-center sm:justify-end">
-                  {formatCurrency(totalBalance)}
-                </div>
-                <div className="text-xs text-teal-200/85 mt-1 flex items-center gap-1 sm:justify-end font-medium">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true" />
-                  {t.dashboard.balanceSubtitle}
+                <div className="flex items-center gap-2 text-on-surface-variant text-xs sm:text-sm">
+                  <span className="material-symbols-outlined text-[18px]">account_balance</span>
+                  <span className="font-data-mono">
+                    Bank: ending in <span className="tracking-widest">••••</span>{user.masked_bank_account.slice(-4)}
+                  </span>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Sync Delay Notice */}
-        <div className="bg-slate-100 border border-slate-200/80 rounded-xl px-4 py-2.5 text-xs text-zinc-600 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" aria-hidden="true" />
-            <span>{t.dashboard.delayedNotice}</span>
-          </div>
-          <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline">
-            Last synced: {formatDisplayDate(new Date().toISOString())}
-          </span>
-        </div>
-
-        {/* Claims Section */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 flex items-center gap-2 tracking-tight">
-                <FileText className="w-5 h-5 text-teal-700 shrink-0" aria-hidden="true" />
-                {t.dashboard.claimsTitle}
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-500">
-                {t.dashboard.claimsSubtitle}
-              </p>
+            <div className="w-full md:w-auto z-10">
+              <Link
+                href="/#instant-decoder"
+                className="w-full md:w-auto min-h-[44px] px-6 bg-surface-container-high text-on-surface rounded-xl font-semibold text-xs sm:text-sm hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2 border border-outline-variant/40 shadow-2xs cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">edit_document</span>
+                <span>Update KYC / Joint Declaration</span>
+              </Link>
             </div>
-            <Badge variant="outline" className="bg-white text-zinc-800 border-slate-200 font-bold px-3.5 py-1.5 rounded-full text-xs shadow-2xs w-fit">
-              {claims.length} {t.dashboard.claimsCount}
-            </Badge>
-          </div>
+          </section>
 
-          {/* List of Claims */}
-          <div className="space-y-3.5">
-            {claims.length > 0 ? (
-              claims.map((claim) => (
-                <ClaimCard key={claim.id} claim={claim} />
-              ))
-            ) : (
-              <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center bg-white space-y-2">
-                <AlertCircle className="w-8 h-8 text-slate-400 mx-auto" aria-hidden="true" />
-                <p className="text-sm font-bold text-zinc-700">{t.dashboard.noClaims}</p>
+          {/* Balance Card & Claims Layout Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Section 2: Balance Card (Left, 4 cols) */}
+            <div className="lg:col-span-4 flex flex-col h-full">
+              <div className="bg-primary text-on-primary rounded-2xl p-6 sm:p-8 flex flex-col justify-between h-full deep-shadow relative overflow-hidden">
+                {/* Glow effects */}
+                <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute top-4 right-4 w-24 h-24 bg-primary-fixed/20 rounded-full blur-xl pointer-events-none" />
+
+                <div className="space-y-6 z-10">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold text-primary-fixed-dim uppercase tracking-wider">
+                      {t.dashboard.totalBalance}
+                    </h3>
+                    <span className="material-symbols-outlined text-primary-fixed-dim opacity-80">
+                      account_balance_wallet
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-extrabold font-data-mono text-white tracking-tight">
+                      {formatCurrency(totalBalance)}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-primary-fixed-dim mt-2 font-medium">
+                      <span className="w-2 h-2 rounded-full bg-success-emerald" />
+                      <span>{t.dashboard.balanceSubtitle}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </section>
-      </main>
+            </div>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-4 mt-auto">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-zinc-500">
+            {/* Section 3: Claims Section (Right, 8 cols) */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-on-surface tracking-tight">
+                    {t.dashboard.claimsTitle}
+                  </h2>
+                  <p className="text-xs text-on-surface-variant">
+                    {t.dashboard.claimsSubtitle}
+                  </p>
+                </div>
+                <span className="bg-surface-container-high text-on-surface-variant font-bold px-3 py-1 rounded-full text-xs font-data-mono">
+                  {claims.length} {t.dashboard.claimsCount}
+                </span>
+              </div>
+
+              {/* Claims List */}
+              <div className="space-y-4">
+                {claims.length > 0 ? (
+                  claims.map((claim) => (
+                    <ClaimCard key={claim.id} claim={claim} />
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-outline-variant/60 p-8 text-center glass-card space-y-2">
+                    <span className="material-symbols-outlined text-slate-accent text-4xl">
+                      inbox
+                    </span>
+                    <p className="text-sm font-bold text-on-surface">
+                      {t.dashboard.noClaims}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="border-t border-outline-variant/30 py-4 px-6 text-center text-xs text-on-surface-variant bg-surface-container-low mt-auto">
           {t.common.officialDisclaimer}
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }

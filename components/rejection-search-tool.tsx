@@ -59,193 +59,254 @@ export function RejectionSearchTool() {
     }
   };
 
+  const [activeTab, setActiveTab] = useState<"citizen" | "employer">("citizen");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSelectCode = (code: string) => {
+    setSelectedCode(code);
+    const rule = BUILTIN_REMARK_CODES[code]?.[langKey] || BUILTIN_REMARK_CODES[code]?.en;
+    if (rule) {
+      setSearchTerm(rule.official_text);
+    }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = searchTerm.trim().toUpperCase();
+    if (!term) return;
+
+    // Find best match in codes
+    const foundCode = Object.keys(BUILTIN_REMARK_CODES).find((code) => {
+      const r = BUILTIN_REMARK_CODES[code].en;
+      return (
+        code.includes(term) ||
+        r.official_text.toUpperCase().includes(term) ||
+        r.plain_text.toUpperCase().includes(term)
+      );
+    });
+
+    if (foundCode) {
+      setSelectedCode(foundCode);
+    }
+  };
+
   return (
-    <section id="instant-decoder" className="scroll-mt-20">
-      <Card className="border-teal-200/80 bg-white shadow-md rounded-2xl overflow-hidden ring-1 ring-teal-500/15">
-        <CardHeader className="bg-gradient-to-r from-teal-900 via-teal-850 to-teal-950 text-white p-6 sm:p-8 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/90 border border-teal-700/80 text-teal-200 text-xs font-semibold w-fit">
-            <Sparkles className="w-3.5 h-3.5 text-teal-300" aria-hidden="true" />
-            <span>{t.decoderTool.badge}</span>
+    <section id="instant-decoder" className="scroll-mt-24 space-y-8">
+      {/* Title & Introduction */}
+      <div className="max-w-3xl">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight mb-3">
+          {t.decoderTool.title}
+        </h2>
+        <p className="text-base sm:text-lg text-on-surface-variant leading-relaxed">
+          {t.decoderTool.subtitle}
+        </p>
+      </div>
+
+      {/* Search Section Card */}
+      <div className="glass-card rounded-2xl p-6 sm:p-8">
+        <label
+          htmlFor="epfo-remark"
+          className="block text-xs font-bold text-on-surface-variant mb-2.5 uppercase tracking-wider"
+        >
+          {t.decoderTool.selectLabel}
+        </label>
+
+        <form onSubmit={handleSearchSubmit} className="relative">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">
+            search
+          </span>
+          <input
+            id="epfo-remark"
+            type="text"
+            value={searchTerm || currentRule.official_text}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="e.g. 'FATHER NAME DIFFERS' or 'KYC PENDING'"
+            className="w-full h-14 pl-12 pr-28 rounded-xl bg-surface-container-low border border-outline-variant text-sm sm:text-base font-medium text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-2xs"
+          />
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-on-primary h-10 px-5 rounded-lg font-bold text-xs sm:text-sm hover:bg-surface-tint transition-colors cursor-pointer"
+          >
+            Decode
+          </button>
+        </form>
+
+        {/* Popular Quick Pills */}
+        <div className="flex flex-wrap items-center gap-2 mt-4">
+          <span className="text-xs font-bold text-on-surface-variant mr-1">Popular:</span>
+          {QUICK_CATEGORIES.map((cat) => (
+            <button
+              key={cat.code}
+              type="button"
+              onClick={() => handleSelectCode(cat.code)}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                selectedCode === cat.code
+                  ? "bg-primary text-on-primary shadow-2xs"
+                  : "bg-surface-container-highest text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container"
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Decoder Results Grid (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        {/* 1. What EPFO Said */}
+        <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full border-l-4 border-l-alert-crimson shadow-xs">
+          <div className="bg-surface-container p-4 sm:p-5 border-b border-outline-variant/30 flex justify-between items-center">
+            <h3 className="text-sm sm:text-base font-bold text-on-surface flex items-center gap-2">
+              <span className="material-symbols-outlined text-alert-crimson text-[20px]">gavel</span>
+              <span>{t.decoderTool.officialRemarkLabel}</span>
+            </h3>
+            <span className="bg-error-container text-on-error-container px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase font-data-mono">
+              {currentRule.code}
+            </span>
           </div>
-          <CardTitle className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            {t.decoderTool.title}
-          </CardTitle>
-          <p className="text-sm sm:text-base text-teal-100/90 max-w-2xl leading-relaxed">
-            {t.decoderTool.subtitle}
-          </p>
-        </CardHeader>
+          <div className="p-6 bg-surface-container-lowest flex-grow flex items-center justify-center">
+            <p className="font-data-mono text-xs sm:text-sm text-alert-crimson bg-error-container/25 p-4 rounded-xl border border-error-container/60 w-full break-words leading-relaxed">
+              &ldquo;{currentRule.official_text}&rdquo;
+            </p>
+          </div>
+        </div>
 
-        <CardContent className="p-6 sm:p-8 space-y-6">
-          {/* Quick Selection Dropdown and Category Pills */}
-          <div className="space-y-3">
-            <label htmlFor="rejection-select" className="block text-sm font-bold text-zinc-900">
-              {t.decoderTool.selectLabel}
-            </label>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <select
-                id="rejection-select"
-                value={selectedCode}
-                onChange={(e) => setSelectedCode(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 text-zinc-900 text-sm font-medium rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white shadow-2xs"
-              >
-                {Object.keys(BUILTIN_REMARK_CODES).map((code) => {
-                  const rule = BUILTIN_REMARK_CODES[code][langKey] || BUILTIN_REMARK_CODES[code].en;
-                  return (
-                    <option key={code} value={code}>
-                      {rule.code}: {rule.official_text.slice(0, 75)}...
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+        {/* 2. What It Actually Means */}
+        <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full border-l-4 border-l-primary shadow-xs">
+          <div className="bg-primary/10 p-4 sm:p-5 border-b border-outline-variant/30 flex justify-between items-center">
+            <h3 className="text-sm sm:text-base font-bold text-primary flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[20px]">translate</span>
+              <span>{t.decoderTool.plainMeaningLabel}</span>
+            </h3>
+          </div>
+          <div className="p-6 bg-surface-container-lowest flex-grow space-y-4">
+            <p className="text-sm sm:text-base text-on-surface font-semibold leading-relaxed">
+              {currentRule.plain_text}
+            </p>
+            <ul className="space-y-2 text-xs sm:text-sm text-on-surface-variant list-disc list-inside leading-relaxed">
+              <li>EPFO system enforces exact string match across Aadhaar and employer records.</li>
+              <li>Official Authority: <strong className="text-primary font-mono">{currentRule.source_reference}</strong></li>
+              <li>Estimated Resolution Time: <strong className="text-on-surface font-mono">{currentRule.estimated_days}</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-            {/* Quick Pills */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-xs font-semibold text-zinc-500 mr-1">{t.decoderTool.orSearch}</span>
-              {QUICK_CATEGORIES.map((cat) => (
-                <button
-                  key={cat.code}
-                  type="button"
-                  onClick={() => setSelectedCode(cat.code)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-                    selectedCode === cat.code
-                      ? "bg-teal-700 text-white shadow-2xs"
-                      : "bg-slate-100 text-zinc-700 hover:bg-slate-200"
+      {/* Resolution Pathway Card */}
+      <div className="glass-card rounded-2xl overflow-hidden shadow-xs">
+        <div className="bg-surface p-6 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="text-xl font-bold text-on-surface mb-1">
+              Resolution Pathway
+            </h3>
+            <p className="text-xs text-on-surface-variant flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-primary">menu_book</span>
+              <span>Authorized guidance based on {currentRule.source_reference}</span>
+            </p>
+          </div>
+          <a
+            href={currentRule.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-primary hover:underline flex items-center gap-1 self-start sm:self-auto"
+          >
+            <span>{t.decoderTool.circularLabel}</span>
+            <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+          </a>
+        </div>
+
+        {/* Citizen vs Employer Tabs */}
+        <div className="flex border-b border-outline-variant/30 bg-surface-container-lowest">
+          <button
+            type="button"
+            onClick={() => setActiveTab("citizen")}
+            className={`flex-1 py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
+              activeTab === "citizen"
+                ? "border-primary text-primary bg-surface-container-low"
+                : "border-transparent text-on-surface-variant hover:bg-surface-container-low"
+            }`}
+          >
+            {t.decoderTool.citizenMustDo}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("employer")}
+            className={`flex-1 py-4 text-center text-xs sm:text-sm font-bold transition-colors cursor-pointer border-b-2 ${
+              activeTab === "employer"
+                ? "border-primary text-primary bg-surface-container-low"
+                : "border-transparent text-on-surface-variant hover:bg-surface-container-low"
+            }`}
+          >
+            {t.decoderTool.employerMustDo}
+          </button>
+        </div>
+
+        {/* Pathway Steps with timeline */}
+        <div className="p-6 sm:p-8 bg-surface-container-lowest">
+          {activeTab === "citizen" ? (
+            <div className="relative border-l-2 border-outline-variant/50 ml-4 sm:ml-6 space-y-8 py-2">
+              {currentRule.fix_steps.map((step, idx) => (
+                <div key={idx} className="relative pl-8 sm:pl-10">
+                  <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-surface-container-lowest">
+                    {idx + 1}
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-on-surface mb-1.5">
+                    Step {idx + 1}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-2">
+                    {step}
+                  </p>
+                  {idx === 0 && (
+                    <a
+                      href="https://unifiedportal-mem.epfindia.gov.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-primary font-bold hover:underline text-xs"
+                    >
+                      <span>Open UAN Member Portal</span>
+                      <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                    </a>
                   )}
-                >
-                  {cat.label}
-                </button>
+                </div>
+              ))}
+
+              {/* Action: Copy WhatsApp Action Plan */}
+              <div className="relative pl-8 sm:pl-10 pt-2">
+                <div className="bg-surface-container-low border border-outline-variant/50 rounded-xl p-5 space-y-3">
+                  <h5 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                    Shareable Action Plan for HR
+                  </h5>
+                  <button
+                    type="button"
+                    onClick={handleCopyHrMessage}
+                    className="w-full sm:w-auto bg-[#25D366] text-white min-h-[44px] px-6 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-colors shadow-xs cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">send</span>
+                    <span>{copied ? t.decoderTool.copiedNotice : "📲 Copy Ready-to-Send Action Plan for HR"}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative border-l-2 border-outline-variant/50 ml-4 sm:ml-6 space-y-6 py-2">
+              {currentRule.authority_actions.map((action, idx) => (
+                <div key={idx} className="relative pl-8 sm:pl-10">
+                  <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs ring-4 ring-surface-container-lowest">
+                    {idx + 1}
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-on-surface mb-1">
+                    Employer Action Requirement {idx + 1}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                    {action}
+                  </p>
+                </div>
               ))}
             </div>
-          </div>
-
-          {/* Active Rejection Display Card */}
-          <div className="space-y-5 pt-2">
-            {/* 1. What EPFO said (Official Cryptic Portal Remark) */}
-            <div className="border border-slate-800 bg-slate-950 text-slate-100 rounded-xl overflow-hidden shadow-sm">
-              <div className="bg-slate-900 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <span className="text-xs font-mono text-slate-400 font-medium ml-1">
-                    {t.decoderTool.officialRemarkLabel}
-                  </span>
-                </div>
-                <span className="text-[11px] font-mono bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded font-bold">
-                  {currentRule.code}
-                </span>
-              </div>
-              <div className="p-4 font-mono text-sm text-amber-300 select-all leading-relaxed">
-                &ldquo;{currentRule.official_text}&rdquo;
-              </div>
-            </div>
-
-            {/* 2. Plain Language Explanation */}
-            <div className="border border-teal-200 bg-teal-50/50 rounded-xl p-5 space-y-3">
-              <div className="flex items-center gap-2 text-teal-950 font-bold text-base">
-                <Sparkles className="w-5 h-5 text-teal-700" aria-hidden="true" />
-                <span>{t.decoderTool.plainMeaningLabel}</span>
-              </div>
-              <p className="text-sm sm:text-base text-zinc-800 leading-relaxed font-normal bg-white border border-teal-100 rounded-lg p-4 shadow-2xs">
-                {currentRule.plain_text}
-              </p>
-
-              {/* Citizen vs Authority actions */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
-                  <div className="font-bold text-sm text-teal-950 flex items-center gap-1.5">
-                    <UserCheck className="w-4 h-4 text-teal-700" />
-                    <span>{t.decoderTool.citizenMustDo}</span>
-                  </div>
-                  <ul className="space-y-1.5 text-xs sm:text-sm text-zinc-700 list-disc list-inside">
-                    {currentRule.citizen_actions.map((act, i) => (
-                      <li key={i}>{act}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
-                  <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                    <Building2 className="w-4 h-4 text-slate-700" />
-                    <span>{t.decoderTool.employerMustDo}</span>
-                  </div>
-                  <ul className="space-y-1.5 text-xs sm:text-sm text-zinc-700 list-disc list-inside">
-                    {currentRule.authority_actions.map((act, i) => (
-                      <li key={i}>{act}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. Step-by-Step Resolution */}
-            <div className="border border-slate-200 bg-white rounded-xl p-5 space-y-4 shadow-2xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                <div className="flex items-center gap-2 font-bold text-base text-zinc-900">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" aria-hidden="true" />
-                  <span>{t.decoderTool.stepByStepTitle}</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs font-semibold text-zinc-600 bg-slate-100 px-3 py-1 rounded-full w-fit">
-                  <Clock className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{t.decoderTool.timelineLabel}: {currentRule.estimated_days}</span>
-                </div>
-              </div>
-
-              <div className="space-y-2.5">
-                {currentRule.fix_steps.map((step, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-3 p-3.5 rounded-lg bg-slate-50 border border-slate-100 text-xs sm:text-sm text-zinc-800"
-                  >
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-xs shadow-2xs mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <span className="leading-relaxed font-medium pt-0.5">{step}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action Bar: WhatsApp Share & Circular link */}
-              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={handleCopyHrMessage}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-200" aria-hidden="true" />
-                      <span>{t.decoderTool.copiedNotice}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4 text-emerald-200" aria-hidden="true" />
-                      <span>{t.decoderTool.copyHrMessage}</span>
-                    </>
-                  )}
-                </button>
-
-                <div className="flex items-center gap-3 justify-end text-xs text-zinc-500">
-                  <span className="flex items-center gap-1">
-                    <ShieldCheck className="w-4 h-4 text-teal-700" />
-                    <span>{currentRule.source_reference}</span>
-                  </span>
-                  <a
-                    href={currentRule.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-teal-700 hover:text-teal-900 font-semibold inline-flex items-center gap-1 underline underline-offset-2"
-                  >
-                    {t.decoderTool.circularLabel} <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          )}
+        </div>
+      </div>
     </section>
   );
 }

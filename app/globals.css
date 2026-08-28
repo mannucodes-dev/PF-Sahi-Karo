@@ -33,12 +33,51 @@
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
+  --color-primary: #005c55;
+  --color-primary-container: #0f766e;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #a3faef;
+  --color-primary-fixed: #9cf2e8;
+  --color-primary-fixed-dim: #80d5cb;
+  --color-secondary: #855300;
+  --color-secondary-container: #fea619;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #684000;
+  --color-secondary-fixed: #ffddb8;
+  --color-secondary-fixed-dim: #ffb95f;
+  --color-tertiary: #2c5286;
+  --color-tertiary-container: #466aa0;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #e1eaff;
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-surface-variant: #e0e3e5;
+  --color-surface-tint: #006a63;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #3e4947;
+  --color-outline: #6e7977;
+  --color-outline-variant: #bdc9c6;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-alert-crimson: #e11d48;
+  --color-success-emerald: #059669;
+  --color-slate-accent: #64748b;
+  --color-info-blue: #d9edf7;
+  --color-legacy-maroon: #9a124f;
+  --spacing-touch-target: 2.75rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-margin-desktop: 4rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-stack-sm: 0.5rem;
+  --spacing-stack-md: 1rem;
+  --spacing-stack-lg: 2rem;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -122,11 +161,127 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-slate-50 text-zinc-900 antialiased selection:bg-teal-100 selection:text-teal-900;
+    background-color: #f7f9fb;
+    color: #191c1e;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    selection-background-color: #a3faef;
+    selection-color: #00201d;
   }
   html {
-    @apply font-sans scroll-smooth;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
   }
+}
+
+/* Glassmorphism & Atmospheric Depth Tokens from Stitch */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid #e2e8f0;
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+.glass-nav {
+  background: rgba(247, 249, 251, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Exact Stitch Typography System */
+.font-display-lg,
+.text-display-lg {
+  font-size: 48px;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-headline-lg-mobile,
+.text-headline-lg-mobile {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-headline-md,
+.text-headline-md {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-body-lg,
+.text-body-lg {
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-body-md,
+.text-body-md {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-label-caps,
+.text-label-caps {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+.font-data-mono {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+}
+
+/* 44px Minimum Touch Target Standard for Civic Accessibility */
+.touch-target,
+.h-touch-target {
+  min-height: 2.75rem; /* 44px */
+}
+
+/* Material Symbols Outlined Icon Styling */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.icon-filled,
+.material-symbols-outlined[data-weight="fill"] {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 /* Custom subtle scrollbar */

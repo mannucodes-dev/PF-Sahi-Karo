@@ -41,3 +41,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local development scripts & scratch tools
+scripts/
+
+# local design mockups & reference downloads
+stitch_screens/
