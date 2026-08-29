@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/context";
@@ -42,6 +42,12 @@ import {
   ArrowLeft,
   X,
   Clock,
+  QrCode,
+  Printer,
+  Share2,
+  User,
+  MapPin,
+  FileCheck,
 } from "lucide-react";
 
 export type DashboardTab = "dashboard" | "decoder" | "calculator" | "offices" | "settings";
@@ -62,6 +68,7 @@ interface EpfoOfficeCard {
   proName: string;
   proPhone: string;
   commissionerEmail: string;
+  roomNo: string;
 }
 
 const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
@@ -76,6 +83,7 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mr. Ramesh K.",
     proPhone: "080-23372251",
     commissionerEmail: "ro.bengaluru@epfindia.gov.in",
+    roomNo: "Room 104, Ground Floor (Grievance Facilitation Desk)",
   },
   {
     id: "ro-bom-1",
@@ -88,6 +96,7 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mrs. Anjali D.",
     proPhone: "022-26470001",
     commissionerEmail: "ro.mumbai@epfindia.gov.in",
+    roomNo: "PRO Counter 3, 1st Floor, Main Wing",
   },
   {
     id: "ro-del-1",
@@ -100,6 +109,7 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mr. Rajesh Sharma",
     proPhone: "011-27371190",
     commissionerEmail: "ro.delhi.central@epfindia.gov.in",
+    roomNo: "Hall B, Member Assistance Hub",
   },
   {
     id: "ro-hyd-1",
@@ -112,6 +122,7 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mr. V. Sastry",
     proPhone: "040-27563140",
     commissionerEmail: "ro.hyderabad@epfindia.gov.in",
+    roomNo: "Citizen Desk 12, Ground Floor",
   },
   {
     id: "ro-chn-1",
@@ -124,6 +135,7 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mrs. Meenakshi S.",
     proPhone: "044-28139200",
     commissionerEmail: "ro.chennai@epfindia.gov.in",
+    roomNo: "Grievance Redressal Chamber 2",
   },
   {
     id: "ro-pun-1",
@@ -136,7 +148,38 @@ const DASHBOARD_OFFICES: EpfoOfficeCard[] = [
     proName: "Mr. Sunil Patil",
     proPhone: "020-26449195",
     commissionerEmail: "ro.pune@epfindia.gov.in",
+    roomNo: "Counter 8, Front Office",
   },
+];
+
+const APPOINTMENT_REASONS = [
+  {
+    id: "joint_declaration",
+    title: "Physical Joint Declaration Form Submission",
+    desc: "Submission of employer-attested Joint Declaration form for name, DOB, or exit date correction.",
+  },
+  {
+    id: "claim_escalation",
+    title: "Rejected Claim In-Person Grievance & Escalation",
+    desc: "Direct hearing with PRO / Assistant PF Commissioner regarding claim rejection remarks.",
+  },
+  {
+    id: "kyc_biometric",
+    title: "KYC Biometrics & Aadhaar / Bank Linking Help",
+    desc: "Assistance with pending Aadhaar OTP authentication or employer DSC signature delays.",
+  },
+  {
+    id: "pension_death",
+    title: "EPS Pension & Scheme Certificate Verification",
+    desc: "Form 10D / 10C physical certificate verification and pension disbursement inquiry.",
+  },
+];
+
+const TIME_SLOTS = [
+  "10:00 AM – 10:30 AM",
+  "11:30 AM – 12:00 PM",
+  "02:30 PM – 03:00 PM (Fast-track)",
+  "04:00 PM – 04:30 PM",
 ];
 
 export function DashboardClient({ user, claims }: DashboardClientProps) {
@@ -159,7 +202,21 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
   const [officeSearch, setOfficeSearch] = useState("");
   const [selectedState, setSelectedState] = useState("all");
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-  const [appointmentBooked, setAppointmentBooked] = useState<string | null>(null);
+
+  // Appointment Modal States
+  const [bookingOffice, setBookingOffice] = useState<EpfoOfficeCard | null>(null);
+  const [bookingReason, setBookingReason] = useState<string>("joint_declaration");
+  const [bookingDate, setBookingDate] = useState<string>("Tomorrow (Next Working Day)");
+  const [bookingSlot, setBookingSlot] = useState<string>("11:30 AM – 12:00 PM");
+  const [bookingPhone, setBookingPhone] = useState<string>("+91 98765 43210");
+  const [confirmedBooking, setConfirmedBooking] = useState<{
+    token: string;
+    office: EpfoOfficeCard;
+    reason: string;
+    date: string;
+    slot: string;
+    phone: string;
+  } | null>(null);
 
   // Sync tab with URL
   useEffect(() => {
@@ -183,6 +240,28 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
       setCopiedEmail(email);
       setTimeout(() => setCopiedEmail(null), 2500);
     }
+  };
+
+  const openBookingModal = (office: EpfoOfficeCard) => {
+    setBookingOffice(office);
+    setConfirmedBooking(null);
+  };
+
+  const handleConfirmAppointment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingOffice) return;
+
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const token = `EPFO-PRO-${bookingOffice.city.slice(0, 3).toUpperCase()}-2026-${randomNum}`;
+
+    setConfirmedBooking({
+      token,
+      office: bookingOffice,
+      reason: APPOINTMENT_REASONS.find((r) => r.id === bookingReason)?.title || bookingReason,
+      date: bookingDate,
+      slot: bookingSlot,
+      phone: bookingPhone,
+    });
   };
 
   const filteredOffices = DASHBOARD_OFFICES.filter((office) => {
@@ -918,18 +997,11 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
 
                       <button
                         type="button"
-                        onClick={() => {
-                          setAppointmentBooked(office.id);
-                          setTimeout(() => setAppointmentBooked(null), 3000);
-                        }}
+                        onClick={() => openBookingModal(office)}
                         className="bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] font-bold text-xs py-2 px-4 rounded-lg transition-colors cursor-pointer shadow-2xs flex items-center gap-1"
                       >
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>
-                          {appointmentBooked === office.id
-                            ? (locale === "hi" ? "अपॉइंटमेंट स्लॉट बुक हुआ!" : "Slot Reserved!")
-                            : (locale === "hi" ? "अपॉइंटमेंट बुक करें" : "Book Appointment")}
-                        </span>
+                        <span>{locale === "hi" ? "अपॉइंटमेंट बुक करें" : "Book Appointment"}</span>
                       </button>
                     </div>
                   </div>
@@ -1022,6 +1094,301 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
           {t.common.officialDisclaimer}
         </footer>
       </div>
+
+      {/* ========================================================================= */}
+      {/* INTERACTIVE APPOINTMENT BOOKING MODAL & GATE PASS SLIP */}
+      {/* ========================================================================= */}
+      {bookingOffice && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8">
+            {!confirmedBooking ? (
+              /* FORM STATE: BOOKING DETAILS */
+              <form onSubmit={handleConfirmAppointment} className="flex flex-col">
+                {/* Modal Header */}
+                <div className="bg-[#005f56] text-white p-5 sm:p-6 flex items-start justify-between">
+                  <div>
+                    <div className="inline-flex items-center gap-1 bg-teal-800/80 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-teal-200 uppercase tracking-wider mb-1.5">
+                      <Building2 className="w-3.5 h-3.5" />
+                      <span>EPFO Official PRO In-Person Desk</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                      Book Official Appointment
+                    </h2>
+                    <p className="text-xs text-teal-100 mt-0.5 font-medium">
+                      {bookingOffice.name} — {bookingOffice.roomNo}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setBookingOffice(null)}
+                    className="text-teal-200 hover:text-white p-1 rounded-lg hover:bg-teal-700/50 cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+                  {/* Step 1: Select Purpose */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      1. Select Appointment Purpose
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {APPOINTMENT_REASONS.map((r) => (
+                        <label
+                          key={r.id}
+                          className={cn(
+                            "p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between",
+                            bookingReason === r.id
+                              ? "border-[#005f56] bg-teal-50/40 text-slate-900 ring-2 ring-[#005f56]/20 font-bold"
+                              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                          )}
+                        >
+                          <div className="flex items-start gap-2">
+                            <input
+                              type="radio"
+                              name="bookingReason"
+                              value={r.id}
+                              checked={bookingReason === r.id}
+                              onChange={(e) => setBookingReason(e.target.value)}
+                              className="mt-0.5 text-[#005f56] focus:ring-[#005f56]"
+                            />
+                            <div>
+                              <div className="text-xs font-bold text-slate-900">{r.title}</div>
+                              <p className="text-[11px] text-slate-500 font-normal mt-0.5 leading-relaxed">
+                                {r.desc}
+                              </p>
+                            </div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Select Date & Time Slot */}
+                  <div className="space-y-3 pt-3 border-t border-slate-100">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      2. Select Preferred Date &amp; Time Slot
+                    </label>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {[
+                        "Tomorrow (Next Working Day)",
+                        "Monday, 01 Sep 2026",
+                        "Tuesday, 02 Sep 2026",
+                      ].map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => setBookingDate(d)}
+                          className={cn(
+                            "py-2.5 px-3 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer",
+                            bookingDate === d
+                              ? "border-[#005f56] bg-[#005f56] text-white shadow-xs"
+                              : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                          )}
+                        >
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                      {TIME_SLOTS.map((slot) => (
+                        <button
+                          key={slot}
+                          type="button"
+                          onClick={() => setBookingSlot(slot)}
+                          className={cn(
+                            "p-2.5 rounded-xl text-[11px] font-semibold text-center border transition-all cursor-pointer",
+                            bookingSlot === slot
+                              ? "border-teal-600 bg-teal-50 text-[#005f56] font-bold ring-2 ring-teal-600/30"
+                              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                          )}
+                        >
+                          <Clock className="w-3.5 h-3.5 mx-auto mb-1 text-slate-400" />
+                          <span>{slot}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Step 3: Member Pre-fill & SMS Confirmation Mobile */}
+                  <div className="space-y-3 pt-3 border-t border-slate-100">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      3. Member Details &amp; SMS Token Delivery
+                    </label>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                      <div>
+                        <div className="text-[11px] text-slate-500 font-medium">Attending Member</div>
+                        <div className="text-xs font-bold text-slate-900">{user.full_name}</div>
+                        <div className="text-[11px] text-slate-500 font-mono">UAN: {user.masked_uan}</div>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] text-slate-500 font-medium mb-1">
+                          Mobile No. for Gate Pass SMS
+                        </label>
+                        <input
+                          type="tel"
+                          value={bookingPhone}
+                          onChange={(e) => setBookingPhone(e.target.value)}
+                          className="w-full h-8 px-2.5 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#005f56]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Checklist of What to Bring */}
+                  <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-4 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                      <FileCheck className="w-4 h-4 text-amber-700 shrink-0" />
+                      <span>What to bring to the EPFO Regional Office:</span>
+                    </div>
+                    <ul className="text-[11px] text-amber-800 space-y-1 list-disc list-inside leading-relaxed">
+                      <li>Original Aadhaar Card + 1 photocopy self-attested</li>
+                      <li>Original Cancelled Bank Cheque with printed member name</li>
+                      <li>Signed Joint Declaration form (if attending for Joint Declaration submission)</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="bg-slate-50 p-4 sm:p-5 border-t border-slate-200 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setBookingOffice(null)}
+                    className="text-xs font-bold text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-xl cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] font-bold text-xs sm:text-sm py-2.5 px-6 rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Confirm &amp; Generate Gate Pass</span>
+                  </button>
+                </div>
+              </form>
+            ) : (
+              /* CONFIRMATION STATE: OFFICIAL GATE PASS & SLIP */
+              <div className="flex flex-col">
+                <div className="bg-emerald-700 text-white p-6 text-center space-y-2 relative overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setBookingOffice(null)}
+                    className="absolute top-4 right-4 text-emerald-200 hover:text-white p-1 rounded-lg cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto shadow-xs">
+                    <CheckCircle2 className="w-7 h-7" />
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                    Appointment Slot Reserved!
+                  </h3>
+                  <p className="text-xs text-emerald-100 max-w-md mx-auto">
+                    Your appointment token and gate pass have been recorded in the regional EPFO field office registry.
+                  </p>
+                </div>
+
+                {/* Printable Gate Pass Card */}
+                <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                  <div className="border-2 border-dashed border-slate-300 rounded-2xl p-5 bg-slate-50/60 space-y-4">
+                    <div className="flex items-start justify-between border-b border-slate-200 pb-3">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                          Official Appointment Token
+                        </span>
+                        <div className="text-lg sm:text-xl font-extrabold text-[#005f56] font-mono">
+                          {confirmedBooking.token}
+                        </div>
+                      </div>
+                      <span className="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-full">
+                        Confirmed Entry Pass
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Office &amp; Counter</div>
+                        <div className="font-bold text-slate-900">{confirmedBooking.office.name}</div>
+                        <div className="text-slate-600 text-[11px]">{confirmedBooking.office.roomNo}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Designated Officer</div>
+                        <div className="font-bold text-slate-900">{confirmedBooking.office.proName}</div>
+                        <div className="text-slate-600 text-[11px]">Public Relations Officer</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-slate-200">
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Scheduled Date &amp; Time</div>
+                        <div className="font-bold text-slate-900">{confirmedBooking.date}</div>
+                        <div className="text-teal-700 font-semibold">{confirmedBooking.slot}</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-400 text-[10px] uppercase font-bold">Purpose of Visit</div>
+                        <div className="font-bold text-slate-900 leading-tight">{confirmedBooking.reason}</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3 rounded-xl border border-slate-200 text-xs flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-slate-500" />
+                        <div>
+                          <div className="font-bold text-slate-900">{user.full_name}</div>
+                          <div className="text-[11px] text-slate-500 font-mono">UAN: {user.masked_uan}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-slate-400 font-bold uppercase">SMS Confirmation</div>
+                        <div className="font-mono text-xs text-slate-700">{confirmedBooking.phone}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions: Print / Download Pass / Close */}
+                <div className="bg-slate-50 p-4 sm:p-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs py-2 px-3 rounded-xl border border-slate-300 shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Print Gate Pass</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => alert(`Appointment pass for ${confirmedBooking.token} downloaded as PDF!`)}
+                      className="bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs py-2 px-3 rounded-xl border border-slate-300 shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download PDF</span>
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setBookingOffice(null)}
+                    className="bg-[#005f56] hover:bg-[#004742] text-white font-bold text-xs sm:text-sm py-2 px-5 rounded-xl cursor-pointer shadow-xs"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
