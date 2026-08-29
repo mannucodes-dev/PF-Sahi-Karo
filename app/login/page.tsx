@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, ArrowRight, Lock, UserCheck, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { ShieldCheck, ArrowRight, Lock, AlertCircle, Loader2, Sparkles } from "lucide-react";
 import { loginAction } from "@/app/actions/auth-actions";
 import { useTranslation } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -67,68 +67,71 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 text-zinc-900">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-[100dvh] bg-[#f7f9fb] flex flex-col items-center justify-center p-2.5 sm:p-3 text-slate-900">
+      <div className="w-full max-w-[390px] space-y-2 my-auto">
         {/* Brand Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           <Link
             href="/"
-            className="inline-flex mx-auto bg-gradient-to-br from-teal-700 to-teal-900 text-white w-14 h-14 rounded-2xl items-center justify-center shadow-md shadow-teal-900/15 ring-4 ring-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-600"
+            className="inline-flex mx-auto bg-[#005f56] text-white w-9 h-9 rounded-xl items-center justify-center shadow-xs ring-4 ring-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-600"
             aria-label="PF Sahi Karo Home"
           >
-            <ShieldCheck className="w-8 h-8 text-teal-100" aria-hidden="true" />
+            <ShieldCheck className="w-5 h-5 text-teal-100" aria-hidden="true" />
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900">
-            PF Sahi Karo
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-600 max-w-sm mx-auto font-medium">
-            {t.common.tagline}
-          </p>
-          <div className="pt-1 flex justify-center">
-            <LanguageSwitcher />
+          <div>
+            <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-[#005f56] leading-none">
+              {t.common.brandName}
+            </h1>
+            <p className="text-[11px] text-slate-500 max-w-xs mx-auto font-medium leading-tight mt-0.5">
+              {t.common.tagline}
+            </p>
+          </div>
+          <div className="pt-0 flex justify-center">
+            <LanguageSwitcher direction="down" align="right" />
           </div>
         </div>
 
-        {/* Login Card */}
-        <Card className="border-slate-200 bg-white shadow-md rounded-2xl overflow-hidden">
-          <CardHeader className="pb-4 pt-6 px-6 border-b border-slate-100">
-            <CardTitle className="text-lg sm:text-xl font-bold text-zinc-900 tracking-tight">
-              Sign In to Your Claim Dashboard
+        {/* Compact Login Card */}
+        <Card className="border-slate-200/90 bg-white shadow-xs rounded-2xl overflow-hidden">
+          <CardHeader className="py-2.5 px-4 border-b border-slate-100 space-y-0.5">
+            <CardTitle className="text-sm font-bold text-slate-900 tracking-tight">
+              {t.login.title}
             </CardTitle>
-            <CardDescription className="text-xs text-zinc-500">
-              Enter your 12-digit Universal Account Number (UAN) to access active and previous claims.
+            <CardDescription className="text-[11px] text-slate-500 leading-tight">
+              {t.login.subtitle}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 p-6">
+
+          <CardContent className="space-y-2.5 p-3 sm:p-3.5">
             {/* Hackathon Judge Instant 1-Click Login Button */}
-            <div className="rounded-xl bg-gradient-to-br from-amber-50 to-teal-50 border border-amber-300/80 p-4 space-y-2.5 text-xs shadow-2xs">
+            <div className="rounded-xl bg-gradient-to-br from-amber-50/90 to-teal-50/40 border border-amber-300/80 p-2.5 space-y-1.5 text-xs shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className="font-extrabold text-slate-900 flex items-center gap-1.5 text-xs sm:text-sm">
-                  <Sparkles className="w-4 h-4 text-amber-600" aria-hidden="true" />
-                  Hackathon Judge 1-Click Evaluation
+                <span className="font-extrabold text-slate-900 flex items-center gap-1 text-[11.5px]">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" aria-hidden="true" />
+                  <span>{t.login.judgeTitle}</span>
                 </span>
-                <Badge className="bg-amber-400 text-slate-950 font-bold text-[10px] border-amber-500">
-                  Pre-filled
+                <Badge className="bg-amber-400 text-slate-950 font-bold text-[9px] px-1.5 py-0 border-amber-500">
+                  {t.login.prefilledBadge}
                 </Badge>
               </div>
-              <p className="text-zinc-600 text-xs leading-relaxed">
-                Test the complete citizen experience as <strong>Suresh Kumar</strong> (Factory Supervisor with 1 Rejected, 1 Settled, and 1 Pending claim).
+              <p className="text-slate-600 text-[10.5px] leading-tight">
+                {t.login.judgeDesc}
               </p>
               <Button
                 type="button"
                 onClick={handleJudgeInstantLogin}
                 disabled={isDemoLoading}
-                className="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold py-2.5 rounded-xl shadow-xs text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-amber-500 cursor-pointer"
+                className="w-full bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] font-extrabold h-8 py-1 rounded-lg shadow-xs text-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-amber-500 cursor-pointer"
               >
                 {isDemoLoading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
-                    Signing in as Suresh...
+                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
+                    <span>{t.login.judgeLoading}</span>
                   </>
                 ) : (
                   <>
-                    <span>⚡ Log in as Suresh (1-Click Instant Demo)</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>⚡ {t.login.judgeBtn}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}
               </Button>
@@ -138,27 +141,30 @@ function LoginForm() {
             {errorMessage && (
               <div
                 role="alert"
-                className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-start gap-2.5"
+                className="p-2 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 flex items-start gap-1.5"
               >
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" aria-hidden="true" />
-                <span className="font-medium">{errorMessage}</span>
+                <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5" aria-hidden="true" />
+                <span className="font-medium text-[11px]">{errorMessage}</span>
               </div>
             )}
 
-            <div className="relative flex py-1 items-center">
+            {/* Divider */}
+            <div className="relative flex py-0 items-center">
               <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-3 text-xs text-zinc-400 uppercase font-semibold">Or enter manually</span>
+              <span className="flex-shrink mx-2 text-[9.5px] text-slate-400 uppercase font-bold tracking-wider">
+                {t.login.orDivider}
+              </span>
               <div className="flex-grow border-t border-slate-200"></div>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
+            <form onSubmit={handleSubmit} className="space-y-2">
+              <div className="space-y-0.5">
                 <label
                   htmlFor="uan-input"
-                  className="block text-xs sm:text-sm font-bold text-zinc-800"
+                  className="block text-[11px] font-bold text-slate-800"
                 >
-                  Universal Account Number (UAN)
+                  {t.login.uanLabel}
                 </label>
                 <input
                   id="uan-input"
@@ -170,17 +176,17 @@ function LoginForm() {
                   maxLength={12}
                   value={uan}
                   onChange={(e) => setUan(e.target.value.replace(/\D/g, ""))}
-                  placeholder="e.g. 100234567890"
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all font-mono shadow-2xs"
+                  placeholder={t.login.uanPlaceholder}
+                  className="w-full h-8 px-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005f56] focus:bg-white transition-all font-mono shadow-2xs"
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-0.5">
                 <label
                   htmlFor="password-input"
-                  className="block text-xs sm:text-sm font-bold text-zinc-800"
+                  className="block text-[11px] font-bold text-slate-800"
                 >
-                  Member Portal Password
+                  {t.login.passwordLabel}
                 </label>
                 <input
                   id="password-input"
@@ -190,25 +196,25 @@ function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all shadow-2xs"
+                  placeholder={t.login.passwordPlaceholder}
+                  className="w-full h-8 px-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005f56] focus:bg-white transition-all shadow-2xs"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-teal-700 hover:bg-teal-800 text-white font-extrabold py-3 rounded-xl shadow-xs text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="w-full bg-[#005f56] hover:bg-[#004742] text-white font-extrabold h-8.5 py-1 rounded-lg shadow-xs text-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer mt-0.5"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" aria-hidden="true" />
-                    <span>Signing in...</span>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" aria-hidden="true" />
+                    <span>{t.login.signingIn}</span>
                   </>
                 ) : (
                   <>
-                    <span>Sign In</span>
-                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                    <span>{t.login.signInBtn}</span>
+                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </>
                 )}
               </Button>
@@ -217,13 +223,13 @@ function LoginForm() {
         </Card>
 
         {/* Security & Privacy Notice */}
-        <div className="text-center space-y-1 text-xs text-zinc-500">
+        <div className="text-center space-y-0.5 text-[10.5px] text-slate-400">
           <p className="flex items-center justify-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-teal-700" aria-hidden="true" />
-            <span>End-to-end simulated verification. Zero plaintext Aadhaar storage.</span>
+            <Lock className="w-3 h-3 text-[#005f56]" aria-hidden="true" />
+            <span>{t.login.securityNote}</span>
           </p>
-          <p>
-            Independent citizen civic tech tool. Not affiliated with EPFO.
+          <p className="text-[10px]">
+            {t.login.disclaimer}
           </p>
         </div>
       </div>
@@ -235,7 +241,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-zinc-500">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-500">
           Loading sign in...
         </div>
       }

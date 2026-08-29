@@ -206,6 +206,25 @@ export interface Translations {
     expectedTimeline: string;
     timelineText: string;
   };
+  login: {
+    title: string;
+    subtitle: string;
+    judgeTitle: string;
+    prefilledBadge: string;
+    judgeDesc: string;
+    judgeBtn: string;
+    judgeLoading: string;
+    orDivider: string;
+    uanLabel: string;
+    uanPlaceholder: string;
+    passwordLabel: string;
+    passwordPlaceholder: string;
+    signInBtn: string;
+    signingIn: string;
+    securityNote: string;
+    disclaimer: string;
+    loadingSignIn: string;
+  };
 }
 
 const enTranslations: Translations = {
@@ -422,6 +441,25 @@ const enTranslations: Translations = {
     refNo: "Resubmission Reference No.",
     expectedTimeline: "Expected Field Office Review Timeline",
     timelineText: "Standard field office re-evaluation takes 10–15 working days once employer approval is confirmed.",
+  },
+  login: {
+    title: "Sign In to Your Claim Dashboard",
+    subtitle: "Enter your 12-digit Universal Account Number (UAN) to access active and previous claims.",
+    judgeTitle: "Hackathon Judge 1-Click Evaluation",
+    prefilledBadge: "Pre-filled",
+    judgeDesc: "Test the complete citizen experience as Suresh Kumar (Factory Supervisor with 1 Rejected, 1 Settled, and 1 Pending claim).",
+    judgeBtn: "Log in as Suresh (1-Click Instant Demo)",
+    judgeLoading: "Signing in as Suresh...",
+    orDivider: "Or enter manually",
+    uanLabel: "Universal Account Number (UAN)",
+    uanPlaceholder: "e.g. 100234567890",
+    passwordLabel: "Member Portal Password",
+    passwordPlaceholder: "Enter your password",
+    signInBtn: "Sign In",
+    signingIn: "Signing in...",
+    securityNote: "End-to-end simulated verification. Zero plaintext Aadhaar storage.",
+    disclaimer: "Independent citizen civic tech tool. Not affiliated with EPFO.",
+    loadingSignIn: "Loading sign in...",
   },
 };
 
@@ -640,6 +678,25 @@ const hiTranslations: Translations = {
     expectedTimeline: "अपेक्षित समीक्षा समयसीमा",
     timelineText: "नियोक्ता अनुमोदन की पुष्टि के बाद क्षेत्रीय कार्यालय द्वारा सामान्य समीक्षा में 10-15 कार्य दिवस लगते हैं।",
   },
+  login: {
+    title: "दावा डैशबोर्ड में लॉगिन करें",
+    subtitle: "सक्रिय एवं पिछले दावों को देखने के लिए अपना 12 अंकों का UAN दर्ज करें।",
+    judgeTitle: "न्यायाधीश 1-क्लिक त्वरित मूल्यांकन",
+    prefilledBadge: "स्वतः भरा हुआ",
+    judgeDesc: "सुरेश कुमार (1 अस्वीकृत, 1 स्वीकृत, 1 समीक्षाधीन दावा) के रूप में परीक्षण करें।",
+    judgeBtn: "सुरेश के रूप में लॉगिन करें (1-क्लिक डेमो)",
+    judgeLoading: "सुरेश के रूप में लॉगिन हो रहा है...",
+    orDivider: "या मैन्युअल रूप से दर्ज करें",
+    uanLabel: "सार्वभौमिक खाता संख्या (UAN)",
+    uanPlaceholder: "उदा. 100234567890",
+    passwordLabel: "मेंबर पोर्टल पासवर्ड",
+    passwordPlaceholder: "पासवर्ड दर्ज करें",
+    signInBtn: "लॉगिन करें",
+    signingIn: "लॉगिन हो रहा है...",
+    securityNote: "सुरक्षित प्रमाणीकरण। शून्य सादा आधार डेटा संग्रहण।",
+    disclaimer: "स्वतंत्र नागरिक सहायता पोर्टल। ईपीएफओ से संबद्ध नहीं।",
+    loadingSignIn: "लॉगिन लोड हो रहा है...",
+  },
 };
 
 const mrTranslations: Translations = {
@@ -839,6 +896,25 @@ const mrTranslations: Translations = {
     refNo: "पुनर्सादर संदर्भ क्रमांक",
     expectedTimeline: "अपेक्षित पुनरावलोकन कालावधी",
     timelineText: "नियोक्ता मंजुरीनंतर सामान्यतः १०-१५ कामकाजाचे दिवस लागतात.",
+  },
+  login: {
+    title: "दावा डॅशबोर्डमध्ये लॉगिन करा",
+    subtitle: "सक्रिय व मागील दावे पाहण्यासाठी तुमचा १२ अंकी UAN प्रविष्ट करा.",
+    judgeTitle: "परीक्षक १-क्लिक त्वरित मूल्यमापन",
+    prefilledBadge: "पूर्व-भरलेले",
+    judgeDesc: "सुरेश कुमार (१ नाकारलेला, १ मंजूर, १ प्रलंबित दावा) म्हणून थेट चाचणी घ्या.",
+    judgeBtn: "सुरेश म्हणून लॉगिन करा (१-क्लिक डेमो)",
+    judgeLoading: "लॉगिन होत आहे...",
+    orDivider: "किंवा मॅन्युअली प्रविष्ट करा",
+    uanLabel: "युनिव्हर्सल अकाउंट नंबर (UAN)",
+    uanPlaceholder: "उदा. 100234567890",
+    passwordLabel: "मेंबर पोर्टल पासवर्ड",
+    passwordPlaceholder: "पासवर्ड टाका",
+    signInBtn: "साइन इन करा",
+    signingIn: "साइन इन होत आहे...",
+    securityNote: "सुरक्षित प्रमाणीकरण. कोणताही आधार डेटा साठवला जात नाही.",
+    disclaimer: "स्वतंत्र नागरिक सहाय्यता साधन. ईपीएफओशी संलग्न नाही.",
+    loadingSignIn: "लॉगिन लोड होत आहे...",
   },
 };
 
@@ -1040,6 +1116,25 @@ const taTranslations: Translations = {
     expectedTimeline: "எதிர்பார்க்கப்படும் கால அவகாசம்",
     timelineText: "நிறுவன ஒப்புதலுக்குப் பிறகு வழக்கமாக 10-15 வேலை நாட்கள் ஆகும்.",
   },
+  login: {
+    title: "உங்கள் டாஷ்போர்டில் உள்நுழைக",
+    subtitle: "செயலில் உள்ள மற்றும் முந்தைய கோரிக்கைகளைக் காண உங்கள் 12 இலக்க UAN-ஐ உள்ளிடவும்.",
+    judgeTitle: "நீதிபதிகள் 1-கிளிக் உடனடி மதிப்பீடு",
+    prefilledBadge: "முன்பே நிரப்பப்பட்டது",
+    judgeDesc: "சுரேஷ் குமார் (1 நிராகரிக்கப்பட்ட, 1 தீர்க்கப்பட்ட, 1 நிலுவை கோரிக்கை) கணக்கில் சோதிக்கவும்.",
+    judgeBtn: "சுரேஷாக உள்நுழைக (1-கிளிக் டெமோ)",
+    judgeLoading: "உள்நுழைகிறது...",
+    orDivider: "அல்லது கைமுறையாக உள்ளிடவும்",
+    uanLabel: "யுனிவர்சல் கணக்கு எண் (UAN)",
+    uanPlaceholder: "எ.கா. 100234567890",
+    passwordLabel: "போர்ட்டல் கடவுச்சொல்",
+    passwordPlaceholder: "கடவுச்சொல்லை உள்ளிடவும்",
+    signInBtn: "உள்நுழைக",
+    signingIn: "உள்நுழைகிறது...",
+    securityNote: "பாதுகாப்பான சரிபார்ப்பு. ஆதார் எண்கள் சேமிக்கப்படுவதில்லை.",
+    disclaimer: "சுயாதீன குடிமக்கள் சேவை தளம். EPFO-வுடன் இணைக்கப்படவில்லை.",
+    loadingSignIn: "உள்நுழைவு ஏற்றப்படுகிறது...",
+  },
 };
 
 const teTranslations: Translations = {
@@ -1239,6 +1334,25 @@ const teTranslations: Translations = {
     refNo: "రిఫరెన్స్ సంఖ్య",
     expectedTimeline: "అంచనా సమయం",
     timelineText: "కంపెనీ ఆమోదం తర్వాత సాధారణంగా 10-15 పని దినాలు పడుతుంది.",
+  },
+  login: {
+    title: "మీ క్లెయిమ్ డాష్‌బోర్డ్‌కు లాగిన్ అవ్వండి",
+    subtitle: "సక్రియ మరియు మునుపటి క్లెయిమ్‌లను చూడటానికి మీ 12 అంకెల UAN ను నమోదు చేయండి.",
+    judgeTitle: "న్యాయనిర్ణేత 1-క్లిక్ తక్షణ మూల్యాంకనం",
+    prefilledBadge: "ముందుగా నింపబడింది",
+    judgeDesc: "సురేష్ కుమార్ (1 తిరస్కరించబడిన, 1 పరిష్కరించబడిన, 1 పెండింగ్ క్లెయిమ్) ఖాతాతో పరీక్షించండి.",
+    judgeBtn: "సురేష్‌గా లాగిన్ అవ్వండి (1-క్లిక్ డెమో)",
+    judgeLoading: "లాగిన్ అవుతోంది...",
+    orDivider: "లేదా మాన్యువల్‌గా నమోదు చేయండి",
+    uanLabel: "యూనివర్సల్ ఖాతా సంఖ్య (UAN)",
+    uanPlaceholder: "ఉదా. 100234567890",
+    passwordLabel: "మెంబర్ పోర్టల్ పాస్‌వర్డ్",
+    passwordPlaceholder: "పాస్‌వర్డ్ నమోదు చేయండి",
+    signInBtn: "సైన్ ఇన్ చేయండి",
+    signingIn: "సైన్ ఇన్ అవుతోంది...",
+    securityNote: "సురక్షిత ధృవీకరణ. ఆధార్ డేటా నిల్వ చేయబడదు.",
+    disclaimer: "స్వతంత్ర పౌర సేవా సాధనం. EPFOతో అనుబంధం లేదు.",
+    loadingSignIn: "లాగిన్ లోడ్ అవుతోంది...",
   },
 };
 
@@ -1440,6 +1554,25 @@ const knTranslations: Translations = {
     expectedTimeline: "ಅಂದಾಜು ಪರಿಶೀಲನಾ ಸಮಯ",
     timelineText: "ಕಂಪನಿಯ ಅನುಮೋದನೆಯ ನಂತರ ಸಾಮಾನ್ಯವಾಗಿ 10-15 ಕೆಲಸದ ದಿನಗಳು ಬೇಕಾಗುತ್ತವೆ.",
   },
+  login: {
+    title: "ನಿಮ್ಮ ಕ್ಲೈಮ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಲಾಗಿನ್ ಆಗಿ",
+    subtitle: "ಸಕ್ರಿಯ ಮತ್ತು ಹಿಂದಿನ ಕ್ಲೈಮ್‌ಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮ್ಮ 12-ಅಂಕಿಯ UAN ನಮೂದಿಸಿ.",
+    judgeTitle: "ತೀರ್ಪುಗಾರರ 1-ಕ್ಲಿಕ್ ತ್ವರಿತ ಮೌಲ್ಯಮಾಪನ",
+    prefilledBadge: "ಪೂರ್ವಭಾವಿ ಭರ್ತಿ",
+    judgeDesc: "ಸುರೇಶ್ ಕುಮಾರ್ (1 ತಿರಸ್ಕೃತ, 1 ಇತ್ಯರ್ಥ, 1 ಬಾಕಿ ಕ್ಲೈಮ್) ಆಗಿ ಪರೀಕ್ಷಿಸಿ.",
+    judgeBtn: "ಸುರೇಶ್ ಆಗಿ ಲಾಗಿನ್ ಆಗಿ (1-ಕ್ಲಿಕ್ ಡೆಮೊ)",
+    judgeLoading: "ಲಾಗಿನ್ ಆಗುತ್ತಿದೆ...",
+    orDivider: "ಅಥವಾ ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ",
+    uanLabel: "ಸಾರ್ವತ್ರಿಕ ಖಾತೆ ಸಂಖ್ಯೆ (UAN)",
+    uanPlaceholder: "ಉದಾ. 100234567890",
+    passwordLabel: "ಸದಸ್ಯ ಪೋರ್ಟಲ್ ಪಾಸ್‌ವರ್ಡ್",
+    passwordPlaceholder: "ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    signInBtn: "ಸೈನ್ ಇನ್",
+    signingIn: "ಸೈನ್ ಇನ್ ಆಗುತ್ತಿದೆ...",
+    securityNote: "ಸುರಕ್ಷಿತ ಪರಿಶೀಲನೆ. ಯಾವುದೇ ಆಧಾರ್ ಡೇಟಾ ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ.",
+    disclaimer: "ಸ್ವತಂತ್ರ ನಾಗರಿಕ ಸೇವಾ ತಂತ್ರಜ್ಞಾನ. EPFO ನೊಂದಿಗೆ ಸಂಯೋಜಿತವಾಗಿಲ್ಲ.",
+    loadingSignIn: "ಲಾಗಿನ್ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+  },
 };
 
 const guTranslations: Translations = {
@@ -1640,6 +1773,25 @@ const guTranslations: Translations = {
     expectedTimeline: "અપેક્ષિત સમીક્ષા સમય",
     timelineText: "કંપનીની મંજૂરી પછી સામાન્ય રીતે 10-15 કામકાજના દિવસો લાગે છે.",
   },
+  login: {
+    title: "તમારા ક્લેઇમ ડેશબોર્ડમાં સાઇન ઇન કરો",
+    subtitle: "સક્રિય અને પાછલા દાવાઓ જોવા માટે તમારો 12 અંકનો UAN દાખલ કરો.",
+    judgeTitle: "જજ 1-ક્લિક ઇન્સ્ટન્ટ મૂલ્યાંકન",
+    prefilledBadge: "પૂર્વ-ભરેલ",
+    judgeDesc: "સુરેશ કુમાર (1 અસ્વીકાર, 1 પતાવટ, 1 પેન્ડિંગ ક્લેઇમ) તરીકે પરીક્ષણ કરો.",
+    judgeBtn: "સુરેશ તરીકે લૉગિન કરો (1-ક્લિક ડેમો)",
+    judgeLoading: "લૉગિન થઈ રહ્યું છે...",
+    orDivider: "અથવા જાતે દાખલ કરો",
+    uanLabel: "યુનિવર્સલ એકાઉન્ટ નંબર (UAN)",
+    uanPlaceholder: "દા.ત. 100234567890",
+    passwordLabel: "મેમ્બર પોર્ટલ પાસવર્ડ",
+    passwordPlaceholder: "પાસવર્ડ દાખલ કરો",
+    signInBtn: "સાઇન ઇન કરો",
+    signingIn: "સાઇન ઇન થઈ રહ્યું છે...",
+    securityNote: "સુરક્ષિત ચકાસણી. કોઈ આધાર ડેટા સંગ્રહિત થતો નથી.",
+    disclaimer: "સ્વતંત્ર નાગરિક સેવા સાધન. EPFO સાથે જોડાયેલ નથી.",
+    loadingSignIn: "લૉગિન લોડ થઈ રહ્યું છે...",
+  },
 };
 
 const bnTranslations: Translations = {
@@ -1839,6 +1991,25 @@ const bnTranslations: Translations = {
     refNo: "রেফারেন্স নম্বর",
     expectedTimeline: "আনুমানিক পর্যালোচনার সময়সীমা",
     timelineText: "কোম্পানি অনুমোদনের পর সাধারণত ১০-১৫ কার্যদিবস লাগে।",
+  },
+  login: {
+    title: "আপনার দাবি ড্যাশবোর্ডে সাইন ইন করুন",
+    subtitle: "সক্রিয় এবং পূর্ববর্তী দাবিগুলি দেখতে আপনার ১২-সংখ্যার UAN লিখুন।",
+    judgeTitle: "বিচারক ১-ক্লিক তাৎক্ষণিক মূল্যায়ন",
+    prefilledBadge: "পূর্ব-পূরণকৃত",
+    judgeDesc: "সুরেশ কুমার (১টি প্রত্যাখ্যাত, ১টি নিষ্পত্তি, ১টি মুলতুবি দাবি) হিসাবে পরীক্ষা করুন।",
+    judgeBtn: "সুরেশ হিসাবে লগইন করুন (১-ক্লিক ডেমো)",
+    judgeLoading: "লগইন হচ্ছে...",
+    orDivider: "অথবা ম্যানুয়ালি প্রবেশ করুন",
+    uanLabel: "ইউনিভার্সাল অ্যাকাউন্ট নম্বর (UAN)",
+    uanPlaceholder: "যেমন ১০০২৩৪৫৬৭৮৯০",
+    passwordLabel: "মেম্বার পোর্টাল পাসওয়ার্ড",
+    passwordPlaceholder: "পাসওয়ার্ড লিখুন",
+    signInBtn: "সাইন ইন করুন",
+    signingIn: "সাইন ইন হচ্ছে...",
+    securityNote: "সুরক্ষিত যাচাইকরণ। কোনও আধার ডেটা সংরক্ষণ করা হয় না।",
+    disclaimer: "স্বাধীন নাগরিক সেবা প্রযুক্তি। EPFO এর সাথে অনুমোদিত নয়।",
+    loadingSignIn: "লগইন লোড হচ্ছে...",
   },
 };
 
