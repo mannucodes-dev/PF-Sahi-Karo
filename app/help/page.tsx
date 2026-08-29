@@ -1,56 +1,72 @@
 import React from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { getAllBuiltinRemarkCodes } from "@/lib/data/remark-codes";
+import { getAllBuiltinRemarkCodes } from "@/lib/data/remark-constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle, BookOpen, Clock, ShieldCheck, ExternalLink, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { formatDisplayDate } from "@/lib/utils";
 import { getServerTranslation } from "@/lib/i18n/server";
 
 export default async function HelpPage() {
   const { locale, t } = await getServerTranslation();
-  const langKey = locale === "hi" ? "hi" : "en";
-  const remarkCodes = getAllBuiltinRemarkCodes(langKey);
+  const remarkCodes = getAllBuiltinRemarkCodes(locale);
 
   const GLOSSARY_ITEMS = [
     {
-      term: "UAN (Universal Account Number)",
-      description: "A permanent 12-digit number allotted by EPFO to every salaried worker. It links multiple Member IDs allotted by different employers across your career.",
+      term: t.glossary.uan.term,
+      description: t.glossary.uan.explanation,
     },
     {
-      term: "KYC (Know Your Customer)",
-      description: "Mandatory verification documents (Aadhaar, PAN, Bank details) digitally linked to your UAN and authenticated by your employer.",
+      term: t.glossary.kyc.term,
+      description: t.glossary.kyc.explanation,
     },
     {
-      term: "Joint Declaration Form",
-      description: "A standardized physical or online application signed jointly by the employee and employer to rectify name spelling, father's name, date of birth, or date of exit.",
+      term: locale === "hi" ? "संयुक्त घोषणा पत्र (Joint Declaration)" : locale === "mr" ? "संयुक्त घोषणा पत्र (Joint Declaration)" : "Joint Declaration Form",
+      description:
+        locale === "hi"
+          ? "नाम, जन्म तिथि या सेवा विवरण में सुधार के लिए कर्मचारी और नियोक्ता द्वारा संयुक्त रूप से हस्ताक्षरित आधिकारिक आवेदन।"
+          : locale === "mr"
+          ? "नाव, जन्मतारीख किंवा निकास तारीख सुधारण्यासाठी कर्मचारी आणि कंपनीने संयुक्तपणे स्वाक्षरी केलेला अर्ज."
+          : "A standardized physical or online application signed jointly by the employee and employer to rectify name spelling, date of birth, or date of exit.",
     },
     {
-      term: "NEFT (National Electronic Funds Transfer)",
-      description: "The electronic banking network used by EPFO field offices to directly disburse approved claim amounts to your validated bank account.",
+      term: t.glossary.neft.term,
+      description: t.glossary.neft.explanation,
     },
     {
-      term: "DSC (Digital Signature Certificate)",
-      description: "A secure cryptographic token (Class 3) used by employer authorized signatories on the EPFO Unified Portal to digitally approve employee KYC and claims.",
+      term: t.glossary.eps.term,
+      description: t.glossary.eps.explanation,
+    },
+    {
+      term: t.glossary.epfo.term,
+      description: t.glossary.epfo.explanation,
     },
   ];
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-zinc-900">
+      <div id="top" className="scroll-mt-0" />
       <SiteHeader />
 
       <main id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 space-y-10">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full">
             <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Knowledge Base &amp; Decoder Rules</span>
+            <span>{locale === "hi" ? "नियम संग्रह एवं डिकोडर नियम" : locale === "mr" ? "नियम संग्रह व डिकोडर नियम" : "Knowledge Base & Decoder Rules"}</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
-            EPFO Rejection Reasons &amp; Resolution Rules
+            {locale === "hi"
+              ? "ईपीएफओ अस्वीकृति कारण एवं समाधान नियम"
+              : locale === "mr"
+              ? "ईपीएफओ नकार कारणे व निवारण नियम"
+              : "EPFO Rejection Reasons & Resolution Rules"}
           </h1>
           <p className="text-sm sm:text-base text-zinc-600 max-w-2xl leading-relaxed">
-            Browse official rejection remark definitions, plain-language translations, action checklists, and policy circulars.
+            {locale === "hi"
+              ? "आधिकारिक अस्वीकृति टिप्पणियों की परिभाषाएं, सरल भाषा में व्याख्या, समाधान चेकलिस्ट और सरकारी परिपत्र देखें।"
+              : locale === "mr"
+              ? "अधिकृत नकार शेरे, सोप्या भाषेतील स्पष्टीकरण, निवारण पायऱ्या आणि सरकारी परिपत्रके पहा."
+              : "Browse official rejection remark definitions, plain-language translations, action checklists, and policy circulars."}
           </p>
         </div>
 
@@ -58,7 +74,7 @@ export default async function HelpPage() {
         <section className="space-y-4">
           <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-teal-700" aria-hidden="true" />
-            Published Rejection Decoder Catalog
+            <span>{locale === "hi" ? "प्रकाशित अस्वीकृति डिकोडर सूची" : locale === "mr" ? "प्रकाशित नकार डिकोडर सूची" : "Published Rejection Decoder Catalog"}</span>
           </h2>
 
           <div className="space-y-4">
@@ -75,14 +91,14 @@ export default async function HelpPage() {
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-zinc-600 bg-white border border-slate-200 px-3 py-1 rounded-lg w-fit">
                     <Clock className="w-3.5 h-3.5 text-zinc-500" aria-hidden="true" />
-                    <span>Est: {rule.estimated_days}</span>
+                    <span>{t.decoderTool.timelineLabel}: {rule.estimated_days}</span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
                   <div>
                     <div className="text-[11px] uppercase font-bold text-zinc-400 mb-1">
-                      Official Portal Remark Text
+                      {t.decoderTool.officialRemarkLabel}
                     </div>
                     <p className="font-mono text-zinc-800 bg-slate-50 border border-slate-200 p-3 rounded-lg">
                       &ldquo;{rule.official_text}&rdquo;
@@ -91,7 +107,7 @@ export default async function HelpPage() {
 
                   <div className="space-y-2">
                     <div className="text-xs sm:text-sm font-bold text-zinc-900">
-                      Step-by-Step Resolution Steps:
+                      {t.decoderTool.stepByStepTitle}:
                     </div>
                     <ol className="space-y-1.5 list-decimal list-inside text-zinc-700 leading-relaxed">
                       {rule.fix_steps.map((step, idx) => (
@@ -105,7 +121,7 @@ export default async function HelpPage() {
                   <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500">
                     <span className="flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-teal-700" aria-hidden="true" />
-                      <span>Source: <strong>{rule.source_reference}</strong></span>
+                      <span>{t.common.source}: <strong>{rule.source_reference}</strong></span>
                     </span>
 
                     {rule.source_url && (
@@ -115,7 +131,7 @@ export default async function HelpPage() {
                         rel="noopener noreferrer"
                         className="text-teal-700 hover:text-teal-900 font-semibold inline-flex items-center gap-1 underline underline-offset-2"
                       >
-                        View Official Circular <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                        {t.offices.viewCirculars} <ExternalLink className="w-3 h-3" aria-hidden="true" />
                       </a>
                     )}
                   </div>
@@ -129,7 +145,7 @@ export default async function HelpPage() {
         <section className="space-y-4">
           <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-700" aria-hidden="true" />
-            EPFO Glossary &amp; Technical Concepts
+            <span>{t.glossary.title}</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

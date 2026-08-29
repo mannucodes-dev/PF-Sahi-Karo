@@ -15,87 +15,52 @@ import {
   BookOpen,
 } from "lucide-react";
 import { LanguageSwitcher } from "./language-switcher";
+import { useTranslation } from "@/lib/i18n/context";
 import type { CitizenUser } from "@/lib/auth/session";
 
 interface SiteHeaderClientProps {
   user: CitizenUser | null;
 }
 
-interface NavItem {
-  id: string;
-  label: string;
-  mobileLabel: string;
-  href: string;
-  badge?: string;
-  subtext?: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  {
-    id: "tds-calculator",
-    label: "TDS Calculator",
-    mobileLabel: "PF TDS Tax Calculator",
-    href: "/#tax-calculator",
-    subtext: "Section 192A",
-    icon: Calculator,
-  },
-  {
-    id: "instant-decoder",
-    label: "Instant Decoder",
-    mobileLabel: "Instant Rejection Decoder",
-    href: "/#instant-decoder",
-    badge: "Primary",
-    icon: Sparkles,
-  },
-  {
-    id: "office-directory",
-    label: "Office Directory",
-    mobileLabel: "EPFO Office Directory",
-    href: "/#office-directory",
-    subtext: "138+ Offices",
-    icon: MapPin,
-  },
-  {
-    id: "rules-faq",
-    label: "Rules & FAQ",
-    mobileLabel: "Rejection Rules & FAQ",
-    href: "/help",
-    icon: BookOpen,
-  },
-];
-
-function resolveActiveId(pathname: string, hash: string): string {
-  if (pathname.startsWith("/help")) {
-    return "rules-faq";
-  }
-
-  const cleanHash = (hash || "").toLowerCase().replace(/^#/, "");
-
-  if (cleanHash === "tds-calculator" || cleanHash === "tax-calculator" || cleanHash === "calculator") {
-    return "tds-calculator";
-  }
-  if (cleanHash === "office-directory" || cleanHash === "offices" || cleanHash === "office-locator") {
-    return "office-directory";
-  }
-  if (cleanHash === "instant-decoder" || cleanHash === "decoder" || cleanHash === "rejection-decoder") {
-    return "instant-decoder";
-  }
-  if (cleanHash === "rules-faq" || cleanHash === "faq" || cleanHash === "rules") {
-    return "rules-faq";
-  }
-
-  if (pathname === "/") {
-    return "instant-decoder";
-  }
-
-  return "";
-}
-
 export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const navItems = [
+    {
+      id: "tds-calculator",
+      label: t.nav.taxCalc,
+      mobileLabel: `${t.nav.taxCalc} (Section 192A)`,
+      href: "/#tax-calculator",
+      subtext: "Section 192A",
+      icon: Calculator,
+    },
+    {
+      id: "instant-decoder",
+      label: t.nav.decoder,
+      mobileLabel: t.nav.decoder,
+      href: "/#instant-decoder",
+      badge: "Primary",
+      icon: Sparkles,
+    },
+    {
+      id: "office-directory",
+      label: t.nav.officeFinder,
+      mobileLabel: t.nav.officeFinder,
+      href: "/#office-directory",
+      subtext: "138+ Offices",
+      icon: MapPin,
+    },
+    {
+      id: "rules-faq",
+      label: t.nav.help,
+      mobileLabel: t.nav.help,
+      href: "/help#top",
+      icon: BookOpen,
+    },
+  ];
 
   // Close mobile menu on resize to desktop or ESC key
   useEffect(() => {
@@ -139,13 +104,13 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
             src="/logo.png"
           />
           <span className="text-xl sm:text-[22px] font-bold text-[#005f56] tracking-tight whitespace-nowrap">
-            PF Sahi Karo
+            {t.common.brandName}
           </span>
         </Link>
 
         {/* Center: Navigation Links (Desktop: >= 1024px) */}
         <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-8 text-[15px]">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             return (
               <Link
                 key={item.id}
@@ -170,7 +135,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
             title="Instant 1-Click Evaluation for Hackathon Judges"
           >
             <Zap className="w-4 h-4 text-[#291500] fill-[#291500] shrink-0" />
-            <span className="hidden sm:inline">Judge Demo</span>
+            <span className="hidden sm:inline">{t.nav.judgeDemo}</span>
             <span className="sm:hidden">Demo</span>
           </Link>
 
@@ -209,7 +174,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
           <div className="max-w-[1240px] mx-auto px-4 sm:px-6 py-5 space-y-4">
             {/* Primary Navigation Links */}
             <div className="space-y-1.5">
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <Link
@@ -246,7 +211,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
                 className="w-full bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] font-bold text-sm py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-2xs transition-colors"
               >
                 <Zap className="w-4 h-4 text-[#291500] fill-[#291500]" />
-                <span>Evaluate Demo (Suresh Kumar)</span>
+                <span>{t.common.judgeDemoBtn}</span>
               </Link>
 
               <Link
@@ -255,7 +220,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
                 className="w-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
               >
                 <CircleUserRound className="w-4 h-4 text-slate-600" />
-                <span>{user ? `Signed in as ${user.full_name}` : "Citizen / Member Login"}</span>
+                <span>{user ? `Signed in as ${user.full_name}` : t.nav.signIn}</span>
               </Link>
             </div>
           </div>

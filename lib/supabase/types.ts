@@ -63,6 +63,8 @@ export type SupportStatus =
   | "resolved"
   | "closed";
 
+export type Locale = "en" | "hi" | "mr" | "ta" | "te" | "kn" | "gu" | "bn";
+
 export interface Database {
   public: {
     Tables: {
@@ -74,7 +76,7 @@ export interface Database {
           masked_uan: string;
           masked_bank_account: string | null;
           identity_status: IdentityStatus;
-          locale: "en" | "hi";
+          locale: Locale;
           consent_at: string | null;
           created_at: string;
           updated_at: string;
@@ -86,7 +88,7 @@ export interface Database {
           masked_uan: string;
           masked_bank_account?: string | null;
           identity_status?: IdentityStatus;
-          locale?: "en" | "hi";
+          locale?: Locale;
           consent_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -98,7 +100,7 @@ export interface Database {
           masked_uan?: string;
           masked_bank_account?: string | null;
           identity_status?: IdentityStatus;
-          locale?: "en" | "hi";
+          locale?: Locale;
           consent_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -108,7 +110,7 @@ export interface Database {
       remark_codes: {
         Row: {
           code: string;
-          locale: "en" | "hi";
+          locale: Locale;
           official_text: string;
           plain_text: string;
           fix_steps: string[];
@@ -123,7 +125,7 @@ export interface Database {
         };
         Insert: {
           code: string;
-          locale?: "en" | "hi";
+          locale?: Locale;
           official_text: string;
           plain_text: string;
           fix_steps: string[];
@@ -138,7 +140,7 @@ export interface Database {
         };
         Update: {
           code?: string;
-          locale?: "en" | "hi";
+          locale?: Locale;
           official_text?: string;
           plain_text?: string;
           fix_steps?: string[];

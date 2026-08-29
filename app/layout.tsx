@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { SkipToContent } from "@/components/skip-to-content";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { FAQWidget } from "@/components/faq-widget";
 import { getServerLocale } from "@/lib/i18n/server";
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col relative bg-[#f7f9fb] text-[#191c1e] selection:bg-[#a3faef] selection:text-[#00201d] font-sans text-base">
         <LanguageProvider initialLocale={initialLocale}>
+          <ScrollToTop />
           <SkipToContent />
           {children}
           <FAQWidget />

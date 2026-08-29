@@ -46,21 +46,20 @@ export default async function LandingPage() {
             {/* National Rejection Rate Warning Pill */}
             <div className="inline-flex items-center gap-1.5 bg-[#fef2f2] border border-[#fecaca] px-3.5 py-1 rounded-full text-[11px] font-bold text-[#b91c1c] uppercase tracking-wider mb-5 sm:mb-6 w-max shadow-2xs">
               <AlertTriangle className="w-3.5 h-3.5 text-[#dc2626] stroke-[2.25]" />
-              <span>34% NATIONAL REJECTION RATE</span>
+              <span>{t.hero.badge}</span>
             </div>
 
             {/* Main Headline - Exactly 3 distinct lines matching reference image */}
             <h1 className="text-[28px] sm:text-4xl md:text-[44px] lg:text-[50px] font-extrabold text-slate-900 leading-[1.14] tracking-tight mb-5 sm:mb-6">
-              <span className="block">Claim Rejected by EPFO?</span>
+              <span className="block">{t.hero.headlinePart1}</span>
               <span className="block">
-                <span className="text-[#005f56]">We Decode Why</span> and Help
+                <span className="text-[#005f56]">{t.hero.headlinePart2}</span> {t.hero.headlinePart3.replace(/^[^\w\s\u0900-\u0DFF]+/, "")}
               </span>
-              <span className="block">You Fix It.</span>
             </h1>
 
             {/* Subtext */}
             <p className="text-[15px] sm:text-[16px] md:text-[17px] text-slate-600 leading-relaxed max-w-xl mb-7 sm:mb-8">
-              Navigating Provident Fund rejections can be confusing. Upload your rejection notice, and our secure, civic tech tool will instantly explain the issue and guide you on the exact steps to resolution.
+              {t.hero.subheadline}
             </p>
 
             {/* Dual CTA Action Buttons */}
@@ -70,7 +69,7 @@ export default async function LandingPage() {
                 className="bg-[#005953] hover:bg-[#004742] text-white px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 h-[46px] sm:h-[44px] shadow-sm transition-all cursor-pointer whitespace-nowrap"
               >
                 <Search className="w-4 h-4 text-white stroke-[2.5]" />
-                <span>Decode Rejection Notice</span>
+                <span>{t.hero.ctaPrimary}</span>
               </a>
 
               <Link
@@ -78,7 +77,7 @@ export default async function LandingPage() {
                 className="bg-[#fa9d1b] hover:bg-[#f59510] text-[#291500] px-5 sm:px-6 py-3 rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 h-[46px] sm:h-[44px] shadow-sm transition-all cursor-pointer whitespace-nowrap"
               >
                 <Zap className="w-4 h-4 text-[#291500] fill-[#291500]" />
-                <span>Judge Demo Evaluation</span>
+                <span>{t.hero.ctaSecondary}</span>
               </Link>
             </div>
 
@@ -86,19 +85,19 @@ export default async function LandingPage() {
             <div className="flex items-center gap-6 sm:gap-8 pt-6 border-t border-slate-200/80 max-w-md">
               <div>
                 <div className="text-2xl sm:text-[26px] lg:text-[28px] font-extrabold text-[#005f56] tracking-tight">
-                  29+ Crore
+                  {t.hero.statsSubscribers}
                 </div>
                 <div className="text-xs sm:text-sm text-slate-500 font-normal mt-0.5">
-                  Active Members
+                  {t.hero.statsSubscribersLabel}
                 </div>
               </div>
               <div className="h-10 w-px bg-slate-200" />
               <div>
                 <div className="text-2xl sm:text-[26px] lg:text-[28px] font-extrabold text-[#005f56] tracking-tight">
-                  ₹0
+                  {t.hero.statsZeroCost}
                 </div>
                 <div className="text-xs sm:text-sm text-slate-500 font-normal mt-0.5">
-                  Free Public Service
+                  {t.hero.statsZeroCostLabel}
                 </div>
               </div>
             </div>

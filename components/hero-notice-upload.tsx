@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { useTranslation } from "@/lib/i18n/context";
 import {
   FileUp,
   ShieldCheck,
@@ -70,6 +71,7 @@ const SAMPLE_NOTICES: SampleNotice[] = [
 ];
 
 export function HeroNoticeUpload() {
+  const { locale, t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [analyzingState, setAnalyzingState] = useState<
@@ -125,7 +127,7 @@ export function HeroNoticeUpload() {
     setTimeout(() => {
       setAnalyzingState("decoded");
       triggerDecoder(notice.code, notice.officialRemark);
-    }, 1500);
+    }, 1400);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,10 +182,14 @@ export function HeroNoticeUpload() {
 
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Upload Notice
+              {locale === "hi" ? "नोटिस अपलोड करें" : locale === "mr" ? "नोटीस अपलोड करा" : "Upload Notice"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-[270px] mx-auto mt-0.5">
-              Upload PDF or Image of your EPFO rejection message for instant analysis.
+              {locale === "hi"
+                ? "त्वरित विश्लेषण के लिए ईपीएफओ अस्वीकृति संदेश का पीडीएफ या फोटो अपलोड करें।"
+                : locale === "mr"
+                ? "त्वरित विश्लेषणासाठी ईपीएफओ नकार संदेशाचा फोटो किंवा पीडीएफ जोडा."
+                : "Upload PDF or Image of your EPFO rejection message for instant analysis."}
             </p>
           </div>
 
@@ -204,7 +210,13 @@ export function HeroNoticeUpload() {
               className="w-full bg-[#005953] hover:bg-[#004742] text-white py-3 px-4 rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-colors"
             >
               <ImageIcon className="w-4 h-4 text-white" />
-              <span>Select Notice File (PDF / Image)</span>
+              <span>
+                {locale === "hi"
+                  ? "नोटिस फाइल चुनें (PDF / इमेज)"
+                  : locale === "mr"
+                  ? "नोटीस फाइल निवडा (PDF / इमेज)"
+                  : "Select Notice File (PDF / Image)"}
+              </span>
             </button>
           </div>
 
@@ -213,7 +225,9 @@ export function HeroNoticeUpload() {
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-[#005f56]" />
-                <span>Test 1-Click Mock Notice:</span>
+                <span>
+                  {locale === "hi" ? "1-क्लिक टेस्ट सैंपल:" : locale === "mr" ? "१-क्लिक चाचणी नमुना:" : "Test 1-Click Mock Notice:"}
+                </span>
               </span>
               <button
                 type="button"
@@ -221,7 +235,7 @@ export function HeroNoticeUpload() {
                 className="text-[10px] text-[#005f56] hover:underline font-bold flex items-center gap-0.5 cursor-pointer"
               >
                 <Download className="w-3 h-3" />
-                <span>Get Sample Files</span>
+                <span>{locale === "hi" ? "सैंपल फाइलें" : "Get Sample Files"}</span>
               </button>
             </div>
 
@@ -251,7 +265,7 @@ export function HeroNoticeUpload() {
               ))}
             </div>
 
-            {/* Collapsible Download Box for Demo Preparation */}
+            {/* Collapsible Download Box */}
             {showSamplesModal && (
               <div className="mt-2.5 p-2.5 bg-teal-50/70 border border-teal-200 rounded-lg text-xs space-y-1.5 animate-in fade-in duration-200">
                 <p className="font-bold text-teal-900 text-[11px]">
@@ -287,7 +301,11 @@ export function HeroNoticeUpload() {
           <div className="space-y-1">
             <h3 className="text-base sm:text-lg font-bold text-slate-900">
               {analyzingState === "uploading"
-                ? "Reading Rejection Notice..."
+                ? locale === "hi"
+                  ? "अस्वीकृति नोटिस पढ़ी जा रही है..."
+                  : "Reading Rejection Notice..."
+                : locale === "hi"
+                ? "ओसीआर द्वारा ईपीएफओ टिप्पणी की पहचान की जा रही है..."
                 : "OCR Parsing EPFO Remark..."}
             </h3>
             <p className="text-xs text-slate-500 font-mono truncate max-w-[260px] mx-auto">
@@ -305,7 +323,9 @@ export function HeroNoticeUpload() {
           </div>
 
           <p className="text-[11px] text-slate-600 font-medium">
-            Matching text patterns against official EPFO Master Circulars...
+            {locale === "hi"
+              ? "सरकारी ईपीएफओ परिपत्रों से मिलान किया जा रहा है..."
+              : "Matching text patterns against official EPFO Master Circulars..."}
           </p>
         </div>
       )}
@@ -319,7 +339,7 @@ export function HeroNoticeUpload() {
 
           <div>
             <span className="inline-block bg-emerald-50 text-emerald-800 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-emerald-200 mb-1">
-              Remark Identified
+              {locale === "hi" ? "टिप्पणी पहचानी गई" : "Remark Identified"}
             </span>
             <h3 className="text-base sm:text-lg font-bold text-slate-900">
               {analyzedNotice.name}
@@ -331,7 +351,7 @@ export function HeroNoticeUpload() {
 
           <div className="p-2.5 bg-red-50/80 rounded-lg border border-red-200/70 text-left">
             <div className="text-[10px] font-bold text-red-800 uppercase tracking-wider mb-0.5">
-              Extracted Raw Remark:
+              {locale === "hi" ? "प्राप्त आधिकारिक टिप्पणी:" : "Extracted Raw Remark:"}
             </div>
             <p className="text-xs text-red-700 font-mono leading-relaxed line-clamp-3">
               &ldquo;{analyzedNotice.officialRemark}&rdquo;
@@ -343,7 +363,7 @@ export function HeroNoticeUpload() {
               href="#instant-decoder"
               className="w-full bg-[#005c55] hover:bg-[#004742] text-white py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
             >
-              <span>View Full Resolution & HR Letter</span>
+              <span>{locale === "hi" ? "पूरा समाधान एवं एचआर पत्र देखें" : "View Full Resolution & HR Letter"}</span>
               <ArrowDown className="w-3.5 h-3.5" />
             </a>
 
@@ -355,7 +375,7 @@ export function HeroNoticeUpload() {
               }}
               className="text-xs text-slate-600 hover:text-slate-900 font-semibold py-1 cursor-pointer"
             >
-              Analyze another notice
+              {locale === "hi" ? "अन्य नोटिस का विश्लेषण करें" : "Analyze another notice"}
             </button>
           </div>
         </div>
