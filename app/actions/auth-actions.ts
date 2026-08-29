@@ -11,13 +11,35 @@ export interface LoginActionResult {
   error?: string;
 }
 
+function safeInternalRedirect(value: string | null): string {
+  if (!value) return "/dashboard";
+
+  try {
+    const parsed = new URL(value, "http://localhost");
+
+    if (
+      parsed.origin === "http://localhost" &&
+      parsed.pathname.startsWith("/") &&
+      !parsed.pathname.startsWith("//")
+    ) {
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    }
+  } catch {
+    // Fall through to the safe default.
+  }
+
+  return "/dashboard";
+}
+
 export async function loginAction(
   prevState: LoginActionResult | null,
   formData: FormData
 ): Promise<LoginActionResult> {
   const rawUan = formData.get("uan") as string;
   const rawPassword = formData.get("password") as string;
-  const redirectTo = (formData.get("redirectTo") as string) || "/dashboard";
+  const redirectTo = safeInternalRedirect(
+    formData.get("redirectTo") as string | null
+  );
 
   const parsed = loginSchema.safeParse({
     uan: rawUan,

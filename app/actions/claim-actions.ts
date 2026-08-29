@@ -22,7 +22,7 @@ export async function submitClaimResubmissionAction(
   const hasConfirmedProfileFix = formData.get("hasConfirmedProfileFix") === "true";
   const hasConfirmedBankDetails = formData.get("hasConfirmedBankDetails") === "true";
   const notes = (formData.get("notes") as string) || undefined;
-  const idempotencyKey = (formData.get("idempotencyKey") as string) || `idemp_${Date.now()}_${Math.random()}`;
+  const idempotencyKey = formData.get("idempotencyKey") as string;
 
   // Validate schema
   const parsed = resubmissionSchema.safeParse({

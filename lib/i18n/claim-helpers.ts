@@ -135,11 +135,12 @@ export function getLocalizedScenarios(locale: Locale): LocalizedScenario[] {
 export function getLocalizedClaimDetails(
   locale: Locale,
   claim: { amount: number; settled_at?: string | null; claim_type: string },
-  user: { full_name: string; masked_bank_account: string }
+  user: { full_name: string; masked_bank_account?: string | null }
 ) {
   const formattedAmount = formatCurrency(claim.amount);
   const formattedDate = formatDisplayDate(claim.settled_at);
-  const last4Bank = user.masked_bank_account.slice(-4);
+  const maskedBank = user.masked_bank_account || "";
+  const last4Bank = maskedBank.replace(/\D/g, "").slice(-4) || "0000";
 
   const texts: Record<
     Locale,

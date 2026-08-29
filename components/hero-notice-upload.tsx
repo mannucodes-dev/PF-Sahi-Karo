@@ -70,6 +70,25 @@ const SAMPLE_NOTICES: SampleNotice[] = [
   },
 ];
 
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = new Set([
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+]);
+
+function validateSelectedFile(file: File): string | null {
+  if (!ALLOWED_FILE_TYPES.has(file.type)) {
+    return "Only PDF, PNG, and JPEG files are supported.";
+  }
+
+  if (file.size <= 0 || file.size > MAX_FILE_SIZE_BYTES) {
+    return "The file must be smaller than 5 MB.";
+  }
+
+  return null;
+}
+
 export function HeroNoticeUpload() {
   const { locale, t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -131,23 +150,39 @@ export function HeroNoticeUpload() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const matched = determineNoticeFromFileName(file.name);
-      const sizeStr = `${(file.size / 1024).toFixed(1)} KB`;
-      processNoticeAnalysis(matched, file.name, sizeStr);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validationError = validateSelectedFile(file);
+
+    if (validationError) {
+      setUploadedFileName(validationError);
+      setAnalyzingState("idle");
+      return;
     }
+
+    const matched = determineNoticeFromFileName(file.name);
+    const sizeStr = `${(file.size / 1024).toFixed(1)} KB`;
+    processNoticeAnalysis(matched, file.name, sizeStr);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      const matched = determineNoticeFromFileName(file.name);
-      const sizeStr = `${(file.size / 1024).toFixed(1)} KB`;
-      processNoticeAnalysis(matched, file.name, sizeStr);
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+
+    const validationError = validateSelectedFile(file);
+
+    if (validationError) {
+      setUploadedFileName(validationError);
+      setAnalyzingState("idle");
+      return;
     }
+
+    const matched = determineNoticeFromFileName(file.name);
+    const sizeStr = `${(file.size / 1024).toFixed(1)} KB`;
+    processNoticeAnalysis(matched, file.name, sizeStr);
   };
 
   return (
@@ -161,24 +196,28 @@ export function HeroNoticeUpload() {
       {analyzingState === "idle" && (
         <div className="space-y-3.5">
           {/* Upload Dropzone */}
-          <div
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => {
               e.preventDefault();
               setIsDragging(true);
             }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
+            aria-label="Upload an EPFO rejection notice"
             className={cn(
-              "w-18 h-18 rounded-full flex items-center justify-center mx-auto mb-1 cursor-pointer transition-all border-2 border-dashed",
+              "w-18 h-18 rounded-full flex items-center justify-center mx-auto mb-1 cursor-pointer transition-all border-2 border-dashed focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2",
               isDragging
                 ? "bg-teal-50 border-[#005f56] scale-105"
                 : "bg-slate-100/90 border-slate-200 hover:bg-slate-200/80 hover:border-slate-400"
             )}
-            title="Click or drag rejection notice here"
           >
-            <FileUp className="w-8 h-8 text-slate-700 stroke-[1.75]" />
-          </div>
+            <FileUp
+              className="w-8 h-8 text-slate-700 stroke-[1.75]"
+              aria-hidden="true"
+            />
+          </button>
 
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
@@ -191,6 +230,11 @@ export function HeroNoticeUpload() {
                 ? "त्वरित विश्लेषणासाठी ईपीएफओ नकार संदेशाचा फोटो किंवा पीडीएफ जोडा."
                 : "Upload PDF or Image of your EPFO rejection message for instant analysis."}
             </p>
+            {uploadedFileName && (uploadedFileName.startsWith("Only ") || uploadedFileName.startsWith("The file ")) && (
+              <p className="text-xs text-red-600 font-semibold mt-1.5 bg-red-50 py-1 px-2.5 rounded-lg border border-red-200 inline-block">
+                {uploadedFileName}
+              </p>
+            )}
           </div>
 
           {/* Action Button & Hidden Input */}
@@ -200,7 +244,7 @@ export function HeroNoticeUpload() {
               ref={fileInputRef}
               onChange={handleFileChange}
               className="sr-only"
-              accept=".pdf,image/png,image/jpeg,image/webp,image/svg+xml"
+              accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
               id="hero-notice-file-input"
             />
 

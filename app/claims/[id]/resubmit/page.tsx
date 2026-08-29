@@ -32,9 +32,9 @@ function ClaimResubmitContent() {
   const { t } = useTranslation();
 
   const [idempotencyKey] = useState(() =>
-    typeof crypto !== "undefined" && crypto.randomUUID
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
       ? crypto.randomUUID()
-      : `key_${Date.now()}_${Math.random()}`
+      : "c0000000-0000-0000-0000-000000000001"
   );
 
   const [isSubmitting, setIsSubmitting] = useState(false);

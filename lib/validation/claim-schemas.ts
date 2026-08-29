@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const resubmissionSchema = z.object({
-  claimId: z.string().min(5, { message: "Invalid claim identifier" }),
+  claimId: z.string().uuid({ message: "Invalid claim identifier" }),
   remarkCode: z.string().min(1, { message: "Remark code is required" }),
   hasConfirmedProfileFix: z.literal(true, {
     message: "You must confirm you verified and rectified your details on the Member Sewa portal",
@@ -10,12 +10,14 @@ export const resubmissionSchema = z.object({
     message: "You must confirm that your bank account is active and verified",
   }),
   notes: z.string().max(500, { message: "Notes must not exceed 500 characters" }).optional(),
-  idempotencyKey: z.string().min(10, { message: "Idempotency key missing" }),
+  idempotencyKey: z
+    .string()
+    .uuid({ message: "Invalid idempotency key" }),
   documentId: z.string().min(5).optional(),
 });
 
 export const supportCaseSchema = z.object({
-  claimId: z.string().min(5).optional(),
+  claimId: z.string().uuid({ message: "Invalid claim identifier" }).optional(),
   category: z.enum([
     "claim_rejection",
     "kyc_issue",

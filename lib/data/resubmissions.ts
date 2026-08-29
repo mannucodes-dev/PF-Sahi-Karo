@@ -131,7 +131,18 @@ export async function submitResubmission(
   }
 
   // 4. Update claim status to 'resubmitted'
-  await updateClaimStatus(params.claimId, "resubmitted");
+  const statusUpdated = await updateClaimStatus(
+    params.claimId,
+    params.profileId,
+    "resubmitted"
+  );
+
+  if (!statusUpdated) {
+    return {
+      success: false,
+      error: "Unable to update the claim status securely.",
+    };
+  }
 
   // 5. Record claim event
   await createClaimEvent({

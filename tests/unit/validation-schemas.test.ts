@@ -27,24 +27,33 @@ describe("Validation Schemas", () => {
     assert.ok(!invalidAlpha.success);
   });
 
-  it("should require both confirmation checkboxes on resubmission", () => {
+  it("should require both confirmation checkboxes and valid UUIDs on resubmission", () => {
     const validResubmission = resubmissionSchema.safeParse({
-      claimId: "c3000000-0000-0000-0000-000000000003",
+      claimId: "c3000000-0000-4000-8000-000000000003",
       remarkCode: "NAME_MISMATCH",
       hasConfirmedProfileFix: true,
       hasConfirmedBankDetails: true,
-      idempotencyKey: "idemp_test_123456789",
+      idempotencyKey: "a1000000-0000-4000-8000-000000000001",
     });
     assert.ok(validResubmission.success);
 
     const unconfirmed = resubmissionSchema.safeParse({
-      claimId: "c3000000-0000-0000-0000-000000000003",
+      claimId: "c3000000-0000-4000-8000-000000000003",
       remarkCode: "NAME_MISMATCH",
       hasConfirmedProfileFix: false,
       hasConfirmedBankDetails: true,
-      idempotencyKey: "idemp_test_123456789",
+      idempotencyKey: "a1000000-0000-4000-8000-000000000001",
     });
     assert.ok(!unconfirmed.success);
+
+    const invalidUuid = resubmissionSchema.safeParse({
+      claimId: "invalid-claim-id",
+      remarkCode: "NAME_MISMATCH",
+      hasConfirmedProfileFix: true,
+      hasConfirmedBankDetails: true,
+      idempotencyKey: "not-a-uuid",
+    });
+    assert.ok(!invalidUuid.success);
   });
 
   it("should enforce file upload MIME types and size constraints", () => {

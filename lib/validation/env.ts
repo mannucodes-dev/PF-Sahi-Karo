@@ -39,8 +39,12 @@ export function isSupabaseConfigured(): boolean {
  * enables demo mode so judges can evaluate the app with zero setup.
  */
 export function isDemoMode(): boolean {
-  if (env.NEXT_PUBLIC_DEMO_MODE === "true") {
-    return true;
+  if (env.NODE_ENV === "production") {
+    return env.NEXT_PUBLIC_DEMO_MODE === "true";
   }
-  return !isSupabaseConfigured();
+
+  return (
+    env.NEXT_PUBLIC_DEMO_MODE === "true" ||
+    !isSupabaseConfigured()
+  );
 }

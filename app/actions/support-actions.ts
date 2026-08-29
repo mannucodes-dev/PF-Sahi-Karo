@@ -1,5 +1,6 @@
 "use server";
 
+import { requireUser } from "@/lib/auth/require-user";
 import { createSupportCase } from "@/lib/data/support-cases";
 import { supportCaseSchema } from "@/lib/validation/claim-schemas";
 import { SupportCategory } from "@/lib/supabase/types";
@@ -15,6 +16,8 @@ export async function submitSupportCaseAction(
   description: string,
   claimId?: string
 ): Promise<SupportActionResult> {
+  const user = await requireUser("/help");
+
   const parsed = supportCaseSchema.safeParse({
     category,
     description,
@@ -22,12 +25,16 @@ export async function submitSupportCaseAction(
   });
 
   if (!parsed.success) {
-    const errorMsg = parsed.error.issues[0]?.message || "Invalid support inquiry parameters";
-    return { success: false, error: errorMsg };
+    return {
+      success: false,
+      error:
+        parsed.error.issues[0]?.message ||
+        "Invalid support inquiry parameters",
+    };
   }
 
-  return await createSupportCase({
-    profileId: "public-citizen-inquiry",
+  return createSupportCase({
+    profileId: user.id,
     category: parsed.data.category,
     description: parsed.data.description,
     claimId: parsed.data.claimId,

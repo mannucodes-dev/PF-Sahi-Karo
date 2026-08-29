@@ -124,7 +124,7 @@ const getRelativeDateString = (daysAgo: number): string => {
 // 4. Mock Claims (3 claims shown on dashboard)
 export const MOCK_CLAIMS: Claim[] = [
   {
-    id: "c1000000-0000-0000-0000-000000000001",
+    id: "c1000000-0000-4000-8000-000000000001",
     user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     claim_type: "PF Transfer",
     amount: 42500,
@@ -134,7 +134,7 @@ export const MOCK_CLAIMS: Claim[] = [
     remark_code: null,
   },
   {
-    id: "c2000000-0000-0000-0000-000000000002",
+    id: "c2000000-0000-4000-8000-000000000002",
     user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     claim_type: "Final PF Settlement",
     amount: 184320,
@@ -144,7 +144,7 @@ export const MOCK_CLAIMS: Claim[] = [
     remark_code: null,
   },
   {
-    id: "c3000000-0000-0000-0000-000000000003",
+    id: "c3000000-0000-4000-8000-000000000003",
     user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     claim_type: "Final PF Settlement",
     amount: 184320,

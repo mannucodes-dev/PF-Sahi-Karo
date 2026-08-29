@@ -218,6 +218,20 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
     phone: string;
   } | null>(null);
 
+  // Escape key handler for booking modal
+  useEffect(() => {
+    if (!bookingOffice) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setBookingOffice(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [bookingOffice]);
+
   // Sync tab with URL
   useEffect(() => {
     const tabFromUrl = searchParams.get("tab") as DashboardTab;
@@ -484,7 +498,7 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
                       UAN: <span className="tracking-widest">••••••••</span>{user.masked_uan.slice(-4)}
                     </span>
                     <span className="font-mono">
-                      Bank: ending in <span className="tracking-widest">••••</span>{user.masked_bank_account.slice(-4)}
+                      Bank: ending in <span className="tracking-widest">••••</span>{(user.masked_bank_account || "").replace(/\D/g, "").slice(-4) || "0000"}
                     </span>
                   </div>
                 </div>
@@ -1099,8 +1113,16 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
       {/* INTERACTIVE APPOINTMENT BOOKING MODAL & GATE PASS SLIP */}
       {/* ========================================================================= */}
       {bookingOffice && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8">
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
+          role="presentation"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="appointment-dialog-title"
+            className="bg-white rounded-2xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8"
+          >
             {!confirmedBooking ? (
               /* FORM STATE: BOOKING DETAILS */
               <form onSubmit={handleConfirmAppointment} className="flex flex-col">
@@ -1111,7 +1133,10 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
                       <Building2 className="w-3.5 h-3.5" />
                       <span>EPFO Official PRO In-Person Desk</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                    <h2
+                      id="appointment-dialog-title"
+                      className="text-xl sm:text-2xl font-bold tracking-tight text-white"
+                    >
                       Book Official Appointment
                     </h2>
                     <p className="text-xs text-teal-100 mt-0.5 font-medium">
@@ -1121,6 +1146,7 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
                   <button
                     type="button"
                     onClick={() => setBookingOffice(null)}
+                    aria-label="Close dialog"
                     className="text-teal-200 hover:text-white p-1 rounded-lg hover:bg-teal-700/50 cursor-pointer"
                   >
                     <X className="w-5 h-5" />
@@ -1279,6 +1305,7 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
                   <button
                     type="button"
                     onClick={() => setBookingOffice(null)}
+                    aria-label="Close dialog"
                     className="absolute top-4 right-4 text-emerald-200 hover:text-white p-1 rounded-lg cursor-pointer"
                   >
                     <X className="w-5 h-5" />

@@ -6,8 +6,8 @@ export type ClaimRow = Database["public"]["Tables"]["claims"]["Row"];
 
 export const DEMO_CLAIMS_DATA: ClaimRow[] = [
   {
-    id: "c1000000-0000-0000-0000-000000000001",
-    profile_id: "demo-profile-0000-0000-0000-000000000001",
+    id: "c1000000-0000-4000-8000-000000000001",
+    profile_id: "d1000000-0000-4000-8000-000000000001",
     claim_type: "PF Transfer",
     amount: 42500,
     status: "approved",
@@ -21,8 +21,8 @@ export const DEMO_CLAIMS_DATA: ClaimRow[] = [
     updated_at: new Date(Date.now() - 25 * 86400000).toISOString(),
   },
   {
-    id: "c2000000-0000-0000-0000-000000000002",
-    profile_id: "demo-profile-0000-0000-0000-000000000001",
+    id: "c2000000-0000-4000-8000-000000000002",
+    profile_id: "d1000000-0000-4000-8000-000000000001",
     claim_type: "Final PF Settlement",
     amount: 184320,
     status: "under_review",
@@ -36,8 +36,8 @@ export const DEMO_CLAIMS_DATA: ClaimRow[] = [
     updated_at: new Date(Date.now() - 10 * 86400000).toISOString(),
   },
   {
-    id: "c3000000-0000-0000-0000-000000000003",
-    profile_id: "demo-profile-0000-0000-0000-000000000001",
+    id: "c3000000-0000-4000-8000-000000000003",
+    profile_id: "d1000000-0000-4000-8000-000000000001",
     claim_type: "Final PF Settlement",
     amount: 184320,
     status: "rejected",
@@ -114,20 +114,22 @@ export async function getClaimById(
   return data;
 }
 
-/**
- * Updates a claim's status (server-side only with state tracking).
- */
 export async function updateClaimStatus(
   claimId: string,
+  profileId: string,
   newStatus: ClaimStatus
 ): Promise<boolean> {
   const supabase = await createClient();
-  if (!supabase) return true;
 
-  const { error } = await supabase
+  if (!supabase) return false;
+
+  const { data, error } = await supabase
     .from("claims")
     .update({ status: newStatus })
-    .eq("id", claimId);
+    .eq("id", claimId)
+    .eq("profile_id", profileId)
+    .select("id")
+    .maybeSingle();
 
-  return !error;
+  return !error && Boolean(data);
 }
