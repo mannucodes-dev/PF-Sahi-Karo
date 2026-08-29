@@ -160,18 +160,18 @@ export function PfTaxCalculator() {
           </div>
 
           {/* Document Submission Status Card */}
-          <div className="bg-white rounded-xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col gap-6">
+          <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs flex flex-col gap-5 sm:gap-6">
             <h3 className="text-sm sm:text-base font-semibold text-slate-900">
               {locale === "hi" ? "दस्तावेज़ स्थिति" : locale === "mr" ? "कागदपत्र स्थिती" : "Document Submission Status"}
             </h3>
 
             {/* PAN Card Toggle */}
-            <div className="flex items-center justify-between gap-4">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="min-w-0 flex-1">
                 <div className="text-sm sm:text-base font-semibold text-slate-900">
                   {t.taxCalc.panLinkedLabel}
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">
+                <div className="text-xs text-slate-500 mt-0.5 leading-relaxed">
                   {locale === "hi"
                     ? "30% की अधिकतम कर दर से बचने के लिए आवश्यक।"
                     : locale === "mr"
@@ -180,11 +180,11 @@ export function PfTaxCalculator() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg shrink-0">
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg shrink-0 self-start sm:self-center">
                 <button
                   type="button"
                   onClick={() => setIsPanLinked(true)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     isPanLinked
                       ? "bg-white text-[#015d55] shadow-xs"
                       : "text-slate-600 hover:text-slate-900"
@@ -198,7 +198,7 @@ export function PfTaxCalculator() {
                     setIsPanLinked(false);
                     setHasForm15G(false);
                   }}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     !isPanLinked
                       ? "bg-white text-slate-900 shadow-xs"
                       : "text-slate-600 hover:text-slate-900"
@@ -210,12 +210,12 @@ export function PfTaxCalculator() {
             </div>
 
             {/* Form 15G / 15H Toggle */}
-            <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-100">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-4 border-t border-slate-100">
+              <div className="min-w-0 flex-1">
                 <div className="text-sm sm:text-base font-semibold text-slate-900">
                   {t.taxCalc.form15gLabel}
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">
+                <div className="text-xs text-slate-500 mt-0.5 leading-relaxed">
                   {locale === "hi"
                     ? "यदि कुल वार्षिक आय कर सीमा से कम है तो 0% टीडीएस हेतु।"
                     : locale === "mr"
@@ -224,12 +224,12 @@ export function PfTaxCalculator() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg shrink-0">
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg shrink-0 self-start sm:self-center">
                 <button
                   type="button"
                   disabled={!isPanLinked}
                   onClick={() => setHasForm15G(true)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                     !isPanLinked
                       ? "opacity-50 cursor-not-allowed text-slate-400"
                       : hasForm15G
@@ -243,7 +243,7 @@ export function PfTaxCalculator() {
                   type="button"
                   disabled={!isPanLinked}
                   onClick={() => setHasForm15G(false)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                     !isPanLinked
                       ? "opacity-50 cursor-not-allowed text-slate-400"
                       : !hasForm15G
@@ -260,10 +260,10 @@ export function PfTaxCalculator() {
 
         {/* Right Column: Estimated Deduction Card */}
         <div className="lg:col-span-5 w-full">
-          <div className="bg-[#0b1b36] text-white rounded-xl p-6 sm:p-7 shadow-lg flex flex-col justify-between">
+          <div className="bg-[#0b1b36] text-white rounded-xl p-5 sm:p-7 shadow-lg flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 text-xs font-bold text-teal-300 uppercase tracking-wider mb-4">
-                <ShieldCheck className="w-4 h-4 text-teal-400" />
+                <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
                 <span>{t.taxCalc.badge}</span>
               </div>
 
@@ -277,30 +277,30 @@ export function PfTaxCalculator() {
 
               {/* Amount Breakdown */}
               <div className="space-y-3.5 py-5 border-y border-slate-700/80">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-300">{t.taxCalc.grossAmount}</span>
-                  <span className="font-mono font-semibold text-white">
+                <div className="flex justify-between items-center gap-3 text-sm">
+                  <span className="text-slate-300 min-w-0">{t.taxCalc.grossAmount}</span>
+                  <span className="font-mono font-semibold text-white shrink-0 text-right whitespace-nowrap">
                     ₹{formatNum(claimAmount)}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-300 flex items-center gap-1.5">
+                <div className="flex justify-between items-start sm:items-center gap-2 sm:gap-3 text-sm">
+                  <div className="text-slate-300 flex flex-wrap items-center gap-1.5 min-w-0 flex-1">
                     <span>{t.taxCalc.tdsDeduction}</span>
-                    <span className="bg-red-900/60 text-red-300 px-1.5 py-0.5 rounded text-[11px] font-bold font-mono">
+                    <span className="inline-flex items-center bg-red-950/90 text-red-300 border border-red-800/50 px-1.5 py-0.5 rounded text-[11px] font-bold font-mono shrink-0">
                       {rate}%
                     </span>
-                  </span>
-                  <span className="font-mono font-bold text-red-400">
+                  </div>
+                  <span className="font-mono font-bold text-red-400 shrink-0 text-right whitespace-nowrap">
                     -₹{formatNum(tdsAmount)}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-sm sm:text-base font-bold text-white">
+                <div className="flex justify-between items-center gap-3 pt-2">
+                  <span className="text-sm sm:text-base font-bold text-white min-w-0">
                     {t.taxCalc.netCredit}
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold text-teal-300 font-mono">
+                  <span className="text-xl sm:text-2xl font-bold text-teal-300 font-mono shrink-0 text-right whitespace-nowrap">
                     ₹{formatNum(finalAmount)}
                   </span>
                 </div>

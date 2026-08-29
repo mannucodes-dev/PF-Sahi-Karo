@@ -835,7 +835,7 @@ export function DashboardClient({ user, claims }: DashboardClientProps) {
                 </button>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-xs">
                 <PfTaxCalculator />
               </div>
             </div>
