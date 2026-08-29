@@ -2,20 +2,18 @@
 
 import React from "react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
 import { ClaimRow } from "@/lib/data/claims";
 import { StatusBadge } from "./status-badge";
-import { ArrowRight, AlertTriangle } from "lucide-react";
 import { cn, formatDisplayDate, formatCurrency } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
+import { getLocalizedClaimType } from "@/lib/i18n/claim-helpers";
 
 interface ClaimCardProps {
   claim: ClaimRow;
 }
 
 export function ClaimCard({ claim }: ClaimCardProps) {
-  const { t } = useTranslation();
+  const { locale, t } = useTranslation();
   const isRejected = claim.status === "rejected";
 
   return (
@@ -30,7 +28,7 @@ export function ClaimCard({ claim }: ClaimCardProps) {
       <div className="space-y-2 max-w-lg w-full sm:w-auto">
         <div className="flex flex-wrap items-center gap-2.5">
           <h3 className="font-extrabold text-base sm:text-lg text-on-surface tracking-tight">
-            {claim.claim_type}
+            {getLocalizedClaimType(claim.claim_type, locale)}
           </h3>
           <StatusBadge status={claim.status} />
         </div>

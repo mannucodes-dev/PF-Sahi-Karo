@@ -4,33 +4,31 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { getDecoderResult, RemarkCodeRow } from "@/lib/decoder-rules";
 import { DecoderPanel } from "@/components/decoder-panel";
-import { Card } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Layers, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
+import { getLocalizedScenarios, getLocalizedClaimDetails } from "@/lib/i18n/claim-helpers";
 
 interface RejectionScenarioViewProps {
   claimId: string;
   defaultCode: string;
 }
 
-const SCENARIOS = [
-  { code: "NAME_MISMATCH", label: "Aadhaar Name Mismatch", short: "Name Mismatch" },
-  { code: "KYC_INCOMPLETE", label: "KYC Pending Employer Digital Signature", short: "KYC Pending" },
-  { code: "BANK_MISMATCH", label: "NEFT Failed / Bank Inactive", short: "Bank Error" },
-  { code: "SERVICE_PERIOD", label: "Service Period Discrepancy", short: "Date of Exit" },
-  { code: "UAN_AADHAAR_UNLINKED", label: "UAN-Aadhaar Linkage Missing", short: "UAN-Aadhaar" },
-];
-
 export function RejectionScenarioView({
   claimId,
   defaultCode,
 }: RejectionScenarioViewProps) {
-  const { t } = useTranslation();
+  const { locale, t } = useTranslation();
   const [selectedCode, setSelectedCode] = useState<string>(defaultCode);
   const activeRemark: RemarkCodeRow =
     getDecoderResult(selectedCode) || (getDecoderResult("NAME_MISMATCH") as RemarkCodeRow);
+
+  const scenarios = getLocalizedScenarios(locale);
+  const localizedDetails = getLocalizedClaimDetails(
+    locale,
+    { amount: 0, claim_type: "" },
+    { full_name: "", masked_bank_account: "" }
+  );
 
   return (
     <div className="space-y-6">
@@ -39,15 +37,15 @@ export function RejectionScenarioView({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-xs font-bold text-on-surface">
             <span className="material-symbols-outlined text-[18px] text-primary">science</span>
-            <span>Judge Evaluation Tool: Test Different Rejection Scenarios</span>
+            <span>{localizedDetails.judgeToolTitle}</span>
           </div>
           <span className="text-[11px] font-mono text-on-surface-variant bg-surface-container-high border border-outline-variant/40 px-2.5 py-0.5 rounded-md font-bold">
-            Active: {selectedCode}
+            {localizedDetails.activeLabel} {selectedCode}
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label="Rejection scenarios">
-          {SCENARIOS.map((scenario) => {
+          {scenarios.map((scenario) => {
             const isSelected = selectedCode === scenario.code;
             return (
               <button

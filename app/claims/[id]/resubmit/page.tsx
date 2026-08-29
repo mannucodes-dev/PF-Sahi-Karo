@@ -120,10 +120,10 @@ function ClaimResubmitContent() {
             className="text-on-surface-variant hover:text-primary flex items-center gap-1.5 text-xs sm:text-sm font-bold py-2 px-3 rounded-xl hover:bg-surface-container-high transition-colors"
           >
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            <span>Back to Claim Details</span>
+            <span>{t.common.backToDashboard}</span>
           </Link>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
+            <LanguageSwitcher direction="down" align="right" />
             <div className="flex items-center gap-2">
               <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain rounded-md" />
               <span className="font-bold text-sm text-primary hidden sm:inline">PF Sahi Karo</span>
